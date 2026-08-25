@@ -1,12 +1,8 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { ResponseInterceptor } from './common/interceptors/response.interceptor';
-import { validationExceptionFactory } from './common/pipes/validation-exception-factory';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,16 +15,6 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: validationExceptionFactory,
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new ResponseInterceptor());
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);

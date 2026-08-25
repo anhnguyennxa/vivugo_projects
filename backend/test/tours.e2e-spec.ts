@@ -1,13 +1,10 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as argon2 from 'argon2';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 
 import { AppModule } from './../src/app.module';
-import { HttpExceptionFilter } from './../src/common/filters/http-exception.filter';
-import { ResponseInterceptor } from './../src/common/interceptors/response.interceptor';
-import { validationExceptionFactory } from './../src/common/pipes/validation-exception-factory';
 import { PrismaService } from './../src/database/prisma/prisma.service';
 
 interface ApiBody {
@@ -36,16 +33,6 @@ describe('Tours & Categories (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-        exceptionFactory: validationExceptionFactory,
-      }),
-    );
-    app.useGlobalFilters(new HttpExceptionFilter());
-    app.useGlobalInterceptors(new ResponseInterceptor());
     await app.init();
 
     prisma = app.get(PrismaService);

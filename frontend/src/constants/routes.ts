@@ -13,6 +13,8 @@ export const ROUTES = {
 
   account: '/account',
   cart: '/cart',
+  checkout: '/checkout',
+  checkoutResult: '/checkout/result',
 
   admin: '/admin',
 } as const

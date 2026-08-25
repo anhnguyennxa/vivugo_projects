@@ -1,6 +1,6 @@
-import { Calendar, MapPin, ShoppingCart, Star, Users } from 'lucide-react'
+import { Calendar, Check, Minus, MapPin, Plus, ShoppingCart, Star, Users } from 'lucide-react'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -12,8 +12,12 @@ import { TourGallery } from '@/components/tour/TourGallery'
 import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
 import { cn } from '@/lib/utils'
+import { addToCart } from '@/services/cart'
 import { getTourBySlug } from '@/services/tours'
+import { useAuthStore } from '@/stores/auth'
+import { useCartStore } from '@/stores/cart'
 import type { Departure } from '@/types/tour'
+import { getApiErrorMessage } from '@/utils/errors'
 
 function formatVnd(amount: number) {
   return new Intl.NumberFormat('vi-VN').format(amount) + '₫'
@@ -27,8 +31,14 @@ function formatDate(iso: string) {
 
 export function TourDetail() {
   const { slug } = useParams<{ slug: string }>()
+  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user)
   const { status, data: tour, error } = useAsync(() => getTourBySlug(slug!), [slug])
   const [selectedDeparture, setSelectedDeparture] = useState<Departure | null>(null)
+  const [numAdults, setNumAdults] = useState(1)
+  const [addingToCart, setAddingToCart] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+  const [added, setAdded] = useState(false)
 
   if (status === 'loading') {
     return (
@@ -55,6 +65,38 @@ export function TourDetail() {
 
   const price = selectedDeparture?.priceOverride ?? tour.discountPrice ?? tour.basePrice
   const hasDiscount = tour.discountPrice != null && tour.discountPrice < tour.basePrice
+  const remaining = selectedDeparture
+    ? selectedDeparture.totalSlots - selectedDeparture.bookedSlots
+    : 0
+  const requested = numAdults
+
+  async function handleAddToCart() {
+    if (!user) {
+      navigate(`${ROUTES.login}?next=${ROUTES.tourDetail(tour!.slug)}`)
+      return
+    }
+    if (!selectedDeparture) {
+      setAddError('Vui lòng chọn đợt khởi hành')
+      return
+    }
+
+    setAddError(null)
+    setAddingToCart(true)
+    try {
+      await addToCart({
+        tourId: tour!.id,
+        departureId: selectedDeparture.id,
+        numAdults,
+      })
+      setAdded(true)
+      const count = useCartStore.getState().itemCount
+      useCartStore.getState().setItemCount(count + 1)
+    } catch (err) {
+      setAddError(getApiErrorMessage(err) ?? 'Không thể thêm vào giỏ hàng')
+    } finally {
+      setAddingToCart(false)
+    }
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -180,8 +222,15 @@ export function TourDetail() {
                     <span className="font-medium text-secondary">
                       {formatDate(d.departureDate)}
                     </span>
-                    <span className={cn('text-xs', remaining <= 5 && remaining > 0 && 'font-semibold text-accent')}>
-                      {disabled ? 'Hết chỗ' : `Còn ${remaining} chỗ`}
+                    <span
+                      className={cn(
+                        'text-xs',
+                        d.totalSlots - d.bookedSlots <= 5 &&
+                          d.totalSlots - d.bookedSlots > 0 &&
+                          'font-semibold text-accent',
+                      )}
+                    >
+                      {disabled ? 'Hết chỗ' : `Còn ${d.totalSlots - d.bookedSlots} chỗ`}
                     </span>
                   </button>
                 )
@@ -189,12 +238,60 @@ export function TourDetail() {
             </div>
           )}
 
-          <Button className="mt-5 w-full" disabled>
-            <ShoppingCart /> Thêm vào giỏ hàng
-          </Button>
-          <p className="mt-2 text-center text-[11.5px] text-text-faint">
-            Giỏ hàng &amp; thanh toán sẽ mở ở module tiếp theo
-          </p>
+          {selectedDeparture && (
+            <div className="mt-5 flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-secondary">
+                <Users className="size-4" /> Số khách
+              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setNumAdults((n) => Math.max(1, n - 1))}
+                  className="flex size-6 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-alt"
+                  aria-label="Giảm số khách"
+                >
+                  <Minus className="size-3.5" />
+                </button>
+                <span className="w-6 text-center font-mono text-sm font-semibold">
+                  {requested}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setNumAdults((n) => (requested < remaining ? n + 1 : n))}
+                  disabled={requested >= remaining}
+                  className="flex size-6 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-alt disabled:opacity-40"
+                  aria-label="Tăng số khách"
+                >
+                  <Plus className="size-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {addError && (
+            <p className="mt-3 rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
+              {addError}
+            </p>
+          )}
+
+          {added ? (
+            <div className="mt-5 flex flex-col gap-2">
+              <p className="flex items-center justify-center gap-1.5 rounded-lg bg-success-soft px-3 py-2.5 text-sm font-medium text-success">
+                <Check className="size-4" /> Đã thêm vào giỏ hàng
+              </p>
+              <Button variant="outline" className="w-full" onClick={() => navigate(ROUTES.cart)}>
+                Xem giỏ hàng
+              </Button>
+            </div>
+          ) : (
+            <Button
+              className="mt-5 w-full"
+              disabled={addingToCart || !selectedDeparture}
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart /> {addingToCart ? 'Đang thêm…' : 'Thêm vào giỏ hàng'}
+            </Button>
+          )}
         </aside>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Compass, Eye, EyeOff, LogIn } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
@@ -11,6 +11,8 @@ import { isValidEmail } from '@/utils/validation'
 
 export function Login() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const next = searchParams.get('next')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -34,7 +36,7 @@ export function Login() {
     try {
       const { user, accessToken } = await authService.login({ email, password })
       useAuthStore.getState().setSession(user, accessToken)
-      navigate(ROUTES.home)
+      navigate(next && next.startsWith('/') ? next : ROUTES.home)
     } catch (err) {
       setError(getApiErrorMessage(err) ?? 'Đăng nhập thất bại, vui lòng thử lại')
     } finally {

@@ -4,7 +4,6 @@ import request from 'supertest';
 import type { App } from 'supertest/types';
 
 import { AppModule } from './../src/app.module';
-import { ResponseInterceptor } from './../src/common/interceptors/response.interceptor';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -16,7 +15,6 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
-    app.useGlobalInterceptors(new ResponseInterceptor());
     await app.init();
   });
 
