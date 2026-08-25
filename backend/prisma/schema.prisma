@@ -1,0 +1,366 @@
+// VivuGo — schema theo mục 05 (Database Schema) của bản blueprint đã chốt.
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Enums ----------
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TourStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum DepartureStatus {
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum BookingPaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum PaymentProvider {
+  VNPAY
+  MOMO
+  ZALOPAY
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+}
+
+enum NotificationType {
+  BOOKING_UPDATE
+  PAYMENT
+  CHAT
+  SYSTEM
+}
+
+enum ChatStatus {
+  OPEN
+  CLOSED
+}
+
+// ---------- Models ----------
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  fullName        String
+  phone           String?
+  avatarUrl       String?
+  role            Role      @default(USER)
+  isActive        Boolean   @default(true)
+  emailVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  refreshTokens     RefreshToken[]
+  createdTours      Tour[]             @relation("TourCreatedBy")
+  cartItems         CartItem[]
+  bookings          Booking[]
+  reviews           Review[]
+  favorites         Favorite[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+  chatConversations ChatConversation[] @relation("ChatConversationUser")
+  handledChats      ChatConversation[] @relation("ChatConversationAdmin")
+  chatMessages      ChatMessage[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tours Tour[]
+
+  @@map("categories")
+}
+
+model Tour {
+  id             String     @id @default(cuid())
+  categoryId     String
+  title          String
+  slug           String     @unique
+  summary        String?
+  description    String
+  itinerary      Json
+  location       String
+  durationDays   Int
+  durationNights Int
+  basePrice      Decimal    @db.Decimal(12, 2)
+  discountPrice  Decimal?   @db.Decimal(12, 2)
+  minGuests      Int        @default(1)
+  maxGuests      Int
+  thumbnailUrl   String
+  status         TourStatus @default(DRAFT)
+  isFeatured     Boolean    @default(false)
+  avgRating      Decimal    @default(0) @db.Decimal(2, 1)
+  reviewCount    Int        @default(0)
+  createdById    String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  deletedAt      DateTime?
+
+  category   Category    @relation(fields: [categoryId], references: [id])
+  createdBy  User        @relation("TourCreatedBy", fields: [createdById], references: [id])
+  images     TourImage[]
+  departures Departure[]
+  reviews    Review[]
+  favorites  Favorite[]
+  cartItems  CartItem[]
+  bookings   Booking[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([location])
+  @@index([isFeatured])
+  @@map("tours")
+}
+
+model TourImage {
+  id        String   @id @default(cuid())
+  tourId    String
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@index([tourId])
+  @@map("tour_images")
+}
+
+model Departure {
+  id             String          @id @default(cuid())
+  tourId         String
+  departureDate  DateTime        @db.Date
+  returnDate     DateTime        @db.Date
+  totalSlots     Int
+  bookedSlots    Int             @default(0)
+  priceOverride  Decimal?        @db.Decimal(12, 2)
+  status         DepartureStatus @default(OPEN)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  tour      Tour       @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  cartItems CartItem[]
+  bookings  Booking[]
+
+  @@unique([tourId, departureDate])
+  @@index([departureDate])
+  @@map("departures")
+}
+
+model CartItem {
+  id          String   @id @default(cuid())
+  userId      String
+  tourId      String
+  departureId String
+  numAdults   Int
+  numChildren Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tour      Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  departure Departure @relation(fields: [departureId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, departureId])
+  @@map("cart_items")
+}
+
+model Booking {
+  id            String                @id @default(cuid())
+  bookingCode   String                @unique
+  userId        String
+  tourId        String
+  departureId   String
+  numAdults     Int
+  numChildren   Int                   @default(0)
+  totalPrice    Decimal               @db.Decimal(12, 2)
+  status        BookingStatus         @default(PENDING)
+  paymentStatus BookingPaymentStatus  @default(UNPAID)
+  contactName   String
+  contactPhone  String
+  contactEmail  String
+  note          String?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  tour      Tour      @relation(fields: [tourId], references: [id])
+  departure Departure @relation(fields: [departureId], references: [id])
+  payment   Payment?
+  review    Review?
+
+  @@index([userId])
+  @@index([departureId])
+  @@index([status])
+  @@map("bookings")
+}
+
+model Payment {
+  id              String          @id @default(cuid())
+  bookingId       String          @unique
+  provider        PaymentProvider
+  amount          Decimal         @db.Decimal(12, 2)
+  currency        String          @default("VND")
+  status          PaymentStatus   @default(PENDING)
+  transactionRef  String?         @unique
+  paidAt          DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  tourId    String
+  userId    String
+  bookingId String       @unique
+  rating    Int
+  comment   String
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  tour    Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([tourId])
+  @@map("reviews")
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  tourId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tourId])
+  @@map("favorites")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model ChatConversation {
+  id        String     @id @default(cuid())
+  userId    String
+  adminId   String?
+  status    ChatStatus @default(OPEN)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  user     User          @relation("ChatConversationUser", fields: [userId], references: [id], onDelete: Cascade)
+  admin    User?         @relation("ChatConversationAdmin", fields: [adminId], references: [id])
+  messages ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_conversations")
+}
+
+model ChatMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  message        String
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User             @relation(fields: [senderId], references: [id])
+
+  @@index([conversationId])
+  @@map("chat_messages")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
