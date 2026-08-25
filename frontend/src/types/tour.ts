@@ -2,6 +2,7 @@ export interface Category {
   id: string
   name: string
   slug: string
+  description: string | null
   imageUrl: string | null
 }
 
@@ -11,7 +12,28 @@ export interface Departure {
   returnDate: string
   totalSlots: number
   bookedSlots: number
+  priceOverride: number | null
   status: 'OPEN' | 'CLOSED' | 'CANCELLED'
+}
+
+export interface TourImage {
+  id: string
+  url: string
+  sortOrder: number
+}
+
+export interface Review {
+  id: string
+  rating: number
+  comment: string
+  createdAt: string
+  user: { fullName: string; avatarUrl: string | null }
+}
+
+export interface ItineraryDay {
+  day: number
+  title: string
+  description: string
 }
 
 export interface Tour {
@@ -30,6 +52,16 @@ export interface Tour {
   isFeatured: boolean
   category: Category
   departures?: Departure[]
+}
+
+export interface TourDetail extends Tour {
+  description: string
+  itinerary: ItineraryDay[]
+  minGuests: number
+  maxGuests: number
+  images: TourImage[]
+  departures: Departure[]
+  reviews: Review[]
 }
 
 export interface Paginated<T> {

@@ -5,11 +5,14 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { validateEnv } from './config/env.validation';
 import { PrismaModule } from './database/prisma/prisma.module';
+import { DeparturesModule } from './departures/departures.module';
 import { MailModule } from './mail/mail.module';
+import { ToursModule } from './tours/tours.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -25,6 +28,9 @@ import { UsersModule } from './users/users.module';
     MailModule,
     UsersModule,
     AuthModule,
+    CategoriesModule,
+    ToursModule,
+    DeparturesModule,
   ],
   controllers: [AppController],
   providers: [
