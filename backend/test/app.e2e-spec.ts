@@ -1,8 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { App } from 'supertest/types';
+import type { App } from 'supertest/types';
+
 import { AppModule } from './../src/app.module';
+import { ResponseInterceptor } from './../src/common/interceptors/response.interceptor';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -13,14 +15,24 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api');
+    app.useGlobalInterceptors(new ResponseInterceptor());
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/api/health (GET) trả về trạng thái khoẻ mạnh và đã kết nối DB', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/api/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        const body = res.body as {
+          success: boolean;
+          data: { status: string; database: string };
+        };
+        expect(body.success).toBe(true);
+        expect(body.data.status).toBe('ok');
+        expect(body.data.database).toBe('connected');
+      });
   });
 
   afterEach(async () => {

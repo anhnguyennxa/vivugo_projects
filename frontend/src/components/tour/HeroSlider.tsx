@@ -46,7 +46,7 @@ export function HeroSlider({ tours }: { tours: Tour[] }) {
               }
         }
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/5" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-black/5" />
 
       <span className="absolute left-5 top-5 rounded-full border border-white/30 bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm sm:left-9 sm:top-6">
         Điểm đến nổi bật

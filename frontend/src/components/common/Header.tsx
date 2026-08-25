@@ -1,6 +1,6 @@
-import { Bell, Compass, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Bell, Compass, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
@@ -16,14 +16,33 @@ const NAV_LINKS = [
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
   const user = useAuthStore((s) => s.user)
   const itemCount = useCartStore((s) => s.itemCount)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [])
+
+  async function handleLogout() {
+    setMenuOpen(false)
+    await useAuthStore.getState().logout()
+    navigate(ROUTES.home)
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Link to={ROUTES.home} className="flex shrink-0 items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-400 text-white">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-blue-400 text-white">
             <Compass className="size-4.5" strokeWidth={2.2} />
           </span>
           <span className="font-display text-lg font-extrabold tracking-tight text-secondary">
@@ -69,11 +88,28 @@ export function Header() {
               <Button variant="ghost" size="icon" aria-label="Thông báo" className="hidden sm:inline-flex">
                 <Bell />
               </Button>
-              <Link to={ROUTES.account}>
-                <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-accent to-amber-400 text-xs font-bold text-white">
+              <div className="relative" ref={menuRef}>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen((v) => !v)}
+                  aria-label="Tài khoản"
+                  className="flex size-8 items-center justify-center rounded-full bg-linear-to-br from-accent to-amber-400 text-xs font-bold text-white"
+                >
                   {user.fullName.charAt(0).toUpperCase()}
-                </span>
-              </Link>
+                </button>
+                {menuOpen && (
+                  <div className="absolute right-0 top-11 w-48 rounded-xl border border-border bg-surface p-1.5 shadow-md">
+                    <p className="truncate px-2.5 py-1.5 text-xs text-text-muted">{user.email}</p>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-danger hover:bg-danger-soft"
+                    >
+                      <LogOut className="size-4" /> Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <Link to={ROUTES.login} className="hidden sm:block">
