@@ -8,6 +8,7 @@ import { Blog } from '@/pages/public/Blog'
 import { BlogDetail } from '@/pages/public/BlogDetail'
 import { Cart } from '@/pages/public/Cart'
 import { CategoryRedirect } from '@/pages/public/CategoryRedirect'
+import { Contact } from '@/pages/public/Contact'
 import { Checkout } from '@/pages/public/Checkout'
 import { CheckoutResult } from '@/pages/public/CheckoutResult'
 import { Favorites } from '@/pages/public/Favorites'
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
       { path: '/tours', element: <Tours /> },
       { path: '/tours/:slug', element: <TourDetail /> },
       { path: '/categories/:slug', element: <CategoryRedirect /> },
+      { path: '/contact', element: <Contact /> },
       { path: '/cam-nang', element: <Blog /> },
       { path: '/cam-nang/:slug', element: <BlogDetail /> },
       { path: '/favorites', element: <Favorites /> },

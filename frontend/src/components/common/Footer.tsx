@@ -1,4 +1,4 @@
-import { Compass, Mail, MapPin, Phone } from 'lucide-react'
+import { Compass, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -26,6 +26,7 @@ function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 import { APP_NAME } from '@/constants/config'
+import { CONTACT } from '@/constants/contact'
 import { ROUTES } from '@/constants/routes'
 
 const FOOTER_LINKS = {
@@ -113,13 +114,19 @@ export function Footer() {
           <h4 className="mb-3 text-sm font-semibold text-white">Liên hệ</h4>
           <ul className="space-y-3 text-sm text-slate-400">
             <li className="flex gap-2">
-              <MapPin className="size-4 shrink-0 text-primary" /> 12 Nguyễn Huệ, Q.1, TP.HCM
+              <MapPin className="size-4 shrink-0 text-primary" /> {CONTACT.address}
             </li>
             <li className="flex gap-2">
-              <Phone className="size-4 shrink-0 text-primary" /> 1900 6868
+              <Phone className="size-4 shrink-0 text-primary" /> <a href={CONTACT.hotline.href} className="hover:text-white">{CONTACT.hotline.label}</a>
             </li>
             <li className="flex gap-2">
-              <Mail className="size-4 shrink-0 text-primary" /> hi@vivugo.vn
+              <MessageCircle className="size-4 shrink-0 text-primary" />{' '}
+              <a href={CONTACT.zalo.href} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                Zalo {CONTACT.zalo.label}
+              </a>
+            </li>
+            <li className="flex gap-2">
+              <Mail className="size-4 shrink-0 text-primary" /> <a href={CONTACT.email.href} className="hover:text-white">{CONTACT.email.label}</a>
             </li>
           </ul>
         </div>

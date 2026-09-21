@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 
+import { ContactFab } from '@/components/common/ContactFab'
 import { Footer } from '@/components/common/Footer'
 import { Header } from '@/components/common/Header'
 
@@ -11,6 +12,7 @@ export function PublicLayout() {
         <Outlet />
       </main>
       <Footer />
+      <ContactFab />
     </div>
   )
 }
