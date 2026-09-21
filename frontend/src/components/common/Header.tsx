@@ -1,4 +1,4 @@
-import { Bell, Compass, Heart, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
+import { Bell, Compass, Heart, LayoutDashboard, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -11,6 +11,7 @@ import { useCartStore } from '@/stores/cart'
 const NAV_LINKS = [
   { label: 'Tour', href: ROUTES.tours },
   { label: 'Danh mục', href: ROUTES.tours },
+  { label: 'Cẩm nang', href: ROUTES.blog },
   { label: 'Về chúng tôi', href: ROUTES.about },
 ]
 
@@ -107,6 +108,15 @@ export function Header() {
                     >
                       <Heart className="size-4" /> Yêu thích
                     </Link>
+                    {user.role === 'ADMIN' && (
+                      <Link
+                        to={ROUTES.adminBlog}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
+                      >
+                        <LayoutDashboard className="size-4" /> Quản trị Cẩm nang
+                      </Link>
+                    )}
                     <button
                       type="button"
                       onClick={handleLogout}

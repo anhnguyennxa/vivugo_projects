@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { BlogModule } from './blog/blog.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
@@ -44,6 +45,7 @@ import { UsersModule } from './users/users.module';
     PaymentsModule,
     ReviewsModule,
     FavoritesModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [

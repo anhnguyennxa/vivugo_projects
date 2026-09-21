@@ -17,5 +17,11 @@ export const ROUTES = {
   checkout: '/checkout',
   checkoutResult: '/checkout/result',
 
+  blog: '/cam-nang',
+  blogDetail: (slug: string) => `/cam-nang/${slug}`,
+
   admin: '/admin',
+  adminBlog: '/admin/blog',
+  adminBlogNew: '/admin/blog/new',
+  adminBlogEdit: (id: string) => `/admin/blog/${id}`,
 } as const

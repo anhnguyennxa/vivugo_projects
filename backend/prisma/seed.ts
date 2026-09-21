@@ -226,8 +226,103 @@ async function main() {
     }
   }
 
+  const blogPostsData = [
+    {
+      title: 'Kinh nghiệm du lịch Phú Quốc từ A đến Z',
+      slug: 'kinh-nghiem-du-lich-phu-quoc',
+      region: 'MIEN_NAM' as const,
+      relatedSlugs: ['phu-quoc-kham-pha-dao-ngoc'],
+      excerpt:
+        'Nên đi Phú Quốc mùa nào, ăn gì, chơi gì và những lưu ý quan trọng trước khi lên đường.',
+      content: `## Nên đi Phú Quốc vào mùa nào?
+
+Phú Quốc đẹp nhất từ tháng 11 đến tháng 4 — mùa khô, ít mưa, biển lặng, rất thích hợp để tắm biển và lặn ngắm san hô.
+
+## Những trải nghiệm không thể bỏ lỡ
+
+- Lặn ngắm san hô ở Hòn Móng Tay
+- Tắm biển Bãi Sao — bãi biển đẹp bậc nhất Việt Nam
+- Dạo chợ đêm Dinh Cậu, thưởng thức hải sản tươi sống
+- Cáp treo Hòn Thơm — tuyến cáp treo vượt biển dài nhất thế giới
+
+## Lưu ý khi đi
+
+Nhớ mang kem chống nắng, mũ rộng vành và đặt phòng/tour trước ít nhất 2 tuần vào mùa cao điểm.`,
+      coverImageUrl:
+        'https://picsum.photos/seed/blog-phu-quoc/1200/700',
+    },
+    {
+      title: 'Sổ tay du lịch miền Bắc: Hạ Long, Sa Pa nên đi đâu trước?',
+      slug: 'so-tay-du-lich-mien-bac',
+      region: 'MIEN_BAC' as const,
+      relatedSlugs: ['vinh-ha-long-du-thuyen', 'sa-pa-san-may-fansipan'],
+      excerpt:
+        'So sánh trải nghiệm giữa Vịnh Hạ Long và Sa Pa để chọn hành trình phù hợp với bạn.',
+      content: `## Hạ Long hay Sa Pa?
+
+Nếu thích biển đảo và nghỉ dưỡng trên du thuyền, chọn **Vịnh Hạ Long**. Nếu thích khí hậu se lạnh, săn mây và trekking, chọn **Sa Pa**.
+
+## Vịnh Hạ Long
+
+Du thuyền 5 sao giữa hàng nghìn đảo đá vôi, chèo kayak khám phá hang động — trải nghiệm nghỉ dưỡng đẳng cấp.
+
+## Sa Pa
+
+Chinh phục Fansipan bằng cáp treo, dạo bản Cát Cát, thưởng thức đặc sản vùng cao Tây Bắc trong tiết trời se lạnh.
+
+## Gợi ý lịch trình
+
+Nếu có 5-6 ngày, bạn hoàn toàn có thể kết hợp cả hai điểm đến trong một chuyến đi miền Bắc.`,
+      coverImageUrl: 'https://picsum.photos/seed/blog-mien-bac/1200/700',
+    },
+    {
+      title: 'Cẩm nang khám phá miền Trung: Huế, Hội An trong 4 ngày',
+      slug: 'cam-nang-kham-pha-mien-trung',
+      region: 'MIEN_TRUNG' as const,
+      relatedSlugs: ['hue-co-do-di-san', 'hoi-an-pho-co-den-long'],
+      excerpt:
+        'Lịch trình 4 ngày khám phá cố đô Huế và phố cổ Hội An dành cho người lần đầu đến miền Trung.',
+      content: `## Ngày 1-2: Huế
+
+Tham quan Đại Nội, các lăng tẩm triều Nguyễn và du thuyền sông Hương nghe ca Huế vào buổi tối.
+
+## Ngày 3-4: Hội An
+
+Di chuyển đến Hội An, dạo phố cổ về đêm, thả hoa đăng sông Hoài và trải nghiệm làm nông dân tại làng rau Trà Quế.
+
+## Ẩm thực nên thử
+
+Bún bò Huế, cơm hến, cao lầu, mì Quảng — mỗi món đều mang một câu chuyện văn hoá riêng của miền Trung.`,
+      coverImageUrl: 'https://picsum.photos/seed/blog-mien-trung/1200/700',
+    },
+  ];
+
+  for (const p of blogPostsData) {
+    const relatedTours = await prisma.tour.findMany({
+      where: { slug: { in: p.relatedSlugs } },
+      select: { id: true },
+    });
+
+    await prisma.blogPost.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: {
+        title: p.title,
+        slug: p.slug,
+        excerpt: p.excerpt,
+        content: p.content,
+        coverImageUrl: p.coverImageUrl,
+        region: p.region,
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+        authorId: admin.id,
+        relatedTours: { connect: relatedTours.map((t) => ({ id: t.id })) },
+      },
+    });
+  }
+
   console.log(
-    'Seed hoàn tất: 1 admin, 3 danh mục, 6 tour, mỗi tour 3 ảnh + 2 đợt khởi hành.',
+    'Seed hoàn tất: 1 admin, 3 danh mục, 6 tour, mỗi tour 3 ảnh + 2 đợt khởi hành, 3 bài cẩm nang.',
   );
 }
 

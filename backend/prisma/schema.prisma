@@ -80,6 +80,11 @@ enum ChatStatus {
   CLOSED
 }
 
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+}
+
 // ---------- Models ----------
 
 model User {
@@ -111,6 +116,7 @@ model User {
   chatConversations ChatConversation[] @relation("ChatConversationUser")
   handledChats      ChatConversation[] @relation("ChatConversationAdmin")
   chatMessages      ChatMessage[]
+  blogPosts         BlogPost[]
 
   @@map("users")
 }
@@ -169,14 +175,15 @@ model Tour {
   updatedAt      DateTime   @updatedAt
   deletedAt      DateTime?
 
-  category   Category    @relation(fields: [categoryId], references: [id])
-  createdBy  User        @relation("TourCreatedBy", fields: [createdById], references: [id])
-  images     TourImage[]
-  departures Departure[]
-  reviews    Review[]
-  favorites  Favorite[]
-  cartItems  CartItem[]
-  bookings   Booking[]
+  category         Category    @relation(fields: [categoryId], references: [id])
+  createdBy        User        @relation("TourCreatedBy", fields: [createdById], references: [id])
+  images           TourImage[]
+  departures       Departure[]
+  reviews          Review[]
+  favorites        Favorite[]
+  cartItems        CartItem[]
+  bookings         Booking[]
+  relatedInPosts   BlogPost[]  @relation("BlogPostRelatedTours")
 
   @@index([categoryId])
   @@index([status])
@@ -361,6 +368,30 @@ model ChatMessage {
 
   @@index([conversationId])
   @@map("chat_messages")
+}
+
+model BlogPost {
+  id            String         @id @default(cuid())
+  title         String
+  slug          String         @unique
+  excerpt       String
+  content       String         @db.Text
+  coverImageUrl String
+  region        Region?
+  status        BlogPostStatus @default(DRAFT)
+  publishedAt   DateTime?
+  viewCount     Int            @default(0)
+  authorId      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  author       User   @relation(fields: [authorId], references: [id])
+  relatedTours Tour[] @relation("BlogPostRelatedTours")
+
+  @@index([status, publishedAt])
+  @@index([region])
+  @@map("blog_posts")
 }
 
 model AuditLog {
