@@ -152,6 +152,22 @@ export class ToursService {
     });
   }
 
+  // Xoá hẳn: chỉ khi tour chưa từng có đơn để không làm mất lịch sử đơn/doanh thu.
+  // Ảnh, đợt khởi hành, đánh giá, yêu thích, giỏ hàng tự xoá theo (onDelete: Cascade).
+  async removePermanently(id: string) {
+    const tour = await this.prisma.tour.findUnique({
+      where: { id },
+      include: { _count: { select: { bookings: true } } },
+    });
+    if (!tour) throw new NotFoundException('Không tìm thấy tour');
+    if (tour._count.bookings > 0) {
+      throw new BadRequestException(
+        `Tour đã có ${tour._count.bookings} đơn đặt nên không thể xoá vĩnh viễn, hãy ẩn tour thay vì xoá`,
+      );
+    }
+    await this.prisma.tour.delete({ where: { id } });
+  }
+
   async addImages(tourId: string, dto: AddTourImagesDto) {
     await this.ensureTourExists(tourId);
 
@@ -170,6 +186,14 @@ export class ToursService {
       where: { tourId },
       orderBy: { sortOrder: 'asc' },
     });
+  }
+
+  async removeImage(tourId: string, imageId: string) {
+    const image = await this.prisma.tourImage.findFirst({
+      where: { id: imageId, tourId },
+    });
+    if (!image) throw new NotFoundException('Không tìm thấy ảnh');
+    await this.prisma.tourImage.delete({ where: { id: imageId } });
   }
 
   private async ensureTourExists(id: string) {

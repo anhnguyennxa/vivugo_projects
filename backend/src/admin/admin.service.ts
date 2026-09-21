@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma/prisma.service';
 import type { QueryAdminBookingsDto } from './dto/query-admin-bookings.dto';
+import type { QueryAdminToursDto } from './dto/query-admin-tours.dto';
 
 const REVENUE_MONTHS = 6;
 const TOP_TOURS_LIMIT = 5;
@@ -21,6 +22,22 @@ function monthKey(date: Date) {
 
 function serializeBooking<T extends { totalPrice: Prisma.Decimal }>(b: T) {
   return { ...b, totalPrice: Number(b.totalPrice) };
+}
+
+function serializeTour<
+  T extends {
+    basePrice: Prisma.Decimal;
+    discountPrice: Prisma.Decimal | null;
+    avgRating: Prisma.Decimal;
+  },
+>(tour: T) {
+  return {
+    ...tour,
+    basePrice: Number(tour.basePrice),
+    discountPrice:
+      tour.discountPrice != null ? Number(tour.discountPrice) : null,
+    avgRating: Number(tour.avgRating),
+  };
 }
 
 @Injectable()
@@ -131,6 +148,60 @@ export class AdminService {
       revenueByMonth,
       topTours,
       recentBookings: recentBookings.map(serializeBooking),
+    };
+  }
+
+  // Danh sách tour cho admin: gồm cả DRAFT/ARCHIVED (API công khai chỉ trả PUBLISHED).
+  async findTours(query: QueryAdminToursDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 15;
+
+    const where: Prisma.TourWhereInput = {
+      deletedAt: null,
+      ...(query.status && { status: query.status }),
+      ...(query.categoryId && { categoryId: query.categoryId }),
+      ...(query.search && {
+        OR: [
+          { title: { contains: query.search, mode: 'insensitive' } },
+          { location: { contains: query.search, mode: 'insensitive' } },
+        ],
+      }),
+    };
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.tour.findMany({
+        where,
+        include: {
+          category: { select: { id: true, name: true } },
+          _count: { select: { departures: true, bookings: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.tour.count({ where }),
+    ]);
+
+    return { items: items.map(serializeTour), page, limit, total };
+  }
+
+  async findTourById(id: string) {
+    const tour = await this.prisma.tour.findFirst({
+      where: { id, deletedAt: null },
+      include: {
+        category: { select: { id: true, name: true } },
+        images: { orderBy: { sortOrder: 'asc' } },
+        departures: { orderBy: { departureDate: 'asc' } },
+      },
+    });
+    if (!tour) throw new NotFoundException('Không tìm thấy tour');
+
+    return {
+      ...serializeTour(tour),
+      departures: tour.departures.map((d) => ({
+        ...d,
+        priceOverride: d.priceOverride != null ? Number(d.priceOverride) : null,
+      })),
     };
   }
 

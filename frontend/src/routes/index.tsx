@@ -8,7 +8,10 @@ import { AccountBookings } from '@/pages/account/AccountBookings'
 import { AccountPassword } from '@/pages/account/AccountPassword'
 import { AccountProfile } from '@/pages/account/AccountProfile'
 import { AdminBookings } from '@/pages/admin/AdminBookings'
+import { AdminCategories } from '@/pages/admin/AdminCategories'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
+import { AdminTourForm } from '@/pages/admin/AdminTourForm'
+import { AdminTours } from '@/pages/admin/AdminTours'
 import { BlogAdminForm } from '@/pages/admin/BlogAdminForm'
 import { BlogAdminList } from '@/pages/admin/BlogAdminList'
 import { Blog } from '@/pages/public/Blog'
@@ -66,6 +69,10 @@ export const router = createBrowserRouter([
     children: [
       { path: '/admin', element: <AdminDashboard /> },
       { path: '/admin/bookings', element: <AdminBookings /> },
+      { path: '/admin/tours', element: <AdminTours /> },
+      { path: '/admin/tours/new', element: <AdminTourForm /> },
+      { path: '/admin/tours/:id', element: <AdminTourForm /> },
+      { path: '/admin/categories', element: <AdminCategories /> },
       { path: '/admin/blog', element: <BlogAdminList /> },
       { path: '/admin/blog/new', element: <BlogAdminForm /> },
       { path: '/admin/blog/:id', element: <BlogAdminForm /> },

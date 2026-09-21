@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -33,5 +43,13 @@ export class DeparturesController {
   async update(@Param('id') id: string, @Body() dto: UpdateDepartureDto) {
     const data = await this.departuresService.update(id, dto);
     return { message: 'Cập nhật đợt khởi hành thành công', data };
+  }
+
+  @Roles(Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Delete('departures/:id')
+  async remove(@Param('id') id: string) {
+    await this.departuresService.remove(id);
+    return { message: 'Xoá đợt khởi hành thành công', data: null };
   }
 }

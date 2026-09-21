@@ -19,8 +19,9 @@ export class CreateDepartureDto {
   @IsPositive()
   totalSlots: number;
 
+  // null (khi cập nhật) = xoá giá riêng của đợt, quay về giá gốc của tour
   @IsOptional()
   @Type(() => Number)
   @Min(0)
-  priceOverride?: number;
+  priceOverride?: number | null;
 }

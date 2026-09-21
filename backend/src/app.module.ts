@@ -23,6 +23,7 @@ import { MailModule } from './mail/mail.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ToursModule } from './tours/tours.module';
+import { UploadsModule } from './uploads/uploads.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -48,6 +49,7 @@ import { UsersModule } from './users/users.module';
     FavoritesModule,
     BlogModule,
     AdminModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [

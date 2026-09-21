@@ -1,4 +1,4 @@
-import { BookOpen, Compass, LayoutDashboard, Ticket } from 'lucide-react'
+import { BookOpen, Compass, LayoutDashboard, Route, Tags, Ticket } from 'lucide-react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
 import { APP_NAME } from '@/constants/config'
@@ -9,6 +9,8 @@ import { useAuthStore } from '@/stores/auth'
 const MENU = [
   { label: 'Tổng quan', to: ROUTES.admin, icon: LayoutDashboard, end: true },
   { label: 'Đơn đặt tour', to: ROUTES.adminBookings, icon: Ticket, end: false },
+  { label: 'Tour', to: ROUTES.adminTours, icon: Route, end: false },
+  { label: 'Danh mục', to: ROUTES.adminCategories, icon: Tags, end: false },
   { label: 'Cẩm nang', to: ROUTES.adminBlog, icon: BookOpen, end: false },
 ]
 

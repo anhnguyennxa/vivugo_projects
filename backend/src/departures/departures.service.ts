@@ -55,19 +55,49 @@ export class DeparturesService {
     const departure = await this.prisma.departure.findUnique({ where: { id } });
     if (!departure) throw new NotFoundException('Không tìm thấy đợt khởi hành');
 
+    const departureDate = dto.departureDate
+      ? new Date(dto.departureDate)
+      : departure.departureDate;
+    const returnDate = dto.returnDate
+      ? new Date(dto.returnDate)
+      : departure.returnDate;
+    if (returnDate < departureDate) {
+      throw new BadRequestException('Ngày kết thúc phải sau ngày khởi hành');
+    }
+    if (dto.totalSlots != null && dto.totalSlots < departure.bookedSlots) {
+      throw new BadRequestException(
+        `Tổng số chỗ không được nhỏ hơn số chỗ đã đặt (${departure.bookedSlots})`,
+      );
+    }
+
     const updated = await this.prisma.departure.update({
       where: { id },
       data: {
-        ...(dto.departureDate && {
-          departureDate: new Date(dto.departureDate),
-        }),
-        ...(dto.returnDate && { returnDate: new Date(dto.returnDate) }),
+        departureDate,
+        returnDate,
         ...(dto.totalSlots != null && { totalSlots: dto.totalSlots }),
-        ...(dto.priceOverride != null && { priceOverride: dto.priceOverride }),
+        // priceOverride: null xoá giá riêng, quay về giá gốc của tour
+        ...(dto.priceOverride !== undefined && {
+          priceOverride: dto.priceOverride,
+        }),
         ...(dto.status && { status: dto.status }),
       },
     });
     return serializeDeparture(updated);
+  }
+
+  async remove(id: string) {
+    const departure = await this.prisma.departure.findUnique({
+      where: { id },
+      include: { _count: { select: { bookings: true } } },
+    });
+    if (!departure) throw new NotFoundException('Không tìm thấy đợt khởi hành');
+    if (departure._count.bookings > 0) {
+      throw new BadRequestException(
+        'Đợt khởi hành đã có đơn đặt, hãy đóng đợt thay vì xoá',
+      );
+    }
+    await this.prisma.departure.delete({ where: { id } });
   }
 
   private async ensureTourExists(tourId: string) {

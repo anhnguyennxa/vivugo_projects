@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { PrismaService } from '../database/prisma/prisma.service';
 import type { CreateCategoryDto } from './dto/create-category.dto';
@@ -29,6 +33,23 @@ export class CategoriesService {
 
   async remove(id: string) {
     await this.ensureExists(id);
+    // Tour xoá mềm vẫn giữ khoá ngoại tới danh mục nên cũng chặn việc xoá.
+    const [activeTours, deletedTours] = await Promise.all([
+      this.prisma.tour.count({ where: { categoryId: id, deletedAt: null } }),
+      this.prisma.tour.count({
+        where: { categoryId: id, deletedAt: { not: null } },
+      }),
+    ]);
+    if (activeTours > 0) {
+      throw new BadRequestException(
+        `Danh mục đang có ${activeTours} tour, hãy chuyển tour sang danh mục khác trước khi xoá`,
+      );
+    }
+    if (deletedTours > 0) {
+      throw new BadRequestException(
+        'Danh mục còn liên kết với các tour đã xoá nên không thể xoá',
+      );
+    }
     await this.prisma.category.delete({ where: { id } });
   }
 

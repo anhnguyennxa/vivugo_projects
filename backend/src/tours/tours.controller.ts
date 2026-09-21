@@ -70,9 +70,28 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Delete(':id/permanent')
+  async removePermanently(@Param('id') id: string) {
+    await this.toursService.removePermanently(id);
+    return { message: 'Đã xoá vĩnh viễn tour', data: null };
+  }
+
+  @Roles(Role.ADMIN)
   @Post(':id/images')
   async addImages(@Param('id') id: string, @Body() dto: AddTourImagesDto) {
     const data = await this.toursService.addImages(id, dto);
     return { message: 'Thêm ảnh tour thành công', data };
+  }
+
+  @Roles(Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Delete(':id/images/:imageId')
+  async removeImage(
+    @Param('id') id: string,
+    @Param('imageId') imageId: string,
+  ) {
+    await this.toursService.removeImage(id, imageId);
+    return { message: 'Xoá ảnh tour thành công', data: null };
   }
 }

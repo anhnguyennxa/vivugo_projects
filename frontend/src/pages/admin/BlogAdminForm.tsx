@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
+import { ImageUploadButton } from '@/components/admin/ImageUploadButton'
 import { Button } from '@/components/ui/button'
 import { REGION_OPTIONS } from '@/constants/region'
 import { ROUTES } from '@/constants/routes'
@@ -15,17 +16,7 @@ import { getTours } from '@/services/tours'
 import type { BlogPostStatus } from '@/types/blog'
 import type { Region } from '@/types/tour'
 import { getApiErrorMessage } from '@/utils/errors'
-
-function slugify(text: string) {
-  return text
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
+import { slugify } from '@/utils/slugify'
 
 const EMPTY_FORM: BlogPostInput = {
   title: '',
@@ -190,6 +181,12 @@ export function BlogAdminForm() {
             onChange={(e) => setForm((f) => ({ ...f, coverImageUrl: e.target.value }))}
             className="h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm focus:border-primary focus:outline-none"
           />
+          <div className="mt-2">
+            <ImageUploadButton
+              label="Tải ảnh từ máy"
+              onUploaded={([url]) => setForm((f) => ({ ...f, coverImageUrl: url }))}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
