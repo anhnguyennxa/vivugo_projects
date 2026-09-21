@@ -19,6 +19,7 @@ const BOOKING_INCLUDE = {
     select: { id: true, departureDate: true, returnDate: true },
   },
   payment: true,
+  review: { select: { id: true } },
 } as const;
 
 function toNumber(value: unknown) {

@@ -1,4 +1,4 @@
-import { Calendar, Check, Minus, MapPin, Plus, ShoppingCart, Star, Users } from 'lucide-react'
+import { Calendar, Check, Heart, Minus, MapPin, Plus, ShoppingCart, Star, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -8,14 +8,18 @@ import { ErrorState } from '@/components/common/ErrorState'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ReviewForm } from '@/components/tour/ReviewForm'
 import { TourGallery } from '@/components/tour/TourGallery'
+import { REGION_LABELS } from '@/constants/region'
 import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
 import { cn } from '@/lib/utils'
+import { getMyBookings } from '@/services/bookings'
 import { addToCart } from '@/services/cart'
 import { getTourBySlug } from '@/services/tours'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
+import { useFavoritesStore } from '@/stores/favorites'
 import type { Departure } from '@/types/tour'
 import { getApiErrorMessage } from '@/utils/errors'
 
@@ -39,6 +43,13 @@ export function TourDetail() {
   const [addingToCart, setAddingToCart] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
   const [added, setAdded] = useState(false)
+  const [reviewSubmitted, setReviewSubmitted] = useState(false)
+  const isFavorited = useFavoritesStore((s) => (tour ? s.ids.has(tour.id) : false))
+
+  const { data: myBookings } = useAsync(
+    () => (user ? getMyBookings() : Promise.resolve([])),
+    [user?.id],
+  )
 
   if (status === 'loading') {
     return (
@@ -69,6 +80,17 @@ export function TourDetail() {
     ? selectedDeparture.totalSlots - selectedDeparture.bookedSlots
     : 0
   const requested = numAdults
+  const reviewableBooking = myBookings?.find(
+    (b) => b.tour.id === tour!.id && b.status === 'COMPLETED' && !b.review,
+  )
+
+  function handleToggleFavorite() {
+    if (!user) {
+      navigate(`${ROUTES.login}?next=${ROUTES.tourDetail(tour!.slug)}`)
+      return
+    }
+    void useFavoritesStore.getState().toggle(tour!.id)
+  }
 
   async function handleAddToCart() {
     if (!user) {
@@ -113,13 +135,28 @@ export function TourDetail() {
           <TourGallery images={tour.images} thumbnailUrl={tour.thumbnailUrl} title={tour.title} />
 
           <div className="mt-6">
-            <Badge>{tour.category.name}</Badge>
+            <div className="flex items-start justify-between gap-3">
+              <Badge>{tour.category.name}</Badge>
+              <button
+                type="button"
+                onClick={handleToggleFavorite}
+                aria-label={isFavorited ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}
+                className={cn(
+                  'flex size-9 shrink-0 items-center justify-center rounded-full border transition-colors',
+                  isFavorited
+                    ? 'border-danger/30 bg-danger-soft text-danger'
+                    : 'border-border text-text-muted hover:bg-surface-alt',
+                )}
+              >
+                <Heart className={cn('size-4', isFavorited && 'fill-danger')} />
+              </button>
+            </div>
             <h1 className="mt-2 text-balance font-display text-2xl font-extrabold text-secondary sm:text-3xl">
               {tour.title}
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-muted">
               <span className="flex items-center gap-1">
-                <MapPin className="size-4" /> {tour.location}
+                <MapPin className="size-4" /> {tour.location} · {REGION_LABELS[tour.region]}
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="size-4" /> {tour.durationDays} ngày {tour.durationNights} đêm
@@ -160,6 +197,21 @@ export function TourDetail() {
               <h2 className="font-display text-lg font-bold text-secondary">
                 Đánh giá {tour.reviewCount > 0 && `(${tour.reviewCount})`}
               </h2>
+
+              {reviewableBooking && !reviewSubmitted && (
+                <div className="mt-4">
+                  <ReviewForm
+                    bookingId={reviewableBooking.id}
+                    onSubmitted={() => setReviewSubmitted(true)}
+                  />
+                </div>
+              )}
+              {reviewSubmitted && (
+                <p className="mt-4 rounded-lg bg-success-soft px-3 py-2 text-sm text-success">
+                  Cảm ơn bạn đã đánh giá! Đánh giá sẽ hiển thị sau khi được duyệt.
+                </p>
+              )}
+
               {tour.reviews.length === 0 ? (
                 <EmptyState
                   icon={Star}

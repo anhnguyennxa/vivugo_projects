@@ -1,3 +1,5 @@
+export type Region = 'MIEN_BAC' | 'MIEN_TRUNG' | 'TAY_NGUYEN' | 'MIEN_NAM'
+
 export interface Category {
   id: string
   name: string
@@ -42,6 +44,7 @@ export interface Tour {
   slug: string
   summary: string
   location: string
+  region: Region
   durationDays: number
   durationNights: number
   basePrice: number

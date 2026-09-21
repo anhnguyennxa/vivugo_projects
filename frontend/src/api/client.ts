@@ -19,12 +19,22 @@ apiClient.interceptors.request.use((config) => {
 
 let refreshPromise: Promise<string | null> | null = null
 
+// Các endpoint tự thân liên quan đến phiên đăng nhập — không bao giờ được
+// kích hoạt vòng lặp "refresh rồi retry chính nó" khi chúng thất bại.
+const AUTH_SESSION_PATHS = ['/auth/refresh', '/auth/logout']
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ApiError>) => {
     const originalRequest = error.config as (InternalAxiosRequestConfig & { _retried?: boolean }) | undefined
+    const isAuthSessionRequest = AUTH_SESSION_PATHS.some((path) => originalRequest?.url?.includes(path))
 
-    if (error.response?.status !== 401 || !originalRequest || originalRequest._retried) {
+    if (
+      error.response?.status !== 401 ||
+      !originalRequest ||
+      originalRequest._retried ||
+      isAuthSessionRequest
+    ) {
       throw error
     }
     originalRequest._retried = true
@@ -34,7 +44,7 @@ apiClient.interceptors.response.use(
     refreshPromise = null
 
     if (!newToken) {
-      useAuthStore.getState().logout()
+      useAuthStore.setState({ user: null, accessToken: null })
       throw error
     }
 

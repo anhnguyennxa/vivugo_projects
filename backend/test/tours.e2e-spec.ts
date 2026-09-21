@@ -119,6 +119,42 @@ describe('Tours & Categories (e2e)', () => {
     expect(typeof body.data[0].basePrice).toBe('number');
   });
 
+  it('GET /api/tours?region=... chỉ trả về tour đúng vùng miền', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/tours?region=TAY_NGUYEN&limit=50')
+      .expect(200);
+
+    const body = res.body as ApiBody & { data: { region: string }[] };
+    expect(body.data.length).toBeGreaterThan(0);
+    expect(body.data.every((t) => t.region === 'TAY_NGUYEN')).toBe(true);
+  });
+
+  it('GET /api/tours?lastMinute=true chỉ trả về tour có đợt khởi hành trong 21 ngày tới, kèm đợt gần nhất', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/tours?lastMinute=true&limit=50')
+      .expect(200);
+
+    const body = res.body as ApiBody & {
+      data: {
+        departures?: {
+          departureDate: string;
+          totalSlots: number;
+          bookedSlots: number;
+        }[];
+      }[];
+    };
+    expect(body.data.length).toBeGreaterThan(0);
+    for (const tour of body.data) {
+      expect(tour.departures?.length).toBe(1);
+      const dep = tour.departures![0];
+      const daysAway =
+        (new Date(dep.departureDate).getTime() - Date.now()) / 86_400_000;
+      expect(daysAway).toBeGreaterThanOrEqual(0);
+      expect(daysAway).toBeLessThanOrEqual(21);
+      expect(typeof dep.totalSlots).toBe('number');
+    }
+  });
+
   it('GET /api/tours/:slug trả về 404 khi không tồn tại', async () => {
     await request(app.getHttpServer())
       .get('/api/tours/khong-ton-tai-xyz')
@@ -136,6 +172,7 @@ describe('Tours & Categories (e2e)', () => {
         description: 'Mo ta hop le voi tren hai muoi ky tu',
         itinerary: [],
         location: 'Test',
+        region: 'MIEN_NAM',
         durationDays: 1,
         durationNights: 0,
         basePrice: 100000,
@@ -153,6 +190,7 @@ describe('Tours & Categories (e2e)', () => {
       description: 'Mo ta hop le voi tren hai muoi ky tu cho tour kiem thu',
       itinerary: [{ day: 1, title: 'Khởi hành', description: 'Test' }],
       location: 'Test City',
+      region: 'MIEN_NAM',
       durationDays: 2,
       durationNights: 1,
       basePrice: 1500000,

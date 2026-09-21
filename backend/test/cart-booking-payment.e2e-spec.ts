@@ -83,6 +83,7 @@ describe('Cart, Booking & Payment (e2e)', () => {
         description: 'Mo ta tour kiem thu gio hang thanh toan',
         itinerary: [],
         location: 'Test',
+        region: 'MIEN_NAM',
         durationDays: 2,
         durationNights: 1,
         basePrice: 1000000,
@@ -108,10 +109,15 @@ describe('Cart, Booking & Payment (e2e)', () => {
   });
 
   afterAll(async () => {
-    await prisma.booking.deleteMany({ where: { tourId } });
-    await prisma.cartItem.deleteMany({ where: { tourId } });
-    await prisma.departure.deleteMany({ where: { tourId } });
-    await prisma.tour.deleteMany({ where: { id: tourId } });
+    // Guard: nếu beforeAll throw sớm, các id dưới đây vẫn là undefined — Prisma
+    // coi field undefined trong where là "bỏ qua điều kiện", tức deleteMany({where:{tourId:undefined}})
+    // sẽ xoá TOÀN BỘ bảng thay vì không làm gì. Luôn kiểm tra truthy trước khi xoá.
+    if (tourId) {
+      await prisma.booking.deleteMany({ where: { tourId } });
+      await prisma.cartItem.deleteMany({ where: { tourId } });
+      await prisma.departure.deleteMany({ where: { tourId } });
+      await prisma.tour.deleteMany({ where: { id: tourId } });
+    }
     await prisma.category.deleteMany({
       where: { slug: `e2e-cart-cat-${suffix}` },
     });

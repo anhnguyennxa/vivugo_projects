@@ -1,4 +1,4 @@
-import { Bell, Compass, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
+import { Bell, Compass, Heart, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -100,6 +100,13 @@ export function Header() {
                 {menuOpen && (
                   <div className="absolute right-0 top-11 w-48 rounded-xl border border-border bg-surface p-1.5 shadow-md">
                     <p className="truncate px-2.5 py-1.5 text-xs text-text-muted">{user.email}</p>
+                    <Link
+                      to={ROUTES.favorites}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
+                    >
+                      <Heart className="size-4" /> Yêu thích
+                    </Link>
                     <button
                       type="button"
                       onClick={handleLogout}

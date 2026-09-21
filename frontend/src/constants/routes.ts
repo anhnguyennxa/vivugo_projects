@@ -12,6 +12,7 @@ export const ROUTES = {
   resetPassword: '/reset-password',
 
   account: '/account',
+  favorites: '/favorites',
   cart: '/cart',
   checkout: '/checkout',
   checkoutResult: '/checkout/result',

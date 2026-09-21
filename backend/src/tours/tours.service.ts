@@ -34,6 +34,8 @@ function serializeTour<
   };
 }
 
+const LAST_MINUTE_WINDOW_DAYS = 21;
+
 @Injectable()
 export class ToursService {
   constructor(private readonly prisma: PrismaService) {}
@@ -42,11 +44,24 @@ export class ToursService {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
 
+    const lastMinuteWindow = query.lastMinute
+      ? {
+          gte: new Date(),
+          lte: new Date(Date.now() + LAST_MINUTE_WINDOW_DAYS * 86_400_000),
+        }
+      : undefined;
+
     const where: Prisma.TourWhereInput = {
       status: 'PUBLISHED',
       deletedAt: null,
       ...(query.featured != null && { isFeatured: query.featured }),
       ...(query.category && { category: { slug: query.category } }),
+      ...(query.region && { region: query.region }),
+      ...(query.lastMinute && {
+        departures: {
+          some: { status: 'OPEN', departureDate: lastMinuteWindow },
+        },
+      }),
       ...((query.minPrice != null || query.maxPrice != null) && {
         basePrice: {
           ...(query.minPrice != null && { gte: query.minPrice }),
@@ -65,7 +80,16 @@ export class ToursService {
     const [items, total] = await this.prisma.$transaction([
       this.prisma.tour.findMany({
         where,
-        include: { category: true },
+        include: {
+          category: true,
+          ...(query.lastMinute && {
+            departures: {
+              where: { status: 'OPEN', departureDate: lastMinuteWindow },
+              orderBy: { departureDate: 'asc' },
+              take: 1,
+            },
+          }),
+        },
         orderBy: { [query.sort ?? 'createdAt']: query.order ?? 'desc' },
         skip: (page - 1) * limit,
         take: limit,

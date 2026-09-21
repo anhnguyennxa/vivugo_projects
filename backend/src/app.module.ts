@@ -16,8 +16,10 @@ import { validationExceptionFactory } from './common/pipes/validation-exception-
 import { validateEnv } from './config/env.validation';
 import { PrismaModule } from './database/prisma/prisma.module';
 import { DeparturesModule } from './departures/departures.module';
+import { FavoritesModule } from './favorites/favorites.module';
 import { MailModule } from './mail/mail.module';
 import { PaymentsModule } from './payments/payments.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import { ToursModule } from './tours/tours.module';
 import { UsersModule } from './users/users.module';
 
@@ -40,6 +42,8 @@ import { UsersModule } from './users/users.module';
     CartModule,
     BookingsModule,
     PaymentsModule,
+    ReviewsModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -27,3 +27,8 @@ export async function getBookingByCode(code: string): Promise<Booking> {
   const { data } = await apiClient.get<ApiSuccess<Booking>>(`/bookings/${code}`)
   return data.data
 }
+
+export async function getMyBookings(): Promise<Booking[]> {
+  const { data } = await apiClient.get<ApiSuccess<Booking[]>>('/bookings')
+  return data.data
+}

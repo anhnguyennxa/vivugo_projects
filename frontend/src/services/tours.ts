@@ -1,12 +1,14 @@
 import { apiClient } from '@/api/client'
 import type { ApiSuccess } from '@/types/api'
-import type { Paginated, Tour, TourDetail } from '@/types/tour'
+import type { Paginated, Region, Tour, TourDetail } from '@/types/tour'
 
 export interface ToursQuery {
   page?: number
   limit?: number
   search?: string
   category?: string
+  region?: Region
+  lastMinute?: boolean
   minPrice?: number
   maxPrice?: number
   sort?: 'createdAt' | 'basePrice' | 'avgRating'
@@ -16,6 +18,13 @@ export interface ToursQuery {
 export async function getFeaturedTours(limit = 5): Promise<Tour[]> {
   const { data } = await apiClient.get<ApiSuccess<Tour[]>>('/tours', {
     params: { featured: true, limit },
+  })
+  return data.data
+}
+
+export async function getLastMinuteTours(limit = 8): Promise<Tour[]> {
+  const { data } = await apiClient.get<ApiSuccess<Tour[]>>('/tours', {
+    params: { lastMinute: true, limit },
   })
   return data.data
 }

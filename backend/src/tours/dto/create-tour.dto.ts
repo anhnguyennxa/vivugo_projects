@@ -42,6 +42,9 @@ export class CreateTourDto {
   @IsString()
   location: string;
 
+  @IsIn(['MIEN_BAC', 'MIEN_TRUNG', 'TAY_NGUYEN', 'MIEN_NAM'])
+  region: 'MIEN_BAC' | 'MIEN_TRUNG' | 'TAY_NGUYEN' | 'MIEN_NAM';
+
   @Type(() => Number)
   @IsInt()
   @IsPositive()

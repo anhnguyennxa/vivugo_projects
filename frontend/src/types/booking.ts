@@ -27,4 +27,5 @@ export interface Booking {
   tour: { id: string; title: string; slug: string; thumbnailUrl: string }
   departure: { id: string; departureDate: string; returnDate: string }
   payment: Payment | null
+  review: { id: string } | null
 }

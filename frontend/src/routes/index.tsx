@@ -5,6 +5,7 @@ import { Cart } from '@/pages/public/Cart'
 import { CategoryRedirect } from '@/pages/public/CategoryRedirect'
 import { Checkout } from '@/pages/public/Checkout'
 import { CheckoutResult } from '@/pages/public/CheckoutResult'
+import { Favorites } from '@/pages/public/Favorites'
 import { ForgotPassword } from '@/pages/public/ForgotPassword'
 import { Home } from '@/pages/public/Home'
 import { Login } from '@/pages/public/Login'
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
       { path: '/tours', element: <Tours /> },
       { path: '/tours/:slug', element: <TourDetail /> },
       { path: '/categories/:slug', element: <CategoryRedirect /> },
+      { path: '/favorites', element: <Favorites /> },
       { path: '/cart', element: <Cart /> },
       { path: '/checkout', element: <Checkout /> },
       { path: '/checkout/result', element: <CheckoutResult /> },

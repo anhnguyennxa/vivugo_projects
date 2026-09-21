@@ -1,4 +1,4 @@
-import { CreditCard } from 'lucide-react'
+import { CreditCard, LogIn } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -30,7 +30,10 @@ export function Checkout() {
   const cartItemId = searchParams.get('cartItemId')
   const user = useAuthStore((s) => s.user)
 
-  const { status, data: items, error } = useAsync(() => getCart(), [])
+  const { status, data: items, error } = useAsync(
+    () => (user ? getCart() : Promise.resolve([])),
+    [user?.id],
+  )
   const item = items?.find((i) => i.id === cartItemId)
 
   const [contactName, setContactName] = useState(user?.fullName ?? '')
@@ -79,6 +82,21 @@ export function Checkout() {
       setFormError(getApiErrorMessage(err) ?? 'Không thể tạo đơn đặt tour, vui lòng thử lại')
       setSubmitting(false)
     }
+  }
+
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+        <EmptyState title="Đăng nhập để tiếp tục thanh toán" />
+        <div className="mt-4 text-center">
+          <Link to={`${ROUTES.login}?next=${ROUTES.checkout}?cartItemId=${cartItemId ?? ''}`}>
+            <Button variant="outline">
+              <LogIn /> Đăng nhập
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   if (!cartItemId) {

@@ -7,10 +7,13 @@ import { ErrorState } from '@/components/common/ErrorState'
 import { Pagination } from '@/components/common/Pagination'
 import { TourCard } from '@/components/tour/TourCard'
 import { TourCardSkeleton } from '@/components/tour/TourCardSkeleton'
+import { REGION_OPTIONS } from '@/constants/region'
 import { useAsync } from '@/hooks/useAsync'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
+import { cn } from '@/lib/utils'
 import { getCategories } from '@/services/categories'
 import { getTours, type ToursQuery } from '@/services/tours'
+import type { Region } from '@/types/tour'
 
 const SORT_OPTIONS: { value: string; label: string }[] = [
   { value: 'createdAt-desc', label: 'Mới nhất' },
@@ -26,6 +29,7 @@ export function Tours() {
 
   const page = Number(searchParams.get('page') ?? '1')
   const category = searchParams.get('category') ?? ''
+  const region = searchParams.get('region') ?? ''
   const sortKey = searchParams.get('sort') ?? 'createdAt'
   const orderKey = (searchParams.get('order') as 'asc' | 'desc') ?? 'desc'
   const limit = 12
@@ -47,10 +51,11 @@ export function Tours() {
       limit,
       search: searchParams.get('search') ?? undefined,
       category: category || undefined,
+      region: (region || undefined) as Region | undefined,
       sort: sortKey as ToursQuery['sort'],
       order: orderKey,
     }),
-    [page, category, sortKey, orderKey, searchParams],
+    [page, category, region, sortKey, orderKey, searchParams],
   )
 
   const { status, data: result, error } = useAsync(() => getTours(query), [JSON.stringify(query)])
@@ -69,7 +74,7 @@ export function Tours() {
     setSearchParams({})
   }
 
-  const hasFilters = !!(category || searchParams.get('search'))
+  const hasFilters = !!(category || region || searchParams.get('search'))
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -78,6 +83,36 @@ export function Tours() {
         <p className="mt-1 text-sm text-text-muted">
           {result ? `${result.total} tour phù hợp` : 'Khám phá các tour du lịch của VivuGo'}
         </p>
+      </div>
+
+      <div className="mb-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => updateParam('region', '')}
+          className={cn(
+            'rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors',
+            !region
+              ? 'border-primary bg-primary text-white'
+              : 'border-border bg-surface text-text-muted hover:bg-surface-alt',
+          )}
+        >
+          Tất cả vùng miền
+        </button>
+        {REGION_OPTIONS.map((r) => (
+          <button
+            key={r.value}
+            type="button"
+            onClick={() => updateParam('region', r.value)}
+            className={cn(
+              'rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors',
+              region === r.value
+                ? 'border-primary bg-primary text-white'
+                : 'border-border bg-surface text-text-muted hover:bg-surface-alt',
+            )}
+          >
+            {r.label}
+          </button>
+        ))}
       </div>
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">

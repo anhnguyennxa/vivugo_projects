@@ -24,6 +24,13 @@ enum TourStatus {
   ARCHIVED
 }
 
+enum Region {
+  MIEN_BAC
+  MIEN_TRUNG
+  TAY_NGUYEN
+  MIEN_NAM
+}
+
 enum DepartureStatus {
   OPEN
   CLOSED
@@ -145,6 +152,7 @@ model Tour {
   description    String
   itinerary      Json
   location       String
+  region         Region
   durationDays   Int
   durationNights Int
   basePrice      Decimal    @db.Decimal(12, 2)
@@ -174,6 +182,7 @@ model Tour {
   @@index([status])
   @@index([location])
   @@index([isFeatured])
+  @@index([region])
   @@map("tours")
 }
 

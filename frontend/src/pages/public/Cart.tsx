@@ -1,4 +1,4 @@
-import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
+import { LogIn, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
 import { getCart, removeCartItem, updateCartItem } from '@/services/cart'
+import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
 import type { CartItem } from '@/types/cart'
 import { getApiErrorMessage } from '@/utils/errors'
@@ -29,9 +30,32 @@ function itemPrice(item: CartItem) {
 
 export function Cart() {
   const navigate = useNavigate()
-  const { status, data, error, refetch } = useAsyncWithRefetch(() => getCart(), [])
+  const user = useAuthStore((s) => s.user)
+  const { status, data, error, refetch } = useAsyncWithRefetch(
+    () => (user ? getCart() : Promise.resolve([])),
+    [user?.id],
+  )
   const [busyId, setBusyId] = useState<string | null>(null)
   const [itemError, setItemError] = useState<string | null>(null)
+
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+        <EmptyState
+          icon={ShoppingBag}
+          title="Đăng nhập để xem giỏ hàng"
+          description="Lưu tour vào giỏ hàng và đặt tour dễ dàng hơn."
+        />
+        <div className="mt-4 text-center">
+          <Link to={`${ROUTES.login}?next=${ROUTES.cart}`}>
+            <Button variant="outline">
+              <LogIn /> Đăng nhập
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   async function handleQtyChange(item: CartItem, nextAdults: number) {
     if (nextAdults < 1) return

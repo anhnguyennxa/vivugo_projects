@@ -32,6 +32,15 @@ export class QueryToursDto {
   category?: string;
 
   @IsOptional()
+  @IsIn(['MIEN_BAC', 'MIEN_TRUNG', 'TAY_NGUYEN', 'MIEN_NAM'])
+  region?: 'MIEN_BAC' | 'MIEN_TRUNG' | 'TAY_NGUYEN' | 'MIEN_NAM';
+
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  lastMinute?: boolean;
+
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)
