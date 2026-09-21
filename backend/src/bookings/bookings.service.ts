@@ -22,6 +22,15 @@ const BOOKING_INCLUDE = {
   review: { select: { id: true } },
 } as const;
 
+// CANCELLED và COMPLETED là trạng thái cuối: đơn đã huỷ đã trả chỗ về đợt khởi hành
+// nên không được "sống lại" (sẽ lệch số chỗ).
+const ALLOWED_TRANSITIONS: Record<string, string[]> = {
+  PENDING: ['CONFIRMED', 'CANCELLED'],
+  CONFIRMED: ['COMPLETED', 'CANCELLED'],
+  COMPLETED: [],
+  CANCELLED: [],
+};
+
 function toNumber(value: unknown) {
   return value == null ? null : Number(value);
 }
@@ -153,7 +162,13 @@ export class BookingsService {
     const booking = await this.prisma.booking.findUnique({ where: { id } });
     if (!booking) throw new NotFoundException('Không tìm thấy đơn đặt tour');
 
-    if (dto.status === 'CANCELLED' && booking.status !== 'CANCELLED') {
+    if (!ALLOWED_TRANSITIONS[booking.status].includes(dto.status)) {
+      throw new BadRequestException(
+        `Không thể chuyển đơn từ trạng thái ${booking.status} sang ${dto.status}`,
+      );
+    }
+
+    if (dto.status === 'CANCELLED') {
       await this.releaseSlots(
         booking.departureId,
         booking.numAdults + booking.numChildren,

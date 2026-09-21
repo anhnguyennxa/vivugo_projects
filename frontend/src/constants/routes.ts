@@ -25,6 +25,7 @@ export const ROUTES = {
   blogDetail: (slug: string) => `/cam-nang/${slug}`,
 
   admin: '/admin',
+  adminBookings: '/admin/bookings',
   adminBlog: '/admin/blog',
   adminBlogNew: '/admin/blog/new',
   adminBlogEdit: (id: string) => `/admin/blog/${id}`,

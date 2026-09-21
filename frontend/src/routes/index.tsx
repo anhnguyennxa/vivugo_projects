@@ -7,6 +7,8 @@ import { AccountBookingDetail } from '@/pages/account/AccountBookingDetail'
 import { AccountBookings } from '@/pages/account/AccountBookings'
 import { AccountPassword } from '@/pages/account/AccountPassword'
 import { AccountProfile } from '@/pages/account/AccountProfile'
+import { AdminBookings } from '@/pages/admin/AdminBookings'
+import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { BlogAdminForm } from '@/pages/admin/BlogAdminForm'
 import { BlogAdminList } from '@/pages/admin/BlogAdminList'
 import { Blog } from '@/pages/public/Blog'
@@ -62,6 +64,8 @@ export const router = createBrowserRouter([
   {
     element: <AdminLayout />,
     children: [
+      { path: '/admin', element: <AdminDashboard /> },
+      { path: '/admin/bookings', element: <AdminBookings /> },
       { path: '/admin/blog', element: <BlogAdminList /> },
       { path: '/admin/blog/new', element: <BlogAdminForm /> },
       { path: '/admin/blog/:id', element: <BlogAdminForm /> },

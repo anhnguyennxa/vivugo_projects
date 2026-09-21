@@ -124,11 +124,11 @@ export function Header() {
                     </Link>
                     {user.role === 'ADMIN' && (
                       <Link
-                        to={ROUTES.adminBlog}
+                        to={ROUTES.admin}
                         onClick={() => setMenuOpen(false)}
                         className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
                       >
-                        <LayoutDashboard className="size-4" /> Quản trị Cẩm nang
+                        <LayoutDashboard className="size-4" /> Trang quản trị
                       </Link>
                     )}
                     <button

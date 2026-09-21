@@ -1,9 +1,16 @@
-import { Compass, LayoutDashboard } from 'lucide-react'
-import { Link, Navigate, Outlet } from 'react-router-dom'
+import { BookOpen, Compass, LayoutDashboard, Ticket } from 'lucide-react'
+import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
 import { APP_NAME } from '@/constants/config'
 import { ROUTES } from '@/constants/routes'
+import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth'
+
+const MENU = [
+  { label: 'Tổng quan', to: ROUTES.admin, icon: LayoutDashboard, end: true },
+  { label: 'Đơn đặt tour', to: ROUTES.adminBookings, icon: Ticket, end: false },
+  { label: 'Cẩm nang', to: ROUTES.adminBlog, icon: BookOpen, end: false },
+]
 
 export function AdminLayout() {
   const user = useAuthStore((s) => s.user)
@@ -14,7 +21,7 @@ export function AdminLayout() {
   }
 
   if (!user || user.role !== 'ADMIN') {
-    return <Navigate to={`${ROUTES.login}?next=${ROUTES.adminBlog}`} replace />
+    return <Navigate to={`${ROUTES.login}?next=${ROUTES.admin}`} replace />
   }
 
   return (
@@ -24,9 +31,7 @@ export function AdminLayout() {
           <span className="flex size-7 items-center justify-center rounded-lg bg-secondary text-white">
             <LayoutDashboard className="size-3.5" />
           </span>
-          <span className="font-display text-sm font-bold text-secondary">
-            {APP_NAME} · Quản trị Cẩm nang
-          </span>
+          <span className="font-display text-sm font-bold text-secondary">{APP_NAME} · Quản trị</span>
           <Link
             to={ROUTES.home}
             className="ml-auto flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-secondary"
@@ -35,9 +40,31 @@ export function AdminLayout() {
           </Link>
         </div>
       </header>
-      <main className="flex-1">
-        <Outlet />
-      </main>
+
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col md:flex-row">
+        <nav className="flex shrink-0 gap-1 overflow-x-auto border-b border-border p-3 md:w-52 md:flex-col md:border-b-0 md:border-r md:p-4">
+          {MENU.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) =>
+                cn(
+                  'flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-primary-soft text-primary-ink'
+                    : 'text-text-muted hover:bg-surface-alt hover:text-secondary',
+                )
+              }
+            >
+              <item.icon className="size-4" /> {item.label}
+            </NavLink>
+          ))}
+        </nav>
+        <main className="min-w-0 flex-1">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }

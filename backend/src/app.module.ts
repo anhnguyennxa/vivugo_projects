@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
+import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { BlogModule } from './blog/blog.module';
 import { BookingsModule } from './bookings/bookings.module';
@@ -46,6 +47,7 @@ import { UsersModule } from './users/users.module';
     ReviewsModule,
     FavoritesModule,
     BlogModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
