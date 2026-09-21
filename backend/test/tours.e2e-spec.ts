@@ -129,6 +129,20 @@ describe('Tours & Categories (e2e)', () => {
     expect(body.data.every((t) => t.region === 'TAY_NGUYEN')).toBe(true);
   });
 
+  it('GET /api/tours?departureCity=... chỉ trả về tour khởi hành từ thành phố đó', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/tours?departureCity=HA_NOI&limit=50')
+      .expect(200);
+
+    const body = res.body as ApiBody & { data: { departureCity: string }[] };
+    expect(body.data.length).toBeGreaterThan(0);
+    expect(body.data.every((t) => t.departureCity === 'HA_NOI')).toBe(true);
+
+    await request(app.getHttpServer())
+      .get('/api/tours?departureCity=PARIS')
+      .expect(400);
+  });
+
   it('GET /api/tours?lastMinute=true chỉ trả về tour có đợt khởi hành trong 21 ngày tới, kèm đợt gần nhất', async () => {
     const res = await request(app.getHttpServer())
       .get('/api/tours?lastMinute=true&limit=50')
@@ -173,6 +187,7 @@ describe('Tours & Categories (e2e)', () => {
         itinerary: [],
         location: 'Test',
         region: 'MIEN_NAM',
+        departureCity: 'HO_CHI_MINH',
         durationDays: 1,
         durationNights: 0,
         basePrice: 100000,
@@ -191,6 +206,7 @@ describe('Tours & Categories (e2e)', () => {
       itinerary: [{ day: 1, title: 'Khởi hành', description: 'Test' }],
       location: 'Test City',
       region: 'MIEN_NAM',
+      departureCity: 'HO_CHI_MINH',
       durationDays: 2,
       durationNights: 1,
       basePrice: 1500000,

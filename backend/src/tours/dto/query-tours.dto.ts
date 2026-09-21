@@ -9,6 +9,11 @@ import {
   Min,
 } from 'class-validator';
 
+import {
+  DEPARTURE_CITIES,
+  type DepartureCity,
+} from '../constants/departure-city';
+
 export class QueryToursDto {
   @IsOptional()
   @Type(() => Number)
@@ -34,6 +39,10 @@ export class QueryToursDto {
   @IsOptional()
   @IsIn(['MIEN_BAC', 'MIEN_TRUNG', 'TAY_NGUYEN', 'MIEN_NAM'])
   region?: 'MIEN_BAC' | 'MIEN_TRUNG' | 'TAY_NGUYEN' | 'MIEN_NAM';
+
+  @IsOptional()
+  @IsIn(DEPARTURE_CITIES)
+  departureCity?: DepartureCity;
 
   @IsOptional()
   @Type(() => Boolean)

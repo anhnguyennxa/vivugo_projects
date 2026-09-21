@@ -1,6 +1,7 @@
 import { Calendar, Eye, Heart, MapPin, Star } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { DEPARTURE_CITY_LABELS } from '@/constants/departureCity'
 import { REGION_LABELS } from '@/constants/region'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/utils'
@@ -80,7 +81,7 @@ export function TourCard({ tour }: { tour: Tour }) {
           {tour.title}
         </h3>
         <p className="mt-1.5 flex items-center gap-1 text-xs text-text-muted">
-          <MapPin className="size-3.5 shrink-0" /> {tour.location}
+          <MapPin className="size-3.5 shrink-0" /> {tour.location} · Từ {DEPARTURE_CITY_LABELS[tour.departureCity]}
         </p>
 
         {nextDeparture && remaining != null && (

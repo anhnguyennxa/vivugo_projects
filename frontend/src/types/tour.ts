@@ -1,4 +1,5 @@
 export type Region = 'MIEN_BAC' | 'MIEN_TRUNG' | 'TAY_NGUYEN' | 'MIEN_NAM'
+export type DepartureCity = 'HA_NOI' | 'HO_CHI_MINH' | 'DA_NANG' | 'HAI_PHONG' | 'CAN_THO'
 
 export interface Category {
   id: string
@@ -45,6 +46,7 @@ export interface Tour {
   summary: string
   location: string
   region: Region
+  departureCity: DepartureCity
   durationDays: number
   durationNights: number
   basePrice: number

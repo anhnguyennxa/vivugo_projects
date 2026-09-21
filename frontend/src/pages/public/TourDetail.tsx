@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ReviewForm } from '@/components/tour/ReviewForm'
 import { TourGallery } from '@/components/tour/TourGallery'
 import { REGION_LABELS } from '@/constants/region'
+import { DEPARTURE_CITY_LABELS } from '@/constants/departureCity'
 import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
 import { cn } from '@/lib/utils'
@@ -156,7 +157,7 @@ export function TourDetail() {
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-muted">
               <span className="flex items-center gap-1">
-                <MapPin className="size-4" /> {tour.location} · {REGION_LABELS[tour.region]}
+                <MapPin className="size-4" /> {tour.location} · {REGION_LABELS[tour.region]} · Khởi hành từ {DEPARTURE_CITY_LABELS[tour.departureCity]}
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="size-4" /> {tour.durationDays} ngày {tour.durationNights} đêm

@@ -14,6 +14,11 @@ import {
   MinLength,
 } from 'class-validator';
 
+import {
+  DEPARTURE_CITIES,
+  type DepartureCity,
+} from '../constants/departure-city';
+
 export class CreateTourDto {
   @IsString()
   @MinLength(5)
@@ -44,6 +49,9 @@ export class CreateTourDto {
 
   @IsIn(['MIEN_BAC', 'MIEN_TRUNG', 'TAY_NGUYEN', 'MIEN_NAM'])
   region: 'MIEN_BAC' | 'MIEN_TRUNG' | 'TAY_NGUYEN' | 'MIEN_NAM';
+
+  @IsIn(DEPARTURE_CITIES)
+  departureCity: DepartureCity;
 
   @Type(() => Number)
   @IsInt()

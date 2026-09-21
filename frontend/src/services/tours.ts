@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/client'
 import type { ApiSuccess } from '@/types/api'
-import type { Paginated, Region, Tour, TourDetail } from '@/types/tour'
+import type { DepartureCity, Paginated, Region, Tour, TourDetail } from '@/types/tour'
 
 export interface ToursQuery {
   page?: number
@@ -8,6 +8,7 @@ export interface ToursQuery {
   search?: string
   category?: string
   region?: Region
+  departureCity?: DepartureCity
   lastMinute?: boolean
   minPrice?: number
   maxPrice?: number

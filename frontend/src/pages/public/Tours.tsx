@@ -7,13 +7,14 @@ import { ErrorState } from '@/components/common/ErrorState'
 import { Pagination } from '@/components/common/Pagination'
 import { TourCard } from '@/components/tour/TourCard'
 import { TourCardSkeleton } from '@/components/tour/TourCardSkeleton'
+import { DEPARTURE_CITY_OPTIONS } from '@/constants/departureCity'
 import { REGION_OPTIONS } from '@/constants/region'
 import { useAsync } from '@/hooks/useAsync'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { cn } from '@/lib/utils'
 import { getCategories } from '@/services/categories'
 import { getTours, type ToursQuery } from '@/services/tours'
-import type { Region } from '@/types/tour'
+import type { DepartureCity, Region } from '@/types/tour'
 
 const SORT_OPTIONS: { value: string; label: string }[] = [
   { value: 'createdAt-desc', label: 'Mới nhất' },
@@ -30,6 +31,7 @@ export function Tours() {
   const page = Number(searchParams.get('page') ?? '1')
   const category = searchParams.get('category') ?? ''
   const region = searchParams.get('region') ?? ''
+  const departureCity = searchParams.get('departureCity') ?? ''
   const sortKey = searchParams.get('sort') ?? 'createdAt'
   const orderKey = (searchParams.get('order') as 'asc' | 'desc') ?? 'desc'
   const limit = 12
@@ -52,10 +54,11 @@ export function Tours() {
       search: searchParams.get('search') ?? undefined,
       category: category || undefined,
       region: (region || undefined) as Region | undefined,
+      departureCity: (departureCity || undefined) as DepartureCity | undefined,
       sort: sortKey as ToursQuery['sort'],
       order: orderKey,
     }),
-    [page, category, region, sortKey, orderKey, searchParams],
+    [page, category, region, departureCity, sortKey, orderKey, searchParams],
   )
 
   const { status, data: result, error } = useAsync(() => getTours(query), [JSON.stringify(query)])
@@ -74,7 +77,7 @@ export function Tours() {
     setSearchParams({})
   }
 
-  const hasFilters = !!(category || region || searchParams.get('search'))
+  const hasFilters = !!(category || region || departureCity || searchParams.get('search'))
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -136,6 +139,20 @@ export function Tours() {
           {categories?.map((c) => (
             <option key={c.id} value={c.slug}>
               {c.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={departureCity}
+          onChange={(e) => updateParam('departureCity', e.target.value)}
+          aria-label="Điểm khởi hành"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+        >
+          <option value="">Mọi điểm khởi hành</option>
+          {DEPARTURE_CITY_OPTIONS.map((c) => (
+            <option key={c.value} value={c.value}>
+              Từ {c.label}
             </option>
           ))}
         </select>

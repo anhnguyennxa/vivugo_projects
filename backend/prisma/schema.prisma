@@ -159,6 +159,7 @@ model Tour {
   itinerary      Json
   location       String
   region         Region
+  departureCity  String     @default("HO_CHI_MINH")
   durationDays   Int
   durationNights Int
   basePrice      Decimal    @db.Decimal(12, 2)
@@ -190,6 +191,7 @@ model Tour {
   @@index([location])
   @@index([isFeatured])
   @@index([region])
+  @@index([departureCity])
   @@map("tours")
 }
 

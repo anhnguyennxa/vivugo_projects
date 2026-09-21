@@ -57,6 +57,7 @@ export class ToursService {
       ...(query.featured != null && { isFeatured: query.featured }),
       ...(query.category && { category: { slug: query.category } }),
       ...(query.region && { region: query.region }),
+      ...(query.departureCity && { departureCity: query.departureCity }),
       ...(query.lastMinute && {
         departures: {
           some: { status: 'OPEN', departureDate: lastMinuteWindow },

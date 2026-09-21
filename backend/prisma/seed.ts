@@ -61,6 +61,7 @@ async function main() {
       slug: 'phu-quoc-kham-pha-dao-ngoc',
       categorySlug: 'bien-dao',
       region: 'MIEN_NAM' as const,
+      departureCity: 'HO_CHI_MINH',
       summary:
         'Lặn ngắm san hô, tắm biển Bãi Sao, khám phá làng chài Hàm Ninh.',
       description:
@@ -78,6 +79,7 @@ async function main() {
       slug: 'vinh-ha-long-du-thuyen',
       categorySlug: 'bien-dao',
       region: 'MIEN_BAC' as const,
+      departureCity: 'HA_NOI',
       summary:
         'Du thuyền 5 sao, chèo kayak, lặn ngắm san hô giữa hàng nghìn đảo đá vôi.',
       description:
@@ -94,6 +96,7 @@ async function main() {
       slug: 'sa-pa-san-may-fansipan',
       categorySlug: 'nui-rung',
       region: 'MIEN_BAC' as const,
+      departureCity: 'HA_NOI',
       summary:
         'Chinh phục nóc nhà Đông Dương bằng cáp treo, khám phá bản Cát Cát.',
       description:
@@ -110,6 +113,7 @@ async function main() {
       slug: 'da-lat-thanh-pho-ngan-hoa',
       categorySlug: 'nui-rung',
       region: 'TAY_NGUYEN' as const,
+      departureCity: 'HO_CHI_MINH',
       summary: 'Đồi chè Cầu Đất, thác Datanla, chợ đêm Đà Lạt se lạnh.',
       description:
         '3 ngày 2 đêm dạo quanh thành phố ngàn hoa: đồi chè Cầu Đất, thác Datanla, vườn dâu tây và chợ đêm Đà Lạt.',
@@ -124,6 +128,7 @@ async function main() {
       slug: 'hue-co-do-di-san',
       categorySlug: 'van-hoa-lich-su',
       region: 'MIEN_TRUNG' as const,
+      departureCity: 'DA_NANG',
       summary:
         'Đại Nội, lăng tẩm triều Nguyễn, du thuyền sông Hương nghe ca Huế.',
       description:
@@ -140,6 +145,7 @@ async function main() {
       slug: 'hoi-an-pho-co-den-long',
       categorySlug: 'van-hoa-lich-su',
       region: 'MIEN_TRUNG' as const,
+      departureCity: 'DA_NANG',
       summary: 'Phố cổ về đêm, thả hoa đăng sông Hoài, làng rau Trà Quế.',
       description:
         '2 ngày 1 đêm dạo phố cổ Hội An lung linh ánh đèn lồng, thả hoa đăng sông Hoài và trải nghiệm làm nông dân tại làng rau Trà Quế.',
@@ -177,6 +183,7 @@ async function main() {
         ],
         location: t.location,
         region: t.region,
+        departureCity: t.departureCity,
         durationDays: t.durationDays,
         durationNights: t.durationNights,
         basePrice: t.basePrice,
