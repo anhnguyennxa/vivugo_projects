@@ -178,7 +178,7 @@ describe('Tours & Categories (e2e)', () => {
     };
     expect(body.data.length).toBeGreaterThan(0);
     for (const tour of body.data) {
-      expect(tour.departures?.length).toBe(1);
+      expect(tour.departures?.length).toBeGreaterThanOrEqual(1);
       const dep = tour.departures![0];
       const daysAway =
         (new Date(dep.departureDate).getTime() - Date.now()) / 86_400_000;

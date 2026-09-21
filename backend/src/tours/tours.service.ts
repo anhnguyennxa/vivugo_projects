@@ -35,6 +35,7 @@ function serializeTour<
 }
 
 const LAST_MINUTE_WINDOW_DAYS = 21;
+const CARD_DEPARTURES_LIMIT = 6;
 
 @Injectable()
 export class ToursService {
@@ -84,13 +85,12 @@ export class ToursService {
         where,
         include: {
           category: true,
-          ...(query.lastMinute && {
-            departures: {
-              where: { status: 'OPEN', departureDate: lastMinuteWindow },
-              orderBy: { departureDate: 'asc' },
-              take: 1,
-            },
-          }),
+          // Các đợt khởi hành sắp tới (gần nhất trước) để thẻ tour hiện ngày khởi hành.
+          departures: {
+            where: { status: 'OPEN', departureDate: { gte: new Date() } },
+            orderBy: { departureDate: 'asc' },
+            take: CARD_DEPARTURES_LIMIT,
+          },
         },
         orderBy: { [query.sort ?? 'createdAt']: query.order ?? 'desc' },
         skip: (page - 1) * limit,
