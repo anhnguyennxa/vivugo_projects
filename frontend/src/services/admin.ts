@@ -4,7 +4,10 @@ import type {
   AdminDeparture,
   AdminStats,
   AdminTour,
+  AdminReview,
   AdminTourDetail,
+  AdminUser,
+  ReviewStatus,
   TourStatus,
 } from '@/types/admin'
 import type { ApiSuccess } from '@/types/api'
@@ -154,4 +157,50 @@ export async function updateCategory(id: string, input: Partial<CategoryInput>):
 
 export async function deleteCategory(id: string): Promise<void> {
   await apiClient.delete(`/categories/${id}`)
+}
+
+export interface AdminReviewsQuery {
+  page?: number
+  limit?: number
+  status?: ReviewStatus
+  search?: string
+}
+
+export async function getAdminReviews(params: AdminReviewsQuery): Promise<Paginated<AdminReview>> {
+  const { data } = await apiClient.get<ApiSuccess<AdminReview[]>>('/admin/reviews', { params })
+  return {
+    items: data.data,
+    page: data.meta?.page ?? 1,
+    limit: data.meta?.limit ?? 15,
+    total: data.meta?.total ?? data.data.length,
+  }
+}
+
+export async function moderateReview(id: string, status: 'APPROVED' | 'HIDDEN'): Promise<void> {
+  await apiClient.patch(`/reviews/${id}/moderate`, { status })
+}
+
+export interface AdminUsersQuery {
+  page?: number
+  limit?: number
+  role?: AdminUser['role']
+  isActive?: boolean
+  search?: string
+}
+
+export async function getAdminUsers(params: AdminUsersQuery): Promise<Paginated<AdminUser>> {
+  const { data } = await apiClient.get<ApiSuccess<AdminUser[]>>('/admin/users', { params })
+  return {
+    items: data.data,
+    page: data.meta?.page ?? 1,
+    limit: data.meta?.limit ?? 15,
+    total: data.meta?.total ?? data.data.length,
+  }
+}
+
+export async function updateAdminUser(
+  id: string,
+  input: { isActive?: boolean; role?: AdminUser['role'] },
+): Promise<void> {
+  await apiClient.patch(`/admin/users/${id}`, input)
 }

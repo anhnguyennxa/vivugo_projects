@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma/prisma.service';
 import type { QueryAdminBookingsDto } from './dto/query-admin-bookings.dto';
+import type { QueryAdminReviewsDto } from './dto/query-admin-reviews.dto';
 import type { QueryAdminToursDto } from './dto/query-admin-tours.dto';
+import type { QueryAdminUsersDto } from './dto/query-admin-users.dto';
+import type { UpdateAdminUserDto } from './dto/update-admin-user.dto';
 
 const REVENUE_MONTHS = 6;
 const TOP_TOURS_LIMIT = 5;
@@ -234,5 +241,145 @@ export class AdminService {
     ]);
 
     return { items: items.map(serializeBooking), page, limit, total };
+  }
+
+  async findReviews(query: QueryAdminReviewsDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 15;
+
+    const where: Prisma.ReviewWhereInput = {
+      ...(query.status && { status: query.status }),
+      ...(query.search && {
+        OR: [
+          { comment: { contains: query.search, mode: 'insensitive' } },
+          {
+            user: { fullName: { contains: query.search, mode: 'insensitive' } },
+          },
+          { tour: { title: { contains: query.search, mode: 'insensitive' } } },
+        ],
+      }),
+    };
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.review.findMany({
+        where,
+        include: {
+          user: { select: { id: true, fullName: true, email: true } },
+          tour: { select: { id: true, title: true, slug: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.review.count({ where }),
+    ]);
+
+    return { items, page, limit, total };
+  }
+
+  async findUsers(query: QueryAdminUsersDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 15;
+
+    const where: Prisma.UserWhereInput = {
+      deletedAt: null,
+      ...(query.role && { role: query.role }),
+      ...(query.isActive !== undefined && { isActive: query.isActive }),
+      ...(query.search && {
+        OR: [
+          { fullName: { contains: query.search, mode: 'insensitive' } },
+          { email: { contains: query.search, mode: 'insensitive' } },
+          { phone: { contains: query.search } },
+        ],
+      }),
+    };
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        where,
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+          phone: true,
+          avatarUrl: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          _count: { select: { bookings: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return { items, page, limit, total };
+  }
+
+  async updateUser(actorId: string, id: string, dto: UpdateAdminUserDto) {
+    const user = await this.prisma.user.findFirst({
+      where: { id, deletedAt: null },
+    });
+    if (!user) throw new NotFoundException('Không tìm thấy người dùng');
+
+    const losesAdmin = dto.role === 'USER' && user.role === 'ADMIN';
+    const locks = dto.isActive === false && user.isActive;
+
+    if (id === actorId && (losesAdmin || dto.isActive === false)) {
+      throw new BadRequestException(
+        'Bạn không thể tự khoá hoặc tự hạ quyền tài khoản của mình',
+      );
+    }
+
+    // Luôn còn ít nhất một quản trị viên đang hoạt động.
+    if (user.role === 'ADMIN' && (losesAdmin || locks)) {
+      const otherAdmins = await this.prisma.user.count({
+        where: {
+          role: 'ADMIN',
+          isActive: true,
+          deletedAt: null,
+          id: { not: id },
+        },
+      });
+      if (otherAdmins === 0) {
+        throw new BadRequestException(
+          'Không thể khoá hoặc hạ quyền quản trị viên cuối cùng',
+        );
+      }
+    }
+
+    const [updated] = await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id },
+        data: {
+          ...(dto.isActive !== undefined && { isActive: dto.isActive }),
+          ...(dto.role && { role: dto.role }),
+        },
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+          phone: true,
+          avatarUrl: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          _count: { select: { bookings: true } },
+        },
+      }),
+      // Khoá tài khoản: thu hồi mọi refresh token để không gia hạn được phiên.
+      ...(locks
+        ? [
+            this.prisma.refreshToken.updateMany({
+              where: { userId: id, revokedAt: null },
+              data: { revokedAt: new Date() },
+            }),
+          ]
+        : []),
+    ]);
+
+    return updated;
   }
 }

@@ -1,20 +1,34 @@
-import { Compass, Zap } from 'lucide-react'
+import { ArrowRight, Compass, Tag, Zap } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { HeroSlider } from '@/components/tour/HeroSlider'
-import { TourCard } from '@/components/tour/TourCard'
+import { TourCarousel } from '@/components/tour/TourCarousel'
 import { TourCardSkeleton } from '@/components/tour/TourCardSkeleton'
+import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
-import { getFeaturedTours, getLastMinuteTours } from '@/services/tours'
+import { getFeaturedTours, getLastMinuteTours, getPromoTours } from '@/services/tours'
+
+function SeeAll({ to }: { to: string }) {
+  return (
+    <Link
+      to={to}
+      className="flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+    >
+      Xem tất cả <ArrowRight className="size-4" />
+    </Link>
+  )
+}
 
 export function Home() {
-  const { status, data: tours, error } = useAsync(() => getFeaturedTours(5), [])
+  const { status, data: tours, error } = useAsync(() => getFeaturedTours(12), [])
   const {
     status: lastMinuteStatus,
     data: lastMinuteTours,
     error: lastMinuteError,
-  } = useAsync(() => getLastMinuteTours(8), [])
+  } = useAsync(() => getLastMinuteTours(12), [])
+  const { status: promoStatus, data: promoTours } = useAsync(() => getPromoTours(12), [])
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -26,7 +40,7 @@ export function Home() {
           onRetry={() => window.location.reload()}
         />
       )}
-      {status === 'success' && tours.length > 0 && <HeroSlider tours={tours} />}
+      {status === 'success' && tours.length > 0 && <HeroSlider tours={tours.slice(0, 5)} />}
       {status === 'success' && tours.length === 0 && (
         <EmptyState
           icon={Compass}
@@ -38,16 +52,19 @@ export function Home() {
       {(lastMinuteStatus === 'loading' ||
         (lastMinuteStatus === 'success' && lastMinuteTours.length > 0)) && (
         <section className="mt-12">
-          <div className="mb-5 flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-accent-soft text-accent">
-              <Zap className="size-4 fill-accent" />
-            </span>
-            <div>
-              <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">
-                Tour giờ chốt
-              </h2>
-              <p className="text-sm text-text-muted">Khởi hành trong 3 tuần tới — số chỗ có hạn</p>
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="flex size-7 items-center justify-center rounded-lg bg-accent-soft text-accent">
+                <Zap className="size-4 fill-accent" />
+              </span>
+              <div>
+                <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">
+                  Tour giờ chốt
+                </h2>
+                <p className="text-sm text-text-muted">Khởi hành trong 3 tuần tới — số chỗ có hạn</p>
+              </div>
             </div>
+            <SeeAll to={`${ROUTES.tours}?lastMinute=1`} />
           </div>
 
           {lastMinuteStatus === 'loading' && (
@@ -58,11 +75,7 @@ export function Home() {
             </div>
           )}
           {lastMinuteStatus === 'success' && (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {lastMinuteTours.map((tour) => (
-                <TourCard key={tour.id} tour={tour} />
-              ))}
-            </div>
+            <TourCarousel tours={lastMinuteTours} />
           )}
         </section>
       )}
@@ -76,6 +89,24 @@ export function Home() {
         </section>
       )}
 
+      {promoStatus === 'success' && promoTours.length > 0 && (
+        <section className="mt-12">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="flex size-7 items-center justify-center rounded-lg bg-danger-soft text-danger">
+                <Tag className="size-4" />
+              </span>
+              <div>
+                <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">Khuyến mãi</h2>
+                <p className="text-sm text-text-muted">Giá ưu đãi cho các tour đang giảm giá</p>
+              </div>
+            </div>
+            <SeeAll to={`${ROUTES.tours}?promo=1`} />
+          </div>
+          <TourCarousel tours={promoTours} />
+        </section>
+      )}
+
       <section className="mt-12">
         <div className="mb-5 flex items-end justify-between">
           <div>
@@ -84,6 +115,7 @@ export function Home() {
             </h2>
             <p className="mt-1 text-sm text-text-muted">Được yêu thích nhất trong tháng này</p>
           </div>
+          <SeeAll to={`${ROUTES.tours}?featured=1`} />
         </div>
 
         {status === 'loading' && (
@@ -97,11 +129,7 @@ export function Home() {
           <ErrorState description={error} onRetry={() => window.location.reload()} />
         )}
         {status === 'success' && tours.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {tours.map((tour) => (
-              <TourCard key={tour.id} tour={tour} />
-            ))}
-          </div>
+          <TourCarousel tours={tours} />
         )}
         {status === 'success' && tours.length === 0 && (
           <EmptyState title="Chưa có tour nào" description="Quay lại sau nhé." />

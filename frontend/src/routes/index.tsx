@@ -11,7 +11,9 @@ import { AdminBookings } from '@/pages/admin/AdminBookings'
 import { AdminCategories } from '@/pages/admin/AdminCategories'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { AdminTourForm } from '@/pages/admin/AdminTourForm'
+import { AdminReviews } from '@/pages/admin/AdminReviews'
 import { AdminTours } from '@/pages/admin/AdminTours'
+import { AdminUsers } from '@/pages/admin/AdminUsers'
 import { BlogAdminForm } from '@/pages/admin/BlogAdminForm'
 import { BlogAdminList } from '@/pages/admin/BlogAdminList'
 import { Blog } from '@/pages/public/Blog'
@@ -73,6 +75,8 @@ export const router = createBrowserRouter([
       { path: '/admin/tours/new', element: <AdminTourForm /> },
       { path: '/admin/tours/:id', element: <AdminTourForm /> },
       { path: '/admin/categories', element: <AdminCategories /> },
+      { path: '/admin/reviews', element: <AdminReviews /> },
+      { path: '/admin/users', element: <AdminUsers /> },
       { path: '/admin/blog', element: <BlogAdminList /> },
       { path: '/admin/blog/new', element: <BlogAdminForm /> },
       { path: '/admin/blog/:id', element: <BlogAdminForm /> },

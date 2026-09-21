@@ -32,6 +32,9 @@ export function Tours() {
   const category = searchParams.get('category') ?? ''
   const region = searchParams.get('region') ?? ''
   const departureCity = searchParams.get('departureCity') ?? ''
+  const promo = searchParams.get('promo') === '1'
+  const featured = searchParams.get('featured') === '1'
+  const lastMinute = searchParams.get('lastMinute') === '1'
   const sortKey = searchParams.get('sort') ?? 'createdAt'
   const orderKey = (searchParams.get('order') as 'asc' | 'desc') ?? 'desc'
   const limit = 12
@@ -55,10 +58,13 @@ export function Tours() {
       category: category || undefined,
       region: (region || undefined) as Region | undefined,
       departureCity: (departureCity || undefined) as DepartureCity | undefined,
+      promo: promo || undefined,
+      featured: featured || undefined,
+      lastMinute: lastMinute || undefined,
       sort: sortKey as ToursQuery['sort'],
       order: orderKey,
     }),
-    [page, category, region, departureCity, sortKey, orderKey, searchParams],
+    [page, category, region, departureCity, promo, featured, lastMinute, sortKey, orderKey, searchParams],
   )
 
   const { status, data: result, error } = useAsync(() => getTours(query), [JSON.stringify(query)])
@@ -77,12 +83,13 @@ export function Tours() {
     setSearchParams({})
   }
 
-  const hasFilters = !!(category || region || departureCity || searchParams.get('search'))
+  const pageTitle = promo ? 'Tour khuyến mãi' : lastMinute ? 'Tour giờ chốt' : featured ? 'Tour nổi bật' : 'Tất cả tour'
+  const hasFilters = !!(category || region || departureCity || promo || featured || lastMinute || searchParams.get('search'))
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-2xl font-bold text-secondary">Tất cả tour</h1>
+        <h1 className="font-display text-2xl font-bold text-secondary">{pageTitle}</h1>
         <p className="mt-1 text-sm text-text-muted">
           {result ? `${result.total} tour phù hợp` : 'Khám phá các tour du lịch của VivuGo'}
         </p>

@@ -143,6 +143,25 @@ describe('Tours & Categories (e2e)', () => {
       .expect(400);
   });
 
+  it('GET /api/tours?promo=true chỉ trả về tour có giá khuyến mãi', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/tours?promo=true&limit=50')
+      .expect(200);
+
+    const body = res.body as ApiBody & {
+      data: { basePrice: number; discountPrice: number | null }[];
+    };
+    expect(body.data.length).toBeGreaterThan(0);
+    for (const tour of body.data) {
+      expect(tour.discountPrice).not.toBeNull();
+      expect(tour.discountPrice!).toBeLessThan(tour.basePrice);
+    }
+
+    await request(app.getHttpServer())
+      .get('/api/tours?promo=abc')
+      .expect(400);
+  });
+
   it('GET /api/tours?lastMinute=true chỉ trả về tour có đợt khởi hành trong 21 ngày tới, kèm đợt gần nhất', async () => {
     const res = await request(app.getHttpServer())
       .get('/api/tours?lastMinute=true&limit=50')

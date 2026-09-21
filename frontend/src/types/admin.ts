@@ -83,3 +83,27 @@ export interface AdminDeparture {
   priceOverride: number | null
   status: 'OPEN' | 'CLOSED' | 'CANCELLED'
 }
+
+export type ReviewStatus = 'PENDING' | 'APPROVED' | 'HIDDEN'
+
+export interface AdminReview {
+  id: string
+  rating: number
+  comment: string
+  status: ReviewStatus
+  createdAt: string
+  user: { id: string; fullName: string; email: string }
+  tour: { id: string; title: string; slug: string }
+}
+
+export interface AdminUser {
+  id: string
+  email: string
+  fullName: string
+  phone: string | null
+  avatarUrl: string | null
+  role: 'USER' | 'ADMIN'
+  isActive: boolean
+  createdAt: string
+  _count: { bookings: number }
+}

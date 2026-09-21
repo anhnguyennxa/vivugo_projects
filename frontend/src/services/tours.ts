@@ -10,6 +10,8 @@ export interface ToursQuery {
   region?: Region
   departureCity?: DepartureCity
   lastMinute?: boolean
+  featured?: boolean
+  promo?: boolean
   minPrice?: number
   maxPrice?: number
   sort?: 'createdAt' | 'basePrice' | 'avgRating'
@@ -42,5 +44,12 @@ export async function getTours(params: ToursQuery): Promise<Paginated<Tour>> {
 
 export async function getTourBySlug(slug: string): Promise<TourDetail> {
   const { data } = await apiClient.get<ApiSuccess<TourDetail>>(`/tours/${slug}`)
+  return data.data
+}
+
+export async function getPromoTours(limit = 8): Promise<Tour[]> {
+  const { data } = await apiClient.get<ApiSuccess<Tour[]>>('/tours', {
+    params: { promo: true, limit },
+  })
   return data.data
 }

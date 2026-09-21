@@ -417,7 +417,7 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
           </div>
         </div>
 
-        <div className="flex gap-2 pt-2">
+        <div className="sticky bottom-0 -mx-5 -mb-5 flex gap-2 rounded-b-2xl border-t border-border bg-surface px-5 py-3">
           <Button type="submit" disabled={saving}>
             {saving ? 'Đang lưu…' : isEdit ? 'Lưu thay đổi' : 'Tạo tour'}
           </Button>

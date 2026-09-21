@@ -23,6 +23,7 @@ export function TourCard({ tour }: { tour: Tour }) {
   const isFavorited = useFavoritesStore((s) => s.ids.has(tour.id))
   const price = tour.discountPrice ?? tour.basePrice
   const hasDiscount = tour.discountPrice != null && tour.discountPrice < tour.basePrice
+  const discountPercent = hasDiscount ? Math.round((1 - tour.discountPrice! / tour.basePrice) * 100) : 0
   const nextDeparture = tour.departures?.[0]
   const remaining = nextDeparture ? nextDeparture.totalSlots - nextDeparture.bookedSlots : null
 
@@ -60,6 +61,11 @@ export function TourCard({ tour }: { tour: Tour }) {
         >
           <Heart className={cn('size-3.5', isFavorited && 'fill-danger')} />
         </button>
+        {discountPercent > 0 && (
+          <span className="absolute left-2.5 top-2.5 rounded-md bg-danger px-2 py-0.5 text-[11px] font-bold text-white">
+            -{discountPercent}%
+          </span>
+        )}
         <span className="absolute bottom-2.5 left-2.5 rounded-md bg-secondary/75 px-2 py-0.5 text-[11px] font-semibold text-white">
           {tour.durationDays}N{tour.durationNights}Đ
         </span>
