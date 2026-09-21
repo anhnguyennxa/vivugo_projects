@@ -93,6 +93,42 @@ describe('Auth (e2e)', () => {
     expect(meBody.data?.email).toBe(testEmail);
   });
 
+  it('PATCH /auth/me cập nhật họ tên + SĐT, xoá SĐT bằng chuỗi rỗng, từ chối SĐT sai và không đổi được email', async () => {
+    const loginRes = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({ email: testEmail, password: testPassword })
+      .expect(200);
+    const token = (loginRes.body as ApiBody).data?.accessToken as string;
+    const patch = (body: object) =>
+      request(app.getHttpServer())
+        .patch('/api/auth/me')
+        .set('Authorization', `Bearer ${token}`)
+        .send(body);
+
+    const updated = await patch({
+      fullName: 'Nguyễn Văn Cập Nhật',
+      phone: '0912345678',
+    }).expect(200);
+    const data = (
+      updated.body as { data: { fullName: string; phone: string | null } }
+    ).data;
+    expect(data.fullName).toBe('Nguyễn Văn Cập Nhật');
+    expect(data.phone).toBe('0912345678');
+
+    const cleared = await patch({ phone: '' }).expect(200);
+    expect((cleared.body as { data: { phone: string | null } }).data.phone).toBe(
+      null,
+    );
+
+    await patch({ phone: '123' }).expect(400);
+    await patch({ email: 'hacker@vivugo.vn' }).expect(400);
+
+    await request(app.getHttpServer())
+      .patch('/api/auth/me')
+      .send({ fullName: 'Khach' })
+      .expect(401);
+  });
+
   it('từ chối truy cập /auth/me khi không có token (401)', async () => {
     await request(app.getHttpServer()).get('/api/auth/me').expect(401);
   });

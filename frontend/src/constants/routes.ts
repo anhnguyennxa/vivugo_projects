@@ -16,6 +16,10 @@ export const ROUTES = {
   cart: '/cart',
   checkout: '/checkout',
   checkoutResult: '/checkout/result',
+  accountProfile: '/account/profile',
+  accountBookings: '/account/bookings',
+  accountBookingDetail: (code: string) => `/account/bookings/${code}`,
+  accountPassword: '/account/password',
 
   blog: '/cam-nang',
   blogDetail: (slug: string) => `/cam-nang/${slug}`,

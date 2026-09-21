@@ -18,6 +18,7 @@ import {
 import { Public } from '../common/decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -119,6 +120,15 @@ export class AuthController {
     @Body() dto: ChangePasswordDto,
   ) {
     return this.authService.changePassword(user.id, dto);
+  }
+
+  @Patch('me')
+  async updateMe(
+    @CurrentUser() user: RequestUser,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    const data = await this.authService.updateProfile(user.id, dto);
+    return { message: 'Cập nhật hồ sơ thành công', data };
   }
 
   @Get('me')

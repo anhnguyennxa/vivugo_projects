@@ -17,6 +17,7 @@ import type { ForgotPasswordDto } from './dto/forgot-password.dto';
 import type { LoginDto } from './dto/login.dto';
 import type { RegisterDto } from './dto/register.dto';
 import type { ResetPasswordDto } from './dto/reset-password.dto';
+import type { UpdateProfileDto } from './dto/update-profile.dto';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 const RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
@@ -43,6 +44,7 @@ export class AuthService {
   ) {}
 
   private toPublicUser(user: {
+    phone?: string | null;
     id: string;
     email: string;
     fullName: string;
@@ -54,6 +56,7 @@ export class AuthService {
       email: user.email,
       fullName: user.fullName,
       role: user.role,
+      phone: user.phone ?? null,
       avatarUrl: user.avatarUrl,
     };
   }
@@ -299,6 +302,14 @@ export class AuthService {
   async me(userId: string) {
     const user = await this.users.findById(userId);
     if (!user) throw new UnauthorizedException();
+    return this.toPublicUser(user);
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const user = await this.users.updateProfile(userId, {
+      ...(dto.fullName !== undefined && { fullName: dto.fullName.trim() }),
+      ...(dto.phone !== undefined && { phone: dto.phone || null }),
+    });
     return this.toPublicUser(user);
   }
 

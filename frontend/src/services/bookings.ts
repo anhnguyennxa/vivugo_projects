@@ -32,3 +32,7 @@ export async function getMyBookings(): Promise<Booking[]> {
   const { data } = await apiClient.get<ApiSuccess<Booking[]>>('/bookings')
   return data.data
 }
+
+export async function cancelBooking(id: string): Promise<void> {
+  await apiClient.delete(`/bookings/${id}`)
+}

@@ -8,6 +8,7 @@ export interface AuthUser {
   email: string
   fullName: string
   role: 'USER' | 'ADMIN'
+  phone: string | null
   avatarUrl: string | null
 }
 
@@ -16,6 +17,7 @@ interface AuthState {
   accessToken: string | null
   isHydrating: boolean
   setSession: (user: AuthUser, accessToken: string) => void
+  updateUser: (user: AuthUser) => void
   logout: () => Promise<void>
   refreshAccessToken: () => Promise<string | null>
 }
@@ -26,6 +28,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isHydrating: true,
 
   setSession: (user, accessToken) => set({ user, accessToken, isHydrating: false }),
+
+  updateUser: (user) => set({ user }),
 
   logout: async () => {
     try {

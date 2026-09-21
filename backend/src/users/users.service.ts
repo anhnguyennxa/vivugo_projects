@@ -22,4 +22,11 @@ export class UsersService {
   }) {
     return this.prisma.user.create({ data });
   }
+
+  updateProfile(
+    id: string,
+    data: { fullName?: string; phone?: string | null },
+  ) {
+    return this.prisma.user.update({ where: { id }, data });
+  }
 }

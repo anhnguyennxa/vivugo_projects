@@ -1,7 +1,12 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import { AdminLayout } from '@/layouts/AdminLayout'
+import { AccountLayout } from '@/layouts/AccountLayout'
 import { PublicLayout } from '@/layouts/PublicLayout'
+import { AccountBookingDetail } from '@/pages/account/AccountBookingDetail'
+import { AccountBookings } from '@/pages/account/AccountBookings'
+import { AccountPassword } from '@/pages/account/AccountPassword'
+import { AccountProfile } from '@/pages/account/AccountProfile'
 import { BlogAdminForm } from '@/pages/admin/BlogAdminForm'
 import { BlogAdminList } from '@/pages/admin/BlogAdminList'
 import { Blog } from '@/pages/public/Blog'
@@ -30,6 +35,17 @@ export const router = createBrowserRouter([
       { path: '/tours/:slug', element: <TourDetail /> },
       { path: '/categories/:slug', element: <CategoryRedirect /> },
       { path: '/contact', element: <Contact /> },
+      {
+        path: '/account',
+        element: <AccountLayout />,
+        children: [
+          { index: true, element: <Navigate to="profile" replace /> },
+          { path: 'profile', element: <AccountProfile /> },
+          { path: 'bookings', element: <AccountBookings /> },
+          { path: 'bookings/:code', element: <AccountBookingDetail /> },
+          { path: 'password', element: <AccountPassword /> },
+        ],
+      },
       { path: '/cam-nang', element: <Blog /> },
       { path: '/cam-nang/:slug', element: <BlogDetail /> },
       { path: '/favorites', element: <Favorites /> },
