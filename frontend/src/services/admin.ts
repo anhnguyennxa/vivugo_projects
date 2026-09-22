@@ -108,13 +108,6 @@ export async function deleteTourPermanently(id: string): Promise<void> {
   await apiClient.delete(`/tours/${id}/permanent`)
 }
 
-export async function uploadImage(file: File): Promise<string> {
-  const body = new FormData()
-  body.append('file', file)
-  const { data } = await apiClient.post<ApiSuccess<{ url: string }>>('/uploads/image', body)
-  return data.data.url
-}
-
 export async function addTourImages(id: string, urls: string[]): Promise<void> {
   await apiClient.post(`/tours/${id}/images`, { urls })
 }

@@ -309,6 +309,7 @@ export class AuthService {
     const user = await this.users.updateProfile(userId, {
       ...(dto.fullName !== undefined && { fullName: dto.fullName.trim() }),
       ...(dto.phone !== undefined && { phone: dto.phone || null }),
+      ...(dto.avatarUrl !== undefined && { avatarUrl: dto.avatarUrl || null }),
     });
     return this.toPublicUser(user);
   }

@@ -31,8 +31,22 @@ export function AccountLayout() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="font-display text-2xl font-bold text-secondary">Tài khoản của tôi</h1>
-      <p className="mt-1 text-sm text-text-muted">{user.fullName} · {user.email}</p>
+      <div className="flex items-center gap-3">
+        {user.avatarUrl ? (
+          <div
+            className="size-12 shrink-0 rounded-full bg-secondary bg-cover bg-center"
+            style={{ backgroundImage: `url(${user.avatarUrl})` }}
+          />
+        ) : (
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface-alt text-text-faint">
+            <UserIcon className="size-5" />
+          </div>
+        )}
+        <div>
+          <h1 className="font-display text-2xl font-bold text-secondary">Tài khoản của tôi</h1>
+          <p className="mt-1 text-sm text-text-muted">{user.fullName} · {user.email}</p>
+        </div>
+      </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr]">
         <nav className="flex gap-1 overflow-x-auto md:flex-col">

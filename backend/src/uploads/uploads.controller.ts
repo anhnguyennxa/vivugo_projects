@@ -7,14 +7,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { Role } from '../../generated/prisma/enums';
-import { Roles } from '../common/decorators/roles.decorator';
 import { UploadsService } from './uploads.service';
 
 export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-@Roles(Role.ADMIN)
+// Không giới hạn ADMIN: mọi người dùng đã đăng nhập (JwtAuthGuard toàn cục)
+// đều được upload ảnh, ví dụ đổi ảnh đại diện. Việc gắn ảnh vào tour/bài viết
+// vẫn được các endpoint ghi dữ liệu tương ứng kiểm soát quyền riêng.
 @Controller('uploads')
 export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}

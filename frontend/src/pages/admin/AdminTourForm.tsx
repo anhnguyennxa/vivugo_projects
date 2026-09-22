@@ -3,7 +3,7 @@ import { type FormEvent, type ReactNode, useCallback, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { DeparturesManager } from '@/components/admin/DeparturesManager'
-import { ImageUploadButton } from '@/components/admin/ImageUploadButton'
+import { ImageUploadButton } from '@/components/common/ImageUploadButton'
 import { TourImagesManager } from '@/components/admin/TourImagesManager'
 import { ErrorState } from '@/components/common/ErrorState'
 import { Button } from '@/components/ui/button'

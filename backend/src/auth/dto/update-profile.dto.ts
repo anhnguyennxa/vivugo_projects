@@ -1,6 +1,7 @@
 import {
   IsOptional,
   IsString,
+  IsUrl,
   Matches,
   MaxLength,
   MinLength,
@@ -19,4 +20,10 @@ export class UpdateProfileDto {
   @ValidateIf((_, value) => value !== null && value !== '')
   @Matches(/^(0|\+84)\d{9,10}$/, { message: 'Số điện thoại không hợp lệ' })
   phone?: string | null;
+
+  // null => xoá ảnh đại diện, trở về mặc định
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
+  @IsUrl()
+  avatarUrl?: string | null;
 }

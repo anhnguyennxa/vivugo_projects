@@ -83,20 +83,26 @@ describe('Uploads (e2e)', () => {
     await app.close();
   });
 
-  it('khách và USER thường không được tải ảnh (401/403)', async () => {
+  it('khách chưa đăng nhập không được tải ảnh (401)', async () => {
     await request(app.getHttpServer())
       .post('/api/uploads/image')
       .attach('file', PNG, 'a.png')
       .expect(401);
-    await request(app.getHttpServer())
-      .post('/api/uploads/image')
-      .set('Authorization', `Bearer ${userToken}`)
-      .attach('file', PNG, 'a.png')
-      .expect(403);
     expect(uploadCalls).toBe(0);
   });
 
+  it('USER thường cũng tải được ảnh (dùng cho đổi ảnh đại diện)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/uploads/image')
+      .set('Authorization', `Bearer ${userToken}`)
+      .attach('file', PNG, { filename: 'a.png', contentType: 'image/png' })
+      .expect(201);
+    expect((res.body as Body<{ url: string }>).data.url).toMatch(/^https:\/\//);
+    expect(uploadCalls).toBe(1);
+  });
+
   it('từ chối khi thiếu file, sai định dạng hoặc quá 5MB (400/413)', async () => {
+    const before = uploadCalls;
     const auth = { Authorization: `Bearer ${adminToken}` };
     await request(app.getHttpServer())
       .post('/api/uploads/image')
@@ -118,17 +124,18 @@ describe('Uploads (e2e)', () => {
         contentType: 'image/png',
       })
       .expect(413);
-    expect(uploadCalls).toBe(0);
+    expect(uploadCalls).toBe(before);
   });
 
   it('ADMIN tải ảnh hợp lệ và nhận URL', async () => {
+    const before = uploadCalls;
     const res = await request(app.getHttpServer())
       .post('/api/uploads/image')
       .set('Authorization', `Bearer ${adminToken}`)
       .attach('file', PNG, { filename: 'a.png', contentType: 'image/png' })
       .expect(201);
     expect((res.body as Body<{ url: string }>).data.url).toMatch(/^https:\/\//);
-    expect(uploadCalls).toBe(1);
+    expect(uploadCalls).toBe(before + 1);
   });
 
   it('service báo 503 rõ ràng khi chưa cấu hình Cloudinary', () => {

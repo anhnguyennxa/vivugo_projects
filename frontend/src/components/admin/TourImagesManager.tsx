@@ -1,7 +1,7 @@
 import { ImagePlus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
-import { ImageUploadButton } from '@/components/admin/ImageUploadButton'
+import { ImageUploadButton } from '@/components/common/ImageUploadButton'
 import { Button } from '@/components/ui/button'
 import { addTourImages, removeTourImage } from '@/services/admin'
 import type { TourImage } from '@/types/tour'

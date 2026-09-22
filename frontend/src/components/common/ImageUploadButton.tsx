@@ -2,7 +2,7 @@ import { Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { uploadImage } from '@/services/admin'
+import { uploadImage } from '@/services/uploads'
 import { getApiErrorMessage } from '@/utils/errors'
 
 const MAX_SIZE_MB = 5

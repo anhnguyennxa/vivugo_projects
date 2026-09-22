@@ -25,7 +25,7 @@ export class UsersService {
 
   updateProfile(
     id: string,
-    data: { fullName?: string; phone?: string | null },
+    data: { fullName?: string; phone?: string | null; avatarUrl?: string | null },
   ) {
     return this.prisma.user.update({ where: { id }, data });
   }

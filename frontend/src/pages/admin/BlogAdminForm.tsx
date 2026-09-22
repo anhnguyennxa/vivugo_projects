@@ -1,7 +1,7 @@
 import { type FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
-import { ImageUploadButton } from '@/components/admin/ImageUploadButton'
+import { ImageUploadButton } from '@/components/common/ImageUploadButton'
 import { Button } from '@/components/ui/button'
 import { REGION_OPTIONS } from '@/constants/region'
 import { ROUTES } from '@/constants/routes'

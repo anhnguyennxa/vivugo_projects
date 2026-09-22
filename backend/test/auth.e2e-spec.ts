@@ -120,6 +120,20 @@ describe('Auth (e2e)', () => {
       null,
     );
 
+    const withAvatar = await patch({
+      avatarUrl: 'https://res.cloudinary.com/demo/image/upload/avatar.png',
+    }).expect(200);
+    expect(
+      (withAvatar.body as { data: { avatarUrl: string | null } }).data.avatarUrl,
+    ).toBe('https://res.cloudinary.com/demo/image/upload/avatar.png');
+
+    const clearedAvatar = await patch({ avatarUrl: null }).expect(200);
+    expect(
+      (clearedAvatar.body as { data: { avatarUrl: string | null } }).data
+        .avatarUrl,
+    ).toBe(null);
+
+    await patch({ avatarUrl: 'khong-phai-url' }).expect(400);
     await patch({ phone: '123' }).expect(400);
     await patch({ email: 'hacker@vivugo.vn' }).expect(400);
 

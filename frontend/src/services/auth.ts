@@ -47,7 +47,11 @@ export async function changePassword(currentPassword: string, newPassword: strin
   return data.message
 }
 
-export async function updateProfile(payload: { fullName?: string; phone?: string | null }) {
+export async function updateProfile(payload: {
+  fullName?: string
+  phone?: string | null
+  avatarUrl?: string | null
+}) {
   const { data } = await apiClient.patch<ApiSuccess<AuthUser>>('/auth/me', payload)
   return data.data
 }

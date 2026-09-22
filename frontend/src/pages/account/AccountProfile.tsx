@@ -1,5 +1,7 @@
+import { User as UserIcon } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 
+import { ImageUploadButton } from '@/components/common/ImageUploadButton'
 import { Button } from '@/components/ui/button'
 import { updateProfile } from '@/services/auth'
 import { useAuthStore } from '@/stores/auth'
@@ -12,6 +14,17 @@ export function AccountProfile() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
+
+  async function handleAvatarUploaded([url]: string[]) {
+    setAvatarError(null)
+    try {
+      const updated = await updateProfile({ avatarUrl: url })
+      useAuthStore.getState().updateUser(updated)
+    } catch (err) {
+      setAvatarError(getApiErrorMessage(err) ?? 'Không thể cập nhật ảnh đại diện')
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -38,6 +51,24 @@ export function AccountProfile() {
       <h2 className="font-display text-lg font-bold text-secondary">Thông tin cá nhân</h2>
       {error && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>}
       {saved && <p className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">Đã lưu thay đổi</p>}
+
+      <div>
+        <label className="mb-1 block text-sm font-medium text-secondary">Ảnh đại diện</label>
+        {avatarError && <p className="mb-1.5 text-xs text-danger">{avatarError}</p>}
+        <div className="flex items-center gap-3">
+          {user.avatarUrl ? (
+            <div
+              className="size-14 shrink-0 rounded-full bg-secondary bg-cover bg-center"
+              style={{ backgroundImage: `url(${user.avatarUrl})` }}
+            />
+          ) : (
+            <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-surface-alt text-text-faint">
+              <UserIcon className="size-6" />
+            </div>
+          )}
+          <ImageUploadButton label="Đổi ảnh đại diện" onUploaded={handleAvatarUploaded} />
+        </div>
+      </div>
 
       <div>
         <label className="mb-1 block text-sm font-medium text-secondary">Email</label>
