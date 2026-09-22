@@ -24,6 +24,9 @@ export const ROUTES = {
   blog: '/cam-nang',
   blogDetail: (slug: string) => `/cam-nang/${slug}`,
 
+  collections: '/bo-suu-tap',
+  collectionDetail: (slug: string) => `/bo-suu-tap/${slug}`,
+
   admin: '/admin',
   adminBookings: '/admin/bookings',
   adminTours: '/admin/tours',
@@ -35,4 +38,7 @@ export const ROUTES = {
   adminBlog: '/admin/blog',
   adminBlogNew: '/admin/blog/new',
   adminBlogEdit: (id: string) => `/admin/blog/${id}`,
+  adminCollections: '/admin/collections',
+  adminCollectionNew: '/admin/collections/new',
+  adminCollectionEdit: (id: string) => `/admin/collections/${id}`,
 } as const

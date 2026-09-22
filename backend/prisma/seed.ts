@@ -483,8 +483,153 @@ Bún bò Huế, cơm hến, cao lầu, mì Quảng — mỗi món đều mang m�
     });
   }
 
+  const now = new Date();
+  const collectionsData = [
+    {
+      title: 'Tour Tết Nguyên Đán 2027',
+      slug: 'tour-tet-nguyen-dan-2027',
+      description:
+        'Sum vầy đón Tết cổ truyền: về cố đô, phố cổ và làng hoa những ngày xuân.',
+      coverSlug: 'col-tet',
+      tourSlugs: [
+        'hue-co-do-di-san',
+        'hoi-an-pho-co-den-long',
+        'ninh-binh-trang-an-tam-coc',
+        'da-lat-thanh-pho-ngan-hoa',
+      ],
+      startAt: new Date('2027-01-15'),
+      endAt: new Date('2027-02-15'),
+    },
+    {
+      title: 'Tour Hè rực rỡ',
+      slug: 'tour-he-ruc-ro',
+      description: 'Biển xanh, cát trắng, nắng vàng — trọn vẹn mùa hè trên khắp 3 miền.',
+      coverSlug: 'col-he',
+      tourSlugs: [
+        'phu-quoc-kham-pha-dao-ngoc',
+        'nha-trang-bien-xanh-dao-ngoc',
+        'quy-nhon-ky-co-eo-gio',
+        'mui-ne-doi-cat-lang-chai',
+      ],
+    },
+    {
+      title: 'Tour Thu vàng Tây Bắc',
+      slug: 'tour-thu-vang-tay-bac',
+      description: 'Săn mây, ngắm ruộng bậc thang mùa lúa chín trên cung đường Tây Bắc.',
+      coverSlug: 'col-thu',
+      tourSlugs: ['sa-pa-san-may-fansipan', 'ha-giang-vong-cung-dong-bac', 'moc-chau-mua-hoa-doi-che'],
+      startAt: new Date(now.getFullYear(), 8, 1),
+      endAt: new Date(now.getFullYear(), 10, 30),
+    },
+    {
+      title: 'Tour Giáng sinh & Tết Dương lịch',
+      slug: 'tour-giang-sinh-tet-duong-lich',
+      description: 'Se lạnh cuối năm giữa đồi thông Đà Lạt, cầu Vàng Đà Nẵng và Sa Pa mờ sương.',
+      coverSlug: 'col-giang-sinh',
+      tourSlugs: ['da-lat-thanh-pho-ngan-hoa', 'da-nang-ba-na-hills-cau-vang', 'sa-pa-san-may-fansipan'],
+      startAt: new Date(now.getFullYear(), 11, 1),
+      endAt: new Date(now.getFullYear() + 1, 0, 5),
+    },
+    {
+      title: 'Tour Đông se lạnh vùng cao',
+      slug: 'tour-dong-se-lanh-vung-cao',
+      description: 'Sương giăng núi rừng, chợ phiên vùng cao và cái lạnh đặc trưng miền Bắc.',
+      coverSlug: 'col-dong',
+      tourSlugs: ['sa-pa-san-may-fansipan', 'moc-chau-mua-hoa-doi-che', 'ha-giang-vong-cung-dong-bac'],
+    },
+    {
+      title: 'Tour lễ 30/4 - 1/5 rực rỡ',
+      slug: 'tour-le-30-4-1-5',
+      description: 'Kỳ nghỉ lễ dài ngày với những điểm đến được yêu thích nhất cả nước.',
+      coverSlug: 'col-le',
+      tourSlugs: [
+        'da-nang-ba-na-hills-cau-vang',
+        'hoi-an-pho-co-den-long',
+        'hue-co-do-di-san',
+        'phu-quoc-kham-pha-dao-ngoc',
+      ],
+    },
+    {
+      title: 'Tour gia đình cuối tuần',
+      slug: 'tour-gia-dinh-cuoi-tuan',
+      description: 'Hành trình ngắn ngày, nhẹ nhàng, phù hợp cho cả gia đình có trẻ nhỏ.',
+      coverSlug: 'col-gia-dinh',
+      tourSlugs: [
+        'ninh-binh-trang-an-tam-coc',
+        'mui-ne-doi-cat-lang-chai',
+        'mien-tay-can-tho-cho-noi',
+        'da-lat-thanh-pho-ngan-hoa',
+      ],
+    },
+    {
+      title: 'Tour trăng mật lãng mạn',
+      slug: 'tour-trang-mat-lang-man',
+      description: 'Những điểm đến lãng mạn dành cho các cặp đôi mới cưới.',
+      coverSlug: 'col-trang-mat',
+      tourSlugs: [
+        'da-lat-thanh-pho-ngan-hoa',
+        'hoi-an-pho-co-den-long',
+        'phu-quoc-kham-pha-dao-ngoc',
+        'nha-trang-bien-xanh-dao-ngoc',
+      ],
+    },
+    {
+      title: 'Tour khám phá Tây Nguyên',
+      slug: 'tour-kham-pha-tay-nguyen',
+      description: 'Đại ngàn cao nguyên, cà phê và văn hoá cồng chiêng Tây Nguyên.',
+      coverSlug: 'col-tay-nguyen',
+      tourSlugs: ['buon-ma-thuot-dai-ngan-tay-nguyen', 'da-lat-thanh-pho-ngan-hoa'],
+    },
+    {
+      title: 'Tour miền Tây sông nước',
+      slug: 'tour-mien-tay-song-nuoc',
+      description: 'Chợ nổi, miệt vườn và biển đảo phương Nam trong một hành trình.',
+      coverSlug: 'col-mien-tay',
+      tourSlugs: ['mien-tay-can-tho-cho-noi', 'con-dao-hanh-trinh-tam-linh', 'phu-quoc-kham-pha-dao-ngoc'],
+    },
+  ];
+
+  for (const c of collectionsData) {
+    const collection = await prisma.collection.upsert({
+      where: { slug: c.slug },
+      update: {},
+      create: {
+        title: c.title,
+        slug: c.slug,
+        description: c.description,
+        coverImageUrl: `https://picsum.photos/seed/${c.coverSlug}/1200/700`,
+        status: 'PUBLISHED',
+        startAt: c.startAt,
+        endAt: c.endAt,
+        createdById: admin.id,
+      },
+    });
+
+    const existingTours = await prisma.collectionTour.count({
+      where: { collectionId: collection.id },
+    });
+    if (existingTours === 0) {
+      const tours = await prisma.tour.findMany({
+        where: { slug: { in: c.tourSlugs } },
+        select: { id: true, slug: true },
+      });
+      // Giữ đúng thứ tự đã khai báo ở tourSlugs, không theo thứ tự trả về của DB.
+      const orderedTours = c.tourSlugs
+        .map((slug) => tours.find((t) => t.slug === slug))
+        .filter((t): t is { id: string; slug: string } => !!t);
+
+      await prisma.collectionTour.createMany({
+        data: orderedTours.map((t, i) => ({
+          collectionId: collection.id,
+          tourId: t.id,
+          sortOrder: i,
+        })),
+      });
+    }
+  }
+
   console.log(
-    'Seed hoàn tất: 1 admin, 3 danh mục, 6 tour, mỗi tour 3 ảnh + 2 đợt khởi hành, 3 bài cẩm nang.',
+    'Seed hoàn tất: 1 admin, 3 danh mục, 16 tour, 3 bài cẩm nang, 10 bộ sưu tập theo chủ đề/mùa.',
   );
 }
 

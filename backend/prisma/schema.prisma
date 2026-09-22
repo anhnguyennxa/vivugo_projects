@@ -85,6 +85,11 @@ enum BlogPostStatus {
   PUBLISHED
 }
 
+enum CollectionStatus {
+  DRAFT
+  PUBLISHED
+}
+
 // ---------- Models ----------
 
 model User {
@@ -117,6 +122,7 @@ model User {
   handledChats      ChatConversation[] @relation("ChatConversationAdmin")
   chatMessages      ChatMessage[]
   blogPosts         BlogPost[]
+  collections       Collection[]
 
   @@map("users")
 }
@@ -187,6 +193,7 @@ model Tour {
   cartItems        CartItem[]
   bookings         Booking[]
   relatedInPosts   BlogPost[]  @relation("BlogPostRelatedTours")
+  collectionTours  CollectionTour[]
 
   @@index([categoryId])
   @@index([status])
@@ -396,6 +403,46 @@ model BlogPost {
   @@index([status, publishedAt])
   @@index([region])
   @@map("blog_posts")
+}
+
+// Bộ sưu tập tour theo chủ đề/mùa (vd "Tour hè 2026"), tách khỏi Category vì
+// một tour có thể thuộc nhiều bộ sưu tập và bộ sưu tập có thể tự hết hạn.
+model Collection {
+  id            String           @id @default(cuid())
+  title         String
+  slug          String           @unique
+  description   String?
+  coverImageUrl String
+  status        CollectionStatus @default(DRAFT)
+  startAt       DateTime?
+  endAt         DateTime?
+  createdById   String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  deletedAt     DateTime?
+
+  createdBy User             @relation(fields: [createdById], references: [id])
+  tours     CollectionTour[]
+
+  @@index([status])
+  @@map("collections")
+}
+
+// Bảng nối tường minh (không dùng quan hệ nhiều-nhiều ngầm định) để giữ được
+// thứ tự tour trong từng bộ sưu tập theo sortOrder do admin sắp xếp.
+model CollectionTour {
+  id           String @id @default(cuid())
+  collectionId String
+  tourId       String
+  sortOrder    Int    @default(0)
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  tour       Tour       @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@unique([collectionId, tourId])
+  @@index([collectionId])
+  @@index([tourId])
+  @@map("collection_tours")
 }
 
 model AuditLog {

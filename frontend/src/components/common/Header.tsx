@@ -11,6 +11,7 @@ import { useCartStore } from '@/stores/cart'
 const NAV_LINKS = [
   { label: 'Tour', href: ROUTES.tours },
   { label: 'Danh mục', href: ROUTES.tours },
+  { label: 'Bộ sưu tập', href: ROUTES.collections },
   { label: 'Cẩm nang', href: ROUTES.blog },
   { label: 'Về chúng tôi', href: ROUTES.about },
 ]

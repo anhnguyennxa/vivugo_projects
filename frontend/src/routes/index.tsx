@@ -16,10 +16,14 @@ import { AdminTours } from '@/pages/admin/AdminTours'
 import { AdminUsers } from '@/pages/admin/AdminUsers'
 import { BlogAdminForm } from '@/pages/admin/BlogAdminForm'
 import { BlogAdminList } from '@/pages/admin/BlogAdminList'
+import { CollectionAdminForm } from '@/pages/admin/CollectionAdminForm'
+import { CollectionAdminList } from '@/pages/admin/CollectionAdminList'
 import { Blog } from '@/pages/public/Blog'
 import { BlogDetail } from '@/pages/public/BlogDetail'
 import { Cart } from '@/pages/public/Cart'
 import { CategoryRedirect } from '@/pages/public/CategoryRedirect'
+import { CollectionDetail } from '@/pages/public/CollectionDetail'
+import { Collections } from '@/pages/public/Collections'
 import { Contact } from '@/pages/public/Contact'
 import { Checkout } from '@/pages/public/Checkout'
 import { CheckoutResult } from '@/pages/public/CheckoutResult'
@@ -55,6 +59,8 @@ export const router = createBrowserRouter([
       },
       { path: '/cam-nang', element: <Blog /> },
       { path: '/cam-nang/:slug', element: <BlogDetail /> },
+      { path: '/bo-suu-tap', element: <Collections /> },
+      { path: '/bo-suu-tap/:slug', element: <CollectionDetail /> },
       { path: '/favorites', element: <Favorites /> },
       { path: '/cart', element: <Cart /> },
       { path: '/checkout', element: <Checkout /> },
@@ -80,6 +86,9 @@ export const router = createBrowserRouter([
       { path: '/admin/blog', element: <BlogAdminList /> },
       { path: '/admin/blog/new', element: <BlogAdminForm /> },
       { path: '/admin/blog/:id', element: <BlogAdminForm /> },
+      { path: '/admin/collections', element: <CollectionAdminList /> },
+      { path: '/admin/collections/new', element: <CollectionAdminForm /> },
+      { path: '/admin/collections/:id', element: <CollectionAdminForm /> },
     ],
   },
 ])

@@ -1,6 +1,7 @@
-import { ArrowRight, Compass, Tag, Zap } from 'lucide-react'
+import { ArrowRight, Compass, Layers, Tag, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { CollectionCard } from '@/components/collection/CollectionCard'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { HeroSlider } from '@/components/tour/HeroSlider'
@@ -8,6 +9,7 @@ import { TourCarousel } from '@/components/tour/TourCarousel'
 import { TourCardSkeleton } from '@/components/tour/TourCardSkeleton'
 import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
+import { getCollections } from '@/services/collections'
 import { getFeaturedTours, getLastMinuteTours, getPromoTours } from '@/services/tours'
 
 function SeeAll({ to }: { to: string }) {
@@ -29,6 +31,7 @@ export function Home() {
     error: lastMinuteError,
   } = useAsync(() => getLastMinuteTours(12), [])
   const { status: promoStatus, data: promoTours } = useAsync(() => getPromoTours(12), [])
+  const { status: collectionsStatus, data: collections } = useAsync(() => getCollections(4), [])
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -104,6 +107,28 @@ export function Home() {
             <SeeAll to={`${ROUTES.tours}?promo=1`} />
           </div>
           <TourCarousel tours={promoTours} />
+        </section>
+      )}
+
+      {collectionsStatus === 'success' && collections.length > 0 && (
+        <section className="mt-12">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="flex size-7 items-center justify-center rounded-lg bg-primary-soft text-primary-ink">
+                <Layers className="size-4" />
+              </span>
+              <div>
+                <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">Bộ sưu tập</h2>
+                <p className="text-sm text-text-muted">Tour được tuyển chọn theo chủ đề và mùa</p>
+              </div>
+            </div>
+            <SeeAll to={ROUTES.collections} />
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {collections.map((c) => (
+              <CollectionCard key={c.id} collection={c} />
+            ))}
+          </div>
         </section>
       )}
 
