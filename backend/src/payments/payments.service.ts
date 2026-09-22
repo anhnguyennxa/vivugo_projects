@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 
 import type { RequestUser } from '../common/decorators/current-user.decorator';
@@ -89,6 +91,7 @@ export class PaymentsService {
           status: 'SUCCESS',
           transactionRef: result.transactionNo,
           paidAt: new Date(),
+          vnpayPayDate: result.payDate || null,
         },
       }),
       this.prisma.booking.update({
@@ -98,5 +101,71 @@ export class PaymentsService {
     ]);
 
     return { RspCode: '00', Message: 'Confirm Success' };
+  }
+
+  // Chỉ admin gọi, sau khi đơn đã được huỷ (xem BookingsService.updateStatus).
+  // Hoàn toàn phần qua API VNPay, không tự động — admin chủ động xác nhận.
+  async refund(bookingId: string, admin: RequestUser, ipAddr: string) {
+    if (!this.vnpay.isConfigured()) {
+      throw new ServiceUnavailableException(
+        'Chưa cấu hình VNPay (VNPAY_TMN_CODE, VNPAY_HASH_SECRET)',
+      );
+    }
+
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { payment: true },
+    });
+    if (!booking) throw new NotFoundException('Không tìm thấy đơn đặt tour');
+    if (!booking.payment)
+      throw new NotFoundException('Không tìm thấy thông tin thanh toán');
+
+    if (booking.status !== 'CANCELLED') {
+      throw new BadRequestException(
+        'Chỉ có thể hoàn tiền cho đơn đã huỷ, hãy huỷ đơn trước',
+      );
+    }
+    if (booking.paymentStatus !== 'PAID') {
+      throw new BadRequestException(
+        `Đơn ở trạng thái thanh toán "${booking.paymentStatus}", không có gì để hoàn`,
+      );
+    }
+    if (!booking.payment.transactionRef || !booking.payment.vnpayPayDate) {
+      throw new BadRequestException(
+        'Đơn không có dữ liệu giao dịch VNPay gốc nên không thể hoàn tiền tự động',
+      );
+    }
+
+    const result = await this.vnpay.refund({
+      txnRef: booking.bookingCode,
+      amount: Number(booking.payment.amount),
+      transactionNo: booking.payment.transactionRef,
+      transactionDate: booking.payment.vnpayPayDate,
+      orderInfo: `Hoan tien don ${booking.bookingCode}`,
+      createBy: admin.email,
+      ipAddr,
+    });
+
+    if (!result.success) {
+      this.logger.warn(
+        `Hoàn tiền VNPay thất bại cho đơn ${booking.bookingCode}: ${result.responseCode} - ${result.message}`,
+      );
+      throw new BadRequestException(`VNPay từ chối hoàn tiền: ${result.message}`);
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.payment.update({
+        where: { id: booking.payment.id },
+        data: {
+          status: 'REFUNDED',
+          refundedAt: new Date(),
+          refundTransactionRef: result.transactionNo ?? null,
+        },
+      }),
+      this.prisma.booking.update({
+        where: { id: booking.id },
+        data: { paymentStatus: 'REFUNDED' },
+      }),
+    ]);
   }
 }

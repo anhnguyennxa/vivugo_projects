@@ -44,6 +44,11 @@ export async function updateBookingStatus(
   await apiClient.patch(`/bookings/${id}/status`, { status })
 }
 
+// Chỉ dùng được khi đơn đã bị huỷ và đã thanh toán qua VNPay.
+export async function refundBookingPayment(bookingId: string): Promise<void> {
+  await apiClient.post(`/payments/${bookingId}/refund`)
+}
+
 export interface AdminToursQuery {
   page?: number
   limit?: number

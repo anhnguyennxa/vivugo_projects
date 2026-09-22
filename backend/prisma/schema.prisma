@@ -60,6 +60,7 @@ enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
+  REFUNDED
 }
 
 enum ReviewStatus {
@@ -286,16 +287,21 @@ model Booking {
 }
 
 model Payment {
-  id              String          @id @default(cuid())
-  bookingId       String          @unique
-  provider        PaymentProvider
-  amount          Decimal         @db.Decimal(12, 2)
-  currency        String          @default("VND")
-  status          PaymentStatus   @default(PENDING)
-  transactionRef  String?         @unique
-  paidAt          DateTime?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id                   String          @id @default(cuid())
+  bookingId            String          @unique
+  provider             PaymentProvider
+  amount               Decimal         @db.Decimal(12, 2)
+  currency             String          @default("VND")
+  status               PaymentStatus   @default(PENDING)
+  transactionRef       String?         @unique
+  paidAt               DateTime?
+  // Chuỗi vnp_PayDate gốc từ IPN (yyyyMMddHHmmss) — bắt buộc phải khớp nguyên
+  // văn khi gọi API hoàn tiền của VNPay, không thể suy ra lại từ paidAt.
+  vnpayPayDate         String?
+  refundedAt           DateTime?
+  refundTransactionRef String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 

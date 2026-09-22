@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import type { Request } from 'express';
 
 import {
   CurrentUser,
@@ -6,6 +7,8 @@ import {
 } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
 import { RawResponse } from '../common/decorators/raw-response.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../../generated/prisma/enums';
 import { PaymentsService } from './payments.service';
 
 @Controller('payments')
@@ -26,5 +29,16 @@ export class PaymentsController {
   ) {
     const data = await this.paymentsService.getByBookingId(bookingId, user);
     return { message: 'Lấy thông tin thanh toán thành công', data };
+  }
+
+  @Roles(Role.ADMIN)
+  @Post(':bookingId/refund')
+  async refund(
+    @Param('bookingId') bookingId: string,
+    @CurrentUser() user: RequestUser,
+    @Req() request: Request,
+  ) {
+    await this.paymentsService.refund(bookingId, user, request.ip ?? '0.0.0.0');
+    return { message: 'Đã hoàn tiền thành công', data: null };
   }
 }

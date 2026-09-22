@@ -1,4 +1,4 @@
-import { Search, Ticket } from 'lucide-react'
+import { Banknote, Search, Ticket } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { BookingStatusBadge } from '@/components/booking/BookingStatusBadge'
@@ -8,7 +8,12 @@ import { Pagination } from '@/components/common/Pagination'
 import { Button } from '@/components/ui/button'
 import { useAsync } from '@/hooks/useAsync'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
-import { getAdminBookings, updateBookingStatus, type AdminBookingsQuery } from '@/services/admin'
+import {
+  getAdminBookings,
+  refundBookingPayment,
+  updateBookingStatus,
+  type AdminBookingsQuery,
+} from '@/services/admin'
 import type { AdminBooking } from '@/types/admin'
 import type { BookingPaymentStatus, BookingStatus } from '@/types/booking'
 import { getApiErrorMessage } from '@/utils/errors'
@@ -88,6 +93,27 @@ export function AdminBookings() {
       setReloadKey((k) => k + 1)
     } catch (err) {
       setActionError(getApiErrorMessage(err) ?? 'Không thể cập nhật trạng thái đơn')
+    } finally {
+      setBusyId(null)
+    }
+  }
+
+  async function handleRefund(booking: AdminBooking) {
+    if (
+      !window.confirm(
+        `Hoàn tiền ${formatVnd(booking.totalPrice)} cho đơn ${booking.bookingCode} qua VNPay? Không thể hoàn tác.`,
+      )
+    ) {
+      return
+    }
+
+    setActionError(null)
+    setBusyId(booking.id)
+    try {
+      await refundBookingPayment(booking.id)
+      setReloadKey((k) => k + 1)
+    } catch (err) {
+      setActionError(getApiErrorMessage(err) ?? 'Không thể hoàn tiền')
     } finally {
       setBusyId(null)
     }
@@ -218,6 +244,16 @@ export function AdminBookings() {
                               {a.label}
                             </Button>
                           ))}
+                          {b.status === 'CANCELLED' && b.paymentStatus === 'PAID' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={busyId === b.id}
+                              onClick={() => handleRefund(b)}
+                            >
+                              <Banknote /> Hoàn tiền
+                            </Button>
+                          )}
                         </div>
                       </td>
                     </tr>
