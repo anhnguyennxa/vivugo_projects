@@ -35,6 +35,8 @@ interface FormState {
   durationNights: string
   basePrice: string
   discountPrice: string
+  promoStartAt: string
+  promoEndAt: string
   minGuests: string
   maxGuests: string
   thumbnailUrl: string
@@ -56,6 +58,8 @@ const EMPTY: FormState = {
   durationNights: '1',
   basePrice: '',
   discountPrice: '',
+  promoStartAt: '',
+  promoEndAt: '',
   minGuests: '1',
   maxGuests: '20',
   thumbnailUrl: '',
@@ -78,6 +82,8 @@ function fromTour(t: AdminTourDetail): FormState {
     durationNights: String(t.durationNights),
     basePrice: String(t.basePrice),
     discountPrice: t.discountPrice != null ? String(t.discountPrice) : '',
+    promoStartAt: t.promoStartAt ? t.promoStartAt.slice(0, 10) : '',
+    promoEndAt: t.promoEndAt ? t.promoEndAt.slice(0, 10) : '',
     minGuests: String(t.minGuests),
     maxGuests: String(t.maxGuests),
     thumbnailUrl: t.thumbnailUrl,
@@ -172,9 +178,17 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
     if (!Number.isInteger(maxGuests) || maxGuests < minGuests) return 'Số khách tối đa phải ≥ số khách tối thiểu'
 
     let discountPrice: number | null = null
+    let promoStartAt: string | null = null
+    let promoEndAt: string | null = null
     if (form.discountPrice) {
       discountPrice = Number(form.discountPrice)
       if (!(discountPrice >= 0) || discountPrice >= basePrice) return 'Giá khuyến mãi phải nhỏ hơn giá gốc'
+      // Áp dụng từ đầu ngày bắt đầu đến hết ngày kết thúc (giờ địa phương).
+      if (form.promoStartAt) promoStartAt = new Date(`${form.promoStartAt}T00:00:00`).toISOString()
+      if (form.promoEndAt) promoEndAt = new Date(`${form.promoEndAt}T23:59:59`).toISOString()
+      if (promoStartAt && promoEndAt && promoStartAt > promoEndAt) {
+        return 'Ngày bắt đầu khuyến mãi phải trước hoặc bằng ngày kết thúc'
+      }
     }
 
     const itinerary = form.itinerary.filter((d) => d.title.trim() || d.description.trim())
@@ -194,6 +208,8 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
       durationNights,
       basePrice,
       discountPrice,
+      promoStartAt,
+      promoEndAt,
       minGuests,
       maxGuests,
       thumbnailUrl: form.thumbnailUrl,
@@ -217,9 +233,18 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
         setSaved(true)
         await onReload()
       } else {
-        // Tạo mới không gửi discountPrice: null (DTO chỉ nhận số)
-        const { discountPrice, ...rest } = payload
-        const created = await createTour(discountPrice != null ? { ...rest, discountPrice } : rest)
+        // Tạo mới không gửi discountPrice/promoStartAt/promoEndAt: null (DTO chỉ nhận số/ngày)
+        const { discountPrice, promoStartAt, promoEndAt, ...rest } = payload
+        const created = await createTour(
+          discountPrice != null
+            ? {
+                ...rest,
+                discountPrice,
+                ...(promoStartAt != null && { promoStartAt }),
+                ...(promoEndAt != null && { promoEndAt }),
+              }
+            : rest,
+        )
         navigate(ROUTES.adminTourEdit(created.id), { replace: true })
       }
     } catch (err) {
@@ -341,6 +366,26 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
             <input type="number" min={0} value={form.discountPrice} onChange={(e) => set('discountPrice', e.target.value)} className={inputClass} />
           </Field>
         </div>
+        {form.discountPrice && (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Áp dụng từ ngày (tuỳ chọn)">
+              <input
+                type="date"
+                value={form.promoStartAt}
+                onChange={(e) => set('promoStartAt', e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+            <Field label="Đến hết ngày (tuỳ chọn, để trống = vô thời hạn)">
+              <input
+                type="date"
+                value={form.promoEndAt}
+                onChange={(e) => set('promoEndAt', e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+          </div>
+        )}
 
         <Field label="Ảnh đại diện">
           <input

@@ -10,32 +10,53 @@ import type { AddTourImagesDto } from './dto/add-tour-images.dto';
 import type { CreateTourDto } from './dto/create-tour.dto';
 import type { QueryToursDto } from './dto/query-tours.dto';
 import type { UpdateTourDto } from './dto/update-tour.dto';
+import { activePromoWhere, effectiveDiscountPrice } from './promo.util';
+import { serializeDepartures, UPCOMING_DEPARTURES_INCLUDE } from './upcoming-departures.util';
 
-function serializeTour<
-  T extends {
-    basePrice: Prisma.Decimal;
-    discountPrice: Prisma.Decimal | null;
-    avgRating: Prisma.Decimal;
-    departures?: { priceOverride: Prisma.Decimal | null }[];
-  },
->(tour: T) {
+type SerializableTour = {
+  basePrice: Prisma.Decimal;
+  discountPrice: Prisma.Decimal | null;
+  promoStartAt: Date | null;
+  promoEndAt: Date | null;
+  avgRating: Prisma.Decimal;
+  departures?: { priceOverride: Prisma.Decimal | null }[];
+};
+
+// Cho khách xem tour: giá giảm đã hết hạn (hoặc chưa tới hạn) tự trở về giá gốc.
+function serializeTour<T extends SerializableTour>(tour: T) {
   return {
     ...tour,
     basePrice: Number(tour.basePrice),
-    discountPrice:
-      tour.discountPrice != null ? Number(tour.discountPrice) : null,
+    discountPrice: effectiveDiscountPrice(tour),
     avgRating: Number(tour.avgRating),
-    ...(tour.departures && {
-      departures: tour.departures.map((d) => ({
-        ...d,
-        priceOverride: d.priceOverride != null ? Number(d.priceOverride) : null,
-      })),
-    }),
+    ...(tour.departures && { departures: serializeDepartures(tour.departures) }),
   };
 }
 
+// Cho admin vừa tạo/sửa tour: trả đúng giá trị vừa lưu, kể cả khi ngoài hạn,
+// để họ thấy đúng những gì đã nhập thay vì bị ẩn đi.
+function serializeTourRaw<T extends SerializableTour>(tour: T) {
+  return {
+    ...tour,
+    basePrice: Number(tour.basePrice),
+    discountPrice: tour.discountPrice != null ? Number(tour.discountPrice) : null,
+    avgRating: Number(tour.avgRating),
+    ...(tour.departures && { departures: serializeDepartures(tour.departures) }),
+  };
+}
+
+function ensurePromoWindowValid(
+  promoStartAt?: string | null,
+  promoEndAt?: string | null,
+) {
+  if (promoStartAt && promoEndAt && new Date(promoStartAt) > new Date(promoEndAt)) {
+    throw new BadRequestException(
+      'Ngày bắt đầu khuyến mãi phải trước hoặc bằng ngày kết thúc',
+    );
+  }
+}
+
 const LAST_MINUTE_WINDOW_DAYS = 21;
-const CARD_DEPARTURES_LIMIT = 6;
 
 @Injectable()
 export class ToursService {
@@ -56,7 +77,7 @@ export class ToursService {
       status: 'PUBLISHED',
       deletedAt: null,
       ...(query.featured != null && { isFeatured: query.featured }),
-      ...(query.promo && { discountPrice: { not: null } }),
+      ...(query.promo && activePromoWhere()),
       ...(query.category && { category: { slug: query.category } }),
       ...(query.region && { region: query.region }),
       ...(query.departureCity && { departureCity: query.departureCity }),
@@ -86,11 +107,7 @@ export class ToursService {
         include: {
           category: true,
           // Các đợt khởi hành sắp tới (gần nhất trước) để thẻ tour hiện ngày khởi hành.
-          departures: {
-            where: { status: 'OPEN', departureDate: { gte: new Date() } },
-            orderBy: { departureDate: 'asc' },
-            take: CARD_DEPARTURES_LIMIT,
-          },
+          departures: UPCOMING_DEPARTURES_INCLUDE,
         },
         orderBy: { [query.sort ?? 'createdAt']: query.order ?? 'desc' },
         skip: (page - 1) * limit,
@@ -123,6 +140,7 @@ export class ToursService {
 
   async create(dto: CreateTourDto, createdById: string) {
     await this.ensureCategoryExists(dto.categoryId);
+    ensurePromoWindowValid(dto.promoStartAt, dto.promoEndAt);
 
     const tour = await this.prisma.tour.create({
       data: {
@@ -131,18 +149,22 @@ export class ToursService {
         createdById,
       },
     });
-    return serializeTour(tour);
+    return serializeTourRaw(tour);
   }
 
   async update(id: string, dto: UpdateTourDto) {
-    await this.ensureTourExists(id);
+    const existing = await this.ensureTourExists(id);
     if (dto.categoryId) await this.ensureCategoryExists(dto.categoryId);
+    ensurePromoWindowValid(
+      dto.promoStartAt ?? existing.promoStartAt?.toISOString(),
+      dto.promoEndAt ?? existing.promoEndAt?.toISOString(),
+    );
 
     const tour = await this.prisma.tour.update({
       where: { id },
       data: { ...dto, ...(dto.itinerary && { itinerary: dto.itinerary }) },
     });
-    return serializeTour(tour);
+    return serializeTourRaw(tour);
   }
 
   async remove(id: string) {
@@ -201,6 +223,7 @@ export class ToursService {
     const tour = await this.prisma.tour.findUnique({ where: { id } });
     if (!tour || tour.deletedAt)
       throw new NotFoundException('Không tìm thấy tour');
+    return tour;
   }
 
   private async ensureCategoryExists(categoryId: string) {

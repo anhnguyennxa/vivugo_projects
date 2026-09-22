@@ -81,6 +81,9 @@ export interface TourInput {
   durationNights: number
   basePrice: number
   discountPrice?: number | null
+  // Hạn khuyến mãi cho discountPrice, ISO date string; bỏ trống = vô thời hạn.
+  promoStartAt?: string | null
+  promoEndAt?: string | null
   minGuests: number
   maxGuests: number
   thumbnailUrl: string

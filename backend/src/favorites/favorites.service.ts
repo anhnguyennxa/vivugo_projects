@@ -4,17 +4,34 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { effectiveDiscountPrice } from '../tours/promo.util';
+import {
+  serializeDepartures,
+  UPCOMING_DEPARTURES_INCLUDE,
+} from '../tours/upcoming-departures.util';
 
 const FAVORITE_INCLUDE = {
   tour: {
-    include: { category: true },
+    include: {
+      category: true,
+      // Để thẻ tour trong danh sách yêu thích hiện được ngày khởi hành.
+      departures: UPCOMING_DEPARTURES_INCLUDE,
+    },
   },
 } as const;
 
 function serializeFavorite<
   T extends {
-    tour: { basePrice: unknown; discountPrice: unknown; avgRating: unknown };
+    tour: {
+      basePrice: Prisma.Decimal;
+      discountPrice: Prisma.Decimal | null;
+      promoStartAt: Date | null;
+      promoEndAt: Date | null;
+      avgRating: Prisma.Decimal;
+      departures: { priceOverride: Prisma.Decimal | null }[];
+    };
   },
 >(favorite: T) {
   return {
@@ -22,11 +39,9 @@ function serializeFavorite<
     tour: {
       ...favorite.tour,
       basePrice: Number(favorite.tour.basePrice),
-      discountPrice:
-        favorite.tour.discountPrice != null
-          ? Number(favorite.tour.discountPrice)
-          : null,
+      discountPrice: effectiveDiscountPrice(favorite.tour),
       avgRating: Number(favorite.tour.avgRating),
+      departures: serializeDepartures(favorite.tour.departures),
     },
   };
 }

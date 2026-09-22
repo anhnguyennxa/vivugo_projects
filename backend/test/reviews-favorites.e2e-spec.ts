@@ -245,7 +245,14 @@ describe('Reviews & Favorites (e2e)', () => {
       .get('/api/favorites')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(200);
-    expect((list.body as ApiBody & { data: unknown[] }).data).toHaveLength(1);
+    const favorites = (
+      list.body as ApiBody & {
+        data: { tour: { departures: { departureDate: string }[] } }[];
+      }
+    ).data;
+    expect(favorites).toHaveLength(1);
+    // Thẻ tour trong danh sách yêu thích cũng cần đợt khởi hành để hiện ngày.
+    expect(favorites[0].tour.departures.length).toBeGreaterThanOrEqual(1);
 
     await request(app.getHttpServer())
       .delete(`/api/favorites/${tourId}`)

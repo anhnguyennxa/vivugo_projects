@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsDateString,
   IsIn,
   IsInt,
   IsNumber,
@@ -73,6 +74,15 @@ export class CreateTourDto {
   @IsNumber()
   @Min(0)
   discountPrice?: number;
+
+  // Hạn khuyến mãi cho discountPrice — để trống thì áp dụng vô thời hạn.
+  @IsOptional()
+  @IsDateString()
+  promoStartAt?: string;
+
+  @IsOptional()
+  @IsDateString()
+  promoEndAt?: string;
 
   @IsOptional()
   @Type(() => Number)

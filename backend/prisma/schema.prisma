@@ -164,6 +164,8 @@ model Tour {
   durationNights Int
   basePrice      Decimal    @db.Decimal(12, 2)
   discountPrice  Decimal?   @db.Decimal(12, 2)
+  promoStartAt   DateTime?
+  promoEndAt     DateTime?
   minGuests      Int        @default(1)
   maxGuests      Int
   thumbnailUrl   String

@@ -43,6 +43,8 @@ export interface AdminTour {
   departureCity: DepartureCity
   basePrice: number
   discountPrice: number | null
+  promoStartAt: string | null
+  promoEndAt: string | null
   thumbnailUrl: string
   status: TourStatus
   isFeatured: boolean
@@ -65,6 +67,8 @@ export interface AdminTourDetail {
   durationNights: number
   basePrice: number
   discountPrice: number | null
+  promoStartAt: string | null
+  promoEndAt: string | null
   minGuests: number
   maxGuests: number
   thumbnailUrl: string

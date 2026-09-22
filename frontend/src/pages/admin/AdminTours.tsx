@@ -23,7 +23,7 @@ import {
 import { getCategories } from '@/services/categories'
 import type { AdminTour, TourStatus } from '@/types/admin'
 import { getApiErrorMessage } from '@/utils/errors'
-import { formatVnd } from '@/utils/format'
+import { formatDate, formatVnd } from '@/utils/format'
 
 const STATUS_VARIANT = { DRAFT: 'secondary', PUBLISHED: 'success', ARCHIVED: 'danger' } as const
 
@@ -200,7 +200,16 @@ export function AdminTours() {
                       <td className="px-4 py-3 text-right font-mono font-bold text-secondary">
                         {formatVnd(t.discountPrice ?? t.basePrice)}
                         {t.discountPrice != null && (
-                          <p className="text-xs font-normal text-text-faint line-through">{formatVnd(t.basePrice)}</p>
+                          <>
+                            <p className="text-xs font-normal text-text-faint line-through">{formatVnd(t.basePrice)}</p>
+                            {(t.promoStartAt || t.promoEndAt) && (
+                              <p className="text-xs font-normal text-accent">
+                                {t.promoStartAt && `Từ ${formatDate(t.promoStartAt)}`}
+                                {t.promoStartAt && t.promoEndAt && ' – '}
+                                {t.promoEndAt && `Đến ${formatDate(t.promoEndAt)}`}
+                              </p>
+                            )}
+                          </>
                         )}
                       </td>
                       <td className="px-4 py-3 text-text-muted">

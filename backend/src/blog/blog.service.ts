@@ -2,6 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { effectiveDiscountPrice } from '../tours/promo.util';
+import {
+  serializeDepartures,
+  UPCOMING_DEPARTURES_INCLUDE,
+} from '../tours/upcoming-departures.util';
 import type { CreateBlogPostDto } from './dto/create-blog-post.dto';
 import type { QueryAdminBlogPostsDto } from './dto/query-admin-blog-posts.dto';
 import type { QueryBlogPostsDto } from './dto/query-blog-posts.dto';
@@ -12,7 +17,10 @@ function serializeRelatedTours<
     relatedTours?: {
       basePrice: Prisma.Decimal;
       discountPrice: Prisma.Decimal | null;
+      promoStartAt: Date | null;
+      promoEndAt: Date | null;
       avgRating: Prisma.Decimal;
+      departures?: { priceOverride: Prisma.Decimal | null }[];
     }[];
   },
 >(post: T) {
@@ -22,8 +30,9 @@ function serializeRelatedTours<
       relatedTours: post.relatedTours.map((t) => ({
         ...t,
         basePrice: Number(t.basePrice),
-        discountPrice: t.discountPrice != null ? Number(t.discountPrice) : null,
+        discountPrice: effectiveDiscountPrice(t),
         avgRating: Number(t.avgRating),
+        ...(t.departures && { departures: serializeDepartures(t.departures) }),
       })),
     }),
   };
@@ -84,7 +93,11 @@ export class BlogService {
         author: { select: { fullName: true, avatarUrl: true } },
         relatedTours: {
           where: { status: 'PUBLISHED', deletedAt: null },
-          include: { category: true },
+          include: {
+            category: true,
+            // Để thẻ tour liên quan trong bài cẩm nang hiện được ngày khởi hành.
+            departures: UPCOMING_DEPARTURES_INCLUDE,
+          },
         },
       },
     });

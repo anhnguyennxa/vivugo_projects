@@ -250,4 +250,100 @@ describe('Tours & Categories (e2e)', () => {
 
     await prisma.tour.delete({ where: { id: body.data.id } });
   });
+
+  it('từ chối hạn khuyến mãi có ngày bắt đầu sau ngày kết thúc (400)', async () => {
+    await request(app.getHttpServer())
+      .post('/api/tours')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        title: 'Tour kiểm thử hạn khuyến mãi',
+        slug: `e2e-promo-invalid-${suffix}`,
+        categoryId,
+        description: 'Mo ta hop le voi tren hai muoi ky tu cho tour kiem thu',
+        itinerary: [],
+        location: 'Test City',
+        region: 'MIEN_NAM',
+        departureCity: 'HO_CHI_MINH',
+        durationDays: 2,
+        durationNights: 1,
+        basePrice: 1500000,
+        discountPrice: 1200000,
+        promoStartAt: new Date(Date.now() + 10 * 86400000).toISOString(),
+        promoEndAt: new Date(Date.now() + 5 * 86400000).toISOString(),
+        maxGuests: 10,
+        thumbnailUrl: 'https://picsum.photos/seed/e2e-promo-invalid/400',
+      })
+      .expect(400);
+  });
+
+  it('khuyến mãi hết hạn (hoặc chưa tới hạn) tự ẩn giá giảm với khách, admin vẫn thấy giá trị đã lưu', async () => {
+    const create = await request(app.getHttpServer())
+      .post('/api/tours')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        title: 'Tour kiểm thử khuyến mãi hết hạn',
+        slug: `e2e-promo-expired-${suffix}`,
+        categoryId,
+        description: 'Mo ta hop le voi tren hai muoi ky tu cho tour kiem thu',
+        itinerary: [],
+        location: 'Test City',
+        region: 'MIEN_NAM',
+        departureCity: 'HO_CHI_MINH',
+        durationDays: 2,
+        durationNights: 1,
+        basePrice: 1500000,
+        discountPrice: 1200000,
+        promoEndAt: new Date(Date.now() - 86400000).toISOString(),
+        maxGuests: 10,
+        status: 'PUBLISHED',
+        thumbnailUrl: 'https://picsum.photos/seed/e2e-promo-expired/400',
+      })
+      .expect(201);
+    const tourId = (create.body as ApiBody & { data: { id: string } }).data.id;
+
+    // Công khai: giá giảm đã hết hạn nên khách chỉ thấy giá gốc, không nằm trong ?promo=true.
+    const detail = await request(app.getHttpServer())
+      .get(`/api/tours/e2e-promo-expired-${suffix}`)
+      .expect(200);
+    expect(
+      (detail.body as ApiBody & { data: { discountPrice: number | null } }).data
+        .discountPrice,
+    ).toBeNull();
+
+    const promoList = await request(app.getHttpServer())
+      .get('/api/tours?promo=true&limit=50')
+      .expect(200);
+    expect(
+      (promoList.body as ApiBody & { data: { id: string }[] }).data.some(
+        (t) => t.id === tourId,
+      ),
+    ).toBe(false);
+
+    // Admin vẫn thấy đúng giá trị đã lưu để sửa hoặc gia hạn.
+    const adminDetail = await request(app.getHttpServer())
+      .get(`/api/admin/tours/${tourId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    expect(
+      (adminDetail.body as ApiBody & { data: { discountPrice: number | null } })
+        .data.discountPrice,
+    ).toBe(1200000);
+
+    // Gia hạn sang cửa sổ đang hiệu lực -> công khai hiện lại giá giảm.
+    await request(app.getHttpServer())
+      .patch(`/api/tours/${tourId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ promoEndAt: new Date(Date.now() + 86400000).toISOString() })
+      .expect(200);
+
+    const detailAfter = await request(app.getHttpServer())
+      .get(`/api/tours/e2e-promo-expired-${suffix}`)
+      .expect(200);
+    expect(
+      (detailAfter.body as ApiBody & { data: { discountPrice: number | null } })
+        .data.discountPrice,
+    ).toBe(1200000);
+
+    await prisma.tour.delete({ where: { id: tourId } });
+  });
 });
