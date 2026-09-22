@@ -10,6 +10,7 @@ import { AccountProfile } from '@/pages/account/AccountProfile'
 import { AdminBookings } from '@/pages/admin/AdminBookings'
 import { AdminCategories } from '@/pages/admin/AdminCategories'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
+import { AdminNotifications } from '@/pages/admin/AdminNotifications'
 import { AdminTourForm } from '@/pages/admin/AdminTourForm'
 import { AdminReviews } from '@/pages/admin/AdminReviews'
 import { AdminTours } from '@/pages/admin/AdminTours'
@@ -83,6 +84,7 @@ export const router = createBrowserRouter([
       { path: '/admin/categories', element: <AdminCategories /> },
       { path: '/admin/reviews', element: <AdminReviews /> },
       { path: '/admin/users', element: <AdminUsers /> },
+      { path: '/admin/notifications', element: <AdminNotifications /> },
       { path: '/admin/blog', element: <BlogAdminList /> },
       { path: '/admin/blog/new', element: <BlogAdminForm /> },
       { path: '/admin/blog/:id', element: <BlogAdminForm /> },

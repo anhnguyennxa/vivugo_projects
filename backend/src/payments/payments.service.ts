@@ -9,7 +9,12 @@ import {
 
 import type { RequestUser } from '../common/decorators/current-user.decorator';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { VnpayService } from './vnpay.service';
+
+function formatVnd(amount: number) {
+  return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
+}
 
 @Injectable()
 export class PaymentsService {
@@ -18,6 +23,7 @@ export class PaymentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly vnpay: VnpayService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async getByBookingId(bookingId: string, requester: RequestUser) {
@@ -47,7 +53,7 @@ export class PaymentsService {
 
     const booking = await this.prisma.booking.findUnique({
       where: { bookingCode: result.txnRef },
-      include: { payment: true },
+      include: { payment: true, tour: { select: { title: true } } },
     });
     if (!booking || !booking.payment) {
       return { RspCode: '01', Message: 'Order not found' };
@@ -100,6 +106,14 @@ export class PaymentsService {
       }),
     ]);
 
+    await this.notifications.create({
+      userId: booking.userId,
+      type: 'PAYMENT',
+      title: 'Thanh toán thành công',
+      message: `Đơn "${booking.tour.title}" (${booking.bookingCode}) đã thanh toán thành công ${formatVnd(result.amount)}.`,
+      data: { bookingId: booking.id, bookingCode: booking.bookingCode },
+    });
+
     return { RspCode: '00', Message: 'Confirm Success' };
   }
 
@@ -114,7 +128,7 @@ export class PaymentsService {
 
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
-      include: { payment: true },
+      include: { payment: true, tour: { select: { title: true } } },
     });
     if (!booking) throw new NotFoundException('Không tìm thấy đơn đặt tour');
     if (!booking.payment)
@@ -150,7 +164,9 @@ export class PaymentsService {
       this.logger.warn(
         `Hoàn tiền VNPay thất bại cho đơn ${booking.bookingCode}: ${result.responseCode} - ${result.message}`,
       );
-      throw new BadRequestException(`VNPay từ chối hoàn tiền: ${result.message}`);
+      throw new BadRequestException(
+        `VNPay từ chối hoàn tiền: ${result.message}`,
+      );
     }
 
     await this.prisma.$transaction([
@@ -167,5 +183,13 @@ export class PaymentsService {
         data: { paymentStatus: 'REFUNDED' },
       }),
     ]);
+
+    await this.notifications.create({
+      userId: booking.userId,
+      type: 'PAYMENT',
+      title: 'Hoàn tiền thành công',
+      message: `Đơn "${booking.tour.title}" (${booking.bookingCode}) đã được hoàn tiền ${formatVnd(Number(booking.payment.amount))}.`,
+      data: { bookingId: booking.id, bookingCode: booking.bookingCode },
+    });
   }
 }

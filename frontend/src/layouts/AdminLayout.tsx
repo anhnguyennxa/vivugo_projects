@@ -1,4 +1,4 @@
-import { BookOpen, Compass, LayoutDashboard, Layers, MessageSquare, Route, Tags, Ticket, Users } from 'lucide-react'
+import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageSquare, Route, Tags, Ticket, Users } from 'lucide-react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
 import { APP_NAME } from '@/constants/config'
@@ -13,6 +13,7 @@ const MENU = [
   { label: 'Danh mục', to: ROUTES.adminCategories, icon: Tags, end: false },
   { label: 'Đánh giá', to: ROUTES.adminReviews, icon: MessageSquare, end: false },
   { label: 'Người dùng', to: ROUTES.adminUsers, icon: Users, end: false },
+  { label: 'Thông báo', to: ROUTES.adminNotifications, icon: Bell, end: false },
   { label: 'Cẩm nang', to: ROUTES.adminBlog, icon: BookOpen, end: false },
   { label: 'Bộ sưu tập', to: ROUTES.adminCollections, icon: Layers, end: false },
 ]

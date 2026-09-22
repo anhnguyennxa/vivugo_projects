@@ -8,10 +8,21 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '../database/prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { VnpayService } from '../payments/vnpay.service';
 import type { RequestUser } from '../common/decorators/current-user.decorator';
 import type { CheckoutDto } from './dto/checkout.dto';
 import type { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
+
+// Nội dung thông báo khi admin đổi trạng thái đơn thủ công (xem updateStatus).
+const STATUS_UPDATE_MESSAGES: Record<
+  'CONFIRMED' | 'CANCELLED' | 'COMPLETED',
+  string
+> = {
+  CONFIRMED: 'đã được xác nhận',
+  CANCELLED: 'đã bị huỷ',
+  COMPLETED: 'đã hoàn thành',
+};
 
 const BOOKING_INCLUDE = {
   tour: { select: { id: true, title: true, slug: true, thumbnailUrl: true } },
@@ -56,6 +67,7 @@ export class BookingsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly vnpay: VnpayService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async checkout(userId: string, dto: CheckoutDto, ipAddr: string) {
@@ -180,6 +192,15 @@ export class BookingsService {
       data: { status: dto.status },
       include: BOOKING_INCLUDE,
     });
+
+    await this.notifications.create({
+      userId: updated.userId,
+      type: 'BOOKING_UPDATE',
+      title: `Đơn ${updated.bookingCode} ${STATUS_UPDATE_MESSAGES[dto.status]}`,
+      message: `Đơn đặt tour "${updated.tour.title}" của bạn ${STATUS_UPDATE_MESSAGES[dto.status]}.`,
+      data: { bookingId: updated.id, bookingCode: updated.bookingCode },
+    });
+
     return serializeBooking(updated);
   }
 

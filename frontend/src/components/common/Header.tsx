@@ -1,7 +1,8 @@
-import { Bell, Compass, Heart, LayoutDashboard, Ticket, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
+import { Compass, Heart, LayoutDashboard, Ticket, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { NotificationBell } from '@/components/common/NotificationBell'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
 import { APP_NAME } from '@/constants/config'
@@ -87,9 +88,7 @@ export function Header() {
 
           {user ? (
             <>
-              <Button variant="ghost" size="icon" aria-label="Thông báo" className="hidden sm:inline-flex">
-                <Bell />
-              </Button>
+              <NotificationBell />
               <div className="relative" ref={menuRef}>
                 <button
                   type="button"

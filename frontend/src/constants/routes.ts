@@ -35,6 +35,7 @@ export const ROUTES = {
   adminCategories: '/admin/categories',
   adminReviews: '/admin/reviews',
   adminUsers: '/admin/users',
+  adminNotifications: '/admin/notifications',
   adminBlog: '/admin/blog',
   adminBlogNew: '/admin/blog/new',
   adminBlogEdit: (id: string) => `/admin/blog/${id}`,
