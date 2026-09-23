@@ -42,6 +42,11 @@ npx prisma studio        # xem dữ liệu trực quan
 - `npm audit` báo 1 lỗ hổng high (`deepmerge-ts` qua `@prisma/config`) — chỉ ảnh hưởng CLI dev-time của Prisma khi merge config lồng sâu, không chạm tới `@prisma/client` lúc runtime. Theo dõi bản vá từ Prisma, chưa cần hành động.
 - `prisma init` tự sinh `.agents/skills`, `.claude/skills`, `skills-lock.json` trong `backend/` — tài liệu tham khảo chính thức của Prisma cho AI agent, có thể giữ lại hoặc xoá tuỳ ý.
 
+## Ghi chú bảo mật
+
+- **Access token chỉ lưu trong bộ nhớ (Zustand store), không ghi vào `localStorage`/`sessionStorage`.** Đây là lựa chọn chủ đích: mã độc chèn qua lỗ hổng XSS không thể đọc token từ storage bền như thường thấy ở các app lưu JWT vào `localStorage`. Refresh token đi kèm nằm trong cookie `httpOnly` (JS không đọc được), gửi kèm mỗi request nhờ `withCredentials: true`.
+- Đánh đổi thật sự **không phải** "mất phiên khi tải lại trang" — `App.tsx` tự gọi `POST /auth/refresh` ngay khi khởi động app, dùng cookie `httpOnly` để lấy access token mới trong lúc hiển thị trạng thái "Đang tải…" (`isHydrating`), nên trải nghiệm người dùng liền mạch. Đánh đổi thật sự là: access token sống ngắn (mặc định 15 phút, `JWT_ACCESS_EXPIRES_IN`) nên toàn bộ phiên đăng nhập phụ thuộc vào cookie `httpOnly` còn hiệu lực (mặc định 7 ngày, `JWT_REFRESH_EXPIRES_IN`) — mất cookie (xoá cookie thủ công, hết hạn, đổi trình duyệt/thiết bị) thì mới phải đăng nhập lại thật sự.
+
 ## Trạng thái roadmap
 
 - [x] Giai đoạn 1 — Thiết kế hệ thống
