@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -63,6 +64,7 @@ export class ChatController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('ChatConversation', 'ADMIN_REPLY')
   @Post('admin/conversations/:id/messages')
   async sendAdminMessage(
     @CurrentUser() admin: RequestUser,
@@ -74,6 +76,7 @@ export class ChatController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('ChatConversation', 'CLOSE')
   @Patch('admin/conversations/:id/close')
   async closeConversation(@Param('id') id: string) {
     await this.chatService.closeConversation(id);

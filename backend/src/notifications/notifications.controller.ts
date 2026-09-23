@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -55,6 +56,7 @@ export class NotificationsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Notification', 'BROADCAST')
   @Post('broadcast')
   async broadcast(@Body() dto: BroadcastNotificationDto) {
     const data = await this.notificationsService.broadcast(dto);

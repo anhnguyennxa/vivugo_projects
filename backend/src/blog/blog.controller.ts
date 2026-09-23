@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -66,6 +67,7 @@ export class BlogController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('BlogPost', 'CREATE')
   @Post()
   async create(
     @Body() dto: CreateBlogPostDto,
@@ -76,6 +78,7 @@ export class BlogController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('BlogPost', 'UPDATE')
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateBlogPostDto) {
     const data = await this.blogService.update(id, dto);
@@ -83,6 +86,7 @@ export class BlogController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('BlogPost', 'DELETE')
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string) {

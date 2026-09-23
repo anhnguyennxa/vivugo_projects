@@ -1,4 +1,4 @@
-import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageCircle, MessageSquare, Route, Tags, Ticket, Users } from 'lucide-react'
+import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageCircle, MessageSquare, Route, ScrollText, Tags, Ticket, Users } from 'lucide-react'
 import { useEffect } from 'react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
@@ -19,6 +19,7 @@ const MENU = [
   { label: 'Chat hỗ trợ', to: ROUTES.adminChat, icon: MessageCircle, end: false },
   { label: 'Cẩm nang', to: ROUTES.adminBlog, icon: BookOpen, end: false },
   { label: 'Bộ sưu tập', to: ROUTES.adminCollections, icon: Layers, end: false },
+  { label: 'Nhật ký hoạt động', to: ROUTES.adminAuditLogs, icon: ScrollText, end: false },
 ]
 
 export function AdminLayout() {

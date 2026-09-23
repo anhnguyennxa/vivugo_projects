@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../../generated/prisma/enums';
@@ -36,6 +37,7 @@ export class CategoriesController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Category', 'CREATE')
   @Post()
   async create(@Body() dto: CreateCategoryDto) {
     const data = await this.categoriesService.create(dto);
@@ -43,6 +45,7 @@ export class CategoriesController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Category', 'UPDATE')
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateCategoryDto) {
     const data = await this.categoriesService.update(id, dto);
@@ -50,6 +53,7 @@ export class CategoriesController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Category', 'DELETE')
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string) {

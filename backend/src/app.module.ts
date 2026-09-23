@@ -15,6 +15,7 @@ import { CollectionsModule } from './collections/collections.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
+import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { validationExceptionFactory } from './common/pipes/validation-exception-factory';
 import { validateEnv } from './config/env.validation';
@@ -63,6 +64,7 @@ import { UsersModule } from './users/users.module';
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: AuditLogInterceptor },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
     {
       provide: APP_PIPE,

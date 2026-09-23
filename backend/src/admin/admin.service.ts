@@ -10,6 +10,7 @@ import type { QueryAdminBookingsDto } from './dto/query-admin-bookings.dto';
 import type { QueryAdminReviewsDto } from './dto/query-admin-reviews.dto';
 import type { QueryAdminToursDto } from './dto/query-admin-tours.dto';
 import type { QueryAdminUsersDto } from './dto/query-admin-users.dto';
+import type { QueryAuditLogsDto } from './dto/query-audit-logs.dto';
 import type { UpdateAdminUserDto } from './dto/update-admin-user.dto';
 
 const REVENUE_MONTHS = 6;
@@ -381,5 +382,38 @@ export class AdminService {
     ]);
 
     return updated;
+  }
+
+  async findAuditLogs(query: QueryAuditLogsDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+
+    const where: Prisma.AuditLogWhereInput = {
+      ...(query.entity && { entity: query.entity }),
+      ...(query.action && { action: query.action }),
+      ...(query.search && {
+        user: {
+          OR: [
+            { fullName: { contains: query.search, mode: 'insensitive' } },
+            { email: { contains: query.search, mode: 'insensitive' } },
+          ],
+        },
+      }),
+    };
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.auditLog.findMany({
+        where,
+        include: {
+          user: { select: { id: true, fullName: true, email: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.auditLog.count({ where }),
+    ]);
+
+    return { items, page, limit, total };
   }
 }

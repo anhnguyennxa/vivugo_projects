@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -48,6 +49,7 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Tour', 'CREATE')
   @Post()
   async create(@Body() dto: CreateTourDto, @CurrentUser() user: RequestUser) {
     const data = await this.toursService.create(dto, user.id);
@@ -55,6 +57,7 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Tour', 'UPDATE')
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateTourDto) {
     const data = await this.toursService.update(id, dto);
@@ -62,6 +65,7 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Tour', 'DELETE')
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string) {
@@ -70,6 +74,7 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Tour', 'DELETE_PERMANENT')
   @HttpCode(HttpStatus.OK)
   @Delete(':id/permanent')
   async removePermanently(@Param('id') id: string) {
@@ -78,6 +83,7 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Tour', 'ADD_IMAGES')
   @Post(':id/images')
   async addImages(@Param('id') id: string, @Body() dto: AddTourImagesDto) {
     const data = await this.toursService.addImages(id, dto);
@@ -85,6 +91,7 @@ export class ToursController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('TourImage', 'DELETE', 'imageId')
   @HttpCode(HttpStatus.OK)
   @Delete(':id/images/:imageId')
   async removeImage(

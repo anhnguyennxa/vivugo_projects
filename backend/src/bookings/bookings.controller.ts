@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -53,6 +54,7 @@ export class BookingsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Booking', 'UPDATE_STATUS')
   @Patch(':id/status')
   async updateStatus(
     @Param('id') id: string,

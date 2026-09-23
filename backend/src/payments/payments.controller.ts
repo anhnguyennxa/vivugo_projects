@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import type { Request } from 'express';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -32,6 +33,7 @@ export class PaymentsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Payment', 'REFUND', 'bookingId')
   @Post(':bookingId/refund')
   async refund(
     @Param('bookingId') bookingId: string,

@@ -7,6 +7,7 @@ import type {
   AdminReview,
   AdminTourDetail,
   AdminUser,
+  AuditLog,
   ReviewStatus,
   TourStatus,
 } from '@/types/admin'
@@ -204,4 +205,22 @@ export async function updateAdminUser(
   input: { isActive?: boolean; role?: AdminUser['role'] },
 ): Promise<void> {
   await apiClient.patch(`/admin/users/${id}`, input)
+}
+
+export interface AuditLogsQuery {
+  page?: number
+  limit?: number
+  entity?: string
+  action?: string
+  search?: string
+}
+
+export async function getAuditLogs(params: AuditLogsQuery): Promise<Paginated<AuditLog>> {
+  const { data } = await apiClient.get<ApiSuccess<AuditLog[]>>('/admin/audit-logs', { params })
+  return {
+    items: data.data,
+    page: data.meta?.page ?? 1,
+    limit: data.meta?.limit ?? 20,
+    total: data.meta?.total ?? data.data.length,
+  }
 }

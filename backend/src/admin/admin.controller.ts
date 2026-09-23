@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 
 import { Role } from '../../generated/prisma/enums';
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -11,6 +12,7 @@ import { QueryAdminBookingsDto } from './dto/query-admin-bookings.dto';
 import { QueryAdminReviewsDto } from './dto/query-admin-reviews.dto';
 import { QueryAdminToursDto } from './dto/query-admin-tours.dto';
 import { QueryAdminUsersDto } from './dto/query-admin-users.dto';
+import { QueryAuditLogsDto } from './dto/query-audit-logs.dto';
 import { UpdateAdminUserDto } from './dto/update-admin-user.dto';
 
 @Roles(Role.ADMIN)
@@ -74,6 +76,7 @@ export class AdminController {
     };
   }
 
+  @Audit('User', 'UPDATE')
   @Patch('users/:id')
   async updateUser(
     @CurrentUser() actor: RequestUser,
@@ -82,5 +85,16 @@ export class AdminController {
   ) {
     const data = await this.adminService.updateUser(actor.id, id, dto);
     return { message: 'Cập nhật người dùng thành công', data };
+  }
+
+  @Get('audit-logs')
+  async auditLogs(@Query() query: QueryAuditLogsDto) {
+    const { items, page, limit, total } =
+      await this.adminService.findAuditLogs(query);
+    return {
+      message: 'Lấy nhật ký hoạt động thành công',
+      data: items,
+      meta: { page, limit, total },
+    };
   }
 }

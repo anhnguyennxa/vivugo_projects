@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../../generated/prisma/enums';
@@ -29,6 +30,7 @@ export class DeparturesController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Departure', 'CREATE')
   @Post('tours/:tourId/departures')
   async create(
     @Param('tourId') tourId: string,
@@ -39,6 +41,7 @@ export class DeparturesController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Departure', 'UPDATE')
   @Patch('departures/:id')
   async update(@Param('id') id: string, @Body() dto: UpdateDepartureDto) {
     const data = await this.departuresService.update(id, dto);
@@ -46,6 +49,7 @@ export class DeparturesController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Departure', 'DELETE')
   @HttpCode(HttpStatus.OK)
   @Delete('departures/:id')
   async remove(@Param('id') id: string) {

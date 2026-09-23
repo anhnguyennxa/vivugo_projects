@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -48,6 +49,7 @@ export class ReviewsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Review', 'MODERATE')
   @Patch('reviews/:id/moderate')
   async moderate(@Param('id') id: string, @Body() dto: ModerateReviewDto) {
     const data = await this.reviewsService.moderate(id, dto);

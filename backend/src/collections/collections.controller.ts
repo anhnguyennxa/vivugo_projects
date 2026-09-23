@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Audit } from '../common/decorators/audit.decorator';
 import {
   CurrentUser,
   type RequestUser,
@@ -62,6 +63,7 @@ export class CollectionsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Collection', 'CREATE')
   @Post()
   async create(
     @Body() dto: CreateCollectionDto,
@@ -72,6 +74,7 @@ export class CollectionsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Collection', 'UPDATE')
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateCollectionDto) {
     const data = await this.collectionsService.update(id, dto);
@@ -79,6 +82,7 @@ export class CollectionsController {
   }
 
   @Roles(Role.ADMIN)
+  @Audit('Collection', 'DELETE')
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string) {

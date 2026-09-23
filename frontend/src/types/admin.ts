@@ -111,3 +111,14 @@ export interface AdminUser {
   createdAt: string
   _count: { bookings: number }
 }
+
+export interface AuditLog {
+  id: string
+  userId: string | null
+  action: string
+  entity: string
+  entityId: string
+  ipAddress: string | null
+  createdAt: string
+  user: { id: string; fullName: string; email: string } | null
+}
