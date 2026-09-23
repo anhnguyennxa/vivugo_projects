@@ -52,5 +52,5 @@ npx prisma studio        # xem dữ liệu trực quan
 - [x] Giai đoạn 1 — Thiết kế hệ thống
 - [x] Giai đoạn 2 — Khởi tạo nền tảng (Frontend, Backend, kết nối DB)
 - [x] Giai đoạn 3 — Nghiệp vụ cốt lõi (Auth, Tours/Booking/Payment VNPay, Reviews/Favorites, Blog, Bộ sưu tập, User/Admin Dashboard, Notifications, Chat real-time + chào tự động, Audit log)
-- [ ] Giai đoạn 4 — Chất lượng & bảo mật (unit test, security review — code-splitting bundle Admin đã làm)
+- [x] Giai đoạn 4 — Chất lượng & bảo mật (code-splitting bundle Admin, unit test cho VnpayService/promo.util/AuditLogInterceptor, security review toàn bộ diff — không phát hiện lỗ hổng)
 - [ ] Giai đoạn 5 — Vận hành (Docker, CI/CD, deploy production, tài khoản VNPay thật)
