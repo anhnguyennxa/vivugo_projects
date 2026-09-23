@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
+import { useChatStore } from '@/stores/chat'
 import { useNotificationsStore } from '@/stores/notifications'
 import type { AppNotification, NotificationType } from '@/types/notification'
 import { formatRelativeTime } from '@/utils/format'
@@ -37,6 +38,10 @@ export function NotificationBell() {
   function handleClickItem(notification: AppNotification) {
     void markAsRead(notification.id)
     setOpen(false)
+    if (notification.type === 'CHAT') {
+      void useChatStore.getState().openPanel()
+      return
+    }
     if (notification.data?.bookingCode) {
       navigate(ROUTES.accountBookingDetail(notification.data.bookingCode))
     }

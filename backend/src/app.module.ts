@@ -10,6 +10,7 @@ import { BlogModule } from './blog/blog.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ChatModule } from './chat/chat.module';
 import { CollectionsModule } from './collections/collections.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -46,6 +47,7 @@ import { UsersModule } from './users/users.module';
     DeparturesModule,
     CartModule,
     NotificationsModule,
+    ChatModule,
     BookingsModule,
     PaymentsModule,
     ReviewsModule,

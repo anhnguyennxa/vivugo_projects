@@ -10,6 +10,10 @@ import { Server, Socket } from 'socket.io';
 
 import { PrismaService } from '../database/prisma/prisma.service';
 
+// Room chung để mọi admin đều nhận được sự kiện realtime (tin nhắn chat mới từ
+// bất kỳ khách nào) — khớp thiết kế "admin nào cũng thấy và trả lời được".
+const ADMIN_ROOM = 'admins';
+
 @WebSocketGateway({
   path: '/ws',
   cors: {
@@ -17,13 +21,13 @@ import { PrismaService } from '../database/prisma/prisma.service';
     credentials: true,
   },
 })
-export class NotificationsGateway
+export class RealtimeGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
   server: Server;
 
-  private readonly logger = new Logger(NotificationsGateway.name);
+  private readonly logger = new Logger(RealtimeGateway.name);
 
   constructor(
     private readonly jwt: JwtService,
@@ -47,6 +51,9 @@ export class NotificationsGateway
       }
 
       await client.join(`user:${user.id}`);
+      if (user.role === 'ADMIN') {
+        await client.join(ADMIN_ROOM);
+      }
     } catch (err) {
       this.logger.warn(`Kết nối WS bị từ chối: ${(err as Error).message}`);
       client.disconnect(true);
@@ -57,5 +64,9 @@ export class NotificationsGateway
 
   emitToUser(userId: string, event: string, payload: unknown) {
     this.server.to(`user:${userId}`).emit(event, payload);
+  }
+
+  emitToAdmins(event: string, payload: unknown) {
+    this.server.to(ADMIN_ROOM).emit(event, payload);
   }
 }

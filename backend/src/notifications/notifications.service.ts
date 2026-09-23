@@ -9,7 +9,7 @@ import type { NotificationType } from '../../generated/prisma/enums';
 import { PrismaService } from '../database/prisma/prisma.service';
 import type { BroadcastNotificationDto } from './dto/broadcast-notification.dto';
 import type { QueryNotificationsDto } from './dto/query-notifications.dto';
-import { NotificationsGateway } from './notifications.gateway';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 
 interface CreateNotificationInput {
   userId: string;
@@ -25,7 +25,7 @@ const NOTIFICATION_EVENT = 'notification:new';
 export class NotificationsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly gateway: NotificationsGateway,
+    private readonly gateway: RealtimeGateway,
   ) {}
 
   async create(input: CreateNotificationInput) {

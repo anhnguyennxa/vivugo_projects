@@ -9,6 +9,7 @@ import { AccountPassword } from '@/pages/account/AccountPassword'
 import { AccountProfile } from '@/pages/account/AccountProfile'
 import { AdminBookings } from '@/pages/admin/AdminBookings'
 import { AdminCategories } from '@/pages/admin/AdminCategories'
+import { AdminChat } from '@/pages/admin/AdminChat'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { AdminNotifications } from '@/pages/admin/AdminNotifications'
 import { AdminTourForm } from '@/pages/admin/AdminTourForm'
@@ -85,6 +86,7 @@ export const router = createBrowserRouter([
       { path: '/admin/reviews', element: <AdminReviews /> },
       { path: '/admin/users', element: <AdminUsers /> },
       { path: '/admin/notifications', element: <AdminNotifications /> },
+      { path: '/admin/chat', element: <AdminChat /> },
       { path: '/admin/blog', element: <BlogAdminList /> },
       { path: '/admin/blog/new', element: <BlogAdminForm /> },
       { path: '/admin/blog/:id', element: <BlogAdminForm /> },

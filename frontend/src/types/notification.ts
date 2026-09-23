@@ -6,7 +6,7 @@ export interface AppNotification {
   type: NotificationType
   title: string
   message: string
-  data: { bookingId?: string; bookingCode?: string } | null
+  data: { bookingId?: string; bookingCode?: string; conversationId?: string } | null
   isRead: boolean
   createdAt: string
 }

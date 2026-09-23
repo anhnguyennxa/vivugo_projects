@@ -1,9 +1,11 @@
-import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageSquare, Route, Tags, Ticket, Users } from 'lucide-react'
+import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageCircle, MessageSquare, Route, Tags, Ticket, Users } from 'lucide-react'
+import { useEffect } from 'react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
 import { APP_NAME } from '@/constants/config'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/utils'
+import { useAdminChatStore } from '@/stores/adminChat'
 import { useAuthStore } from '@/stores/auth'
 
 const MENU = [
@@ -14,6 +16,7 @@ const MENU = [
   { label: 'Đánh giá', to: ROUTES.adminReviews, icon: MessageSquare, end: false },
   { label: 'Người dùng', to: ROUTES.adminUsers, icon: Users, end: false },
   { label: 'Thông báo', to: ROUTES.adminNotifications, icon: Bell, end: false },
+  { label: 'Chat hỗ trợ', to: ROUTES.adminChat, icon: MessageCircle, end: false },
   { label: 'Cẩm nang', to: ROUTES.adminBlog, icon: BookOpen, end: false },
   { label: 'Bộ sưu tập', to: ROUTES.adminCollections, icon: Layers, end: false },
 ]
@@ -21,6 +24,11 @@ const MENU = [
 export function AdminLayout() {
   const user = useAuthStore((s) => s.user)
   const isHydrating = useAuthStore((s) => s.isHydrating)
+  const chatUnreadCount = useAdminChatStore((s) => s.unreadCount)
+
+  useEffect(() => {
+    if (user?.role === 'ADMIN') void useAdminChatStore.getState().refresh()
+  }, [user?.role])
 
   if (isHydrating) {
     return <div className="flex min-h-screen items-center justify-center text-sm text-text-muted">Đang tải…</div>
@@ -64,6 +72,11 @@ export function AdminLayout() {
               }
             >
               <item.icon className="size-4" /> {item.label}
+              {item.to === ROUTES.adminChat && chatUnreadCount > 0 && (
+                <span className="ml-auto flex size-4.5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
+                  {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

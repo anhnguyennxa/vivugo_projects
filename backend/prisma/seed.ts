@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as argon2 from 'argon2';
+import { randomUUID } from 'node:crypto';
 
 import { PrismaClient } from '../generated/prisma/client';
 
@@ -24,6 +25,19 @@ async function main() {
       email: 'admin@vivugo.vn',
       passwordHash: adminPasswordHash,
       fullName: 'VivuGo Admin',
+      role: 'ADMIN',
+    },
+  });
+
+  // Tài khoản hệ thống đứng tên cho tin nhắn chào tự động trong chat (xem
+  // ChatService.maybeSendAutoReply) — không dùng để đăng nhập.
+  await prisma.user.upsert({
+    where: { email: 'bot@vivugo.vn' },
+    update: {},
+    create: {
+      email: 'bot@vivugo.vn',
+      passwordHash: await argon2.hash(randomUUID()),
+      fullName: 'VivuGo',
       role: 'ADMIN',
     },
   });

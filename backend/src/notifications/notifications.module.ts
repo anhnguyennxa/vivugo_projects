@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 
+import { RealtimeModule } from '../realtime/realtime.module';
 import { NotificationsController } from './notifications.controller';
-import { NotificationsGateway } from './notifications.gateway';
 import { NotificationsService } from './notifications.service';
 
 @Module({
-  imports: [JwtModule.register({})],
+  imports: [RealtimeModule],
   controllers: [NotificationsController],
-  providers: [NotificationsGateway, NotificationsService],
+  providers: [NotificationsService],
   exports: [NotificationsService],
 })
 export class NotificationsModule {}
