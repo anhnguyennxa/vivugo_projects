@@ -1,0 +1,15 @@
+node_modules
+dist
+generated
+coverage
+.env
+.env.*
+!.env.example
+*.log
+.git
+.claude
+.agents
+.windsurf
+skills-lock.json
+Dockerfile
+.dockerignore

@@ -26,6 +26,35 @@ cd frontend
 npm run dev             # http://localhost:5173, proxy /api -> :3000
 ```
 
+## Chạy bằng Docker
+
+Cần Docker Desktop (kèm Docker Compose). Chạy toàn bộ 3 thành phần (Postgres, backend, frontend) cùng lúc:
+
+```bash
+cp backend/.env.example backend/.env   # điền JWT secrets thật (DATABASE_URL sẽ bị compose ghi đè, không cần sửa)
+docker compose up --build              # lần đầu, hoặc sau khi đổi Dockerfile/dependencies
+
+# Lần đầu tiên (hoặc sau khi thêm migration mới), áp migration vào DB trong container:
+docker compose run --rm backend-migrate
+
+# Tuỳ chọn: nạp dữ liệu mẫu (admin@vivugo.vn / Admin123!23, tour, cẩm nang, bộ sưu tập)
+docker compose run --rm backend-migrate npx tsx prisma/seed.ts
+```
+
+Trước khi chạy, tắt các dev server local đang giữ port 3000/5173 (và lưu ý Postgres cài sẵn trên máy cũng dùng port 5432 — nếu bị trùng, đổi cổng host trong `docker-compose.yml`, VD `'5433:5432'`).
+
+- Frontend: http://localhost:5173 (nginx, tự proxy `/api` và `/ws` sang backend — không cần sửa code khi chuyển từ Vite dev sang Docker)
+- Backend: http://localhost:3000/api
+- Postgres: `localhost:5432`, user/pass/db mặc định đều là `vivugo` (đổi qua biến `POSTGRES_PASSWORD` nếu cần)
+
+Lưu ý: `backend/Dockerfile` build 2 giai đoạn — `builder` cài `devDependencies`, chạy `prisma generate` (thư mục `generated/` không commit vào git, xem `.gitignore`) rồi `nest build`; `runner` chỉ cài dependency production. Entry point thật sau khi build là `dist/src/main.js` (không phải `dist/main.js`) vì `tsconfig` không set `rootDir` riêng nên `tsc` gộp cả `src/`, `generated/`, `prisma.config.ts` vào chung 1 cây dưới `dist/` — `npm run start:prod` và `Dockerfile` đều đã trỏ đúng đường dẫn này.
+
+Dừng và xoá toàn bộ (kể cả volume Postgres):
+
+```bash
+docker compose down -v
+```
+
 ## Database
 
 PostgreSQL 17 chạy local. Role/DB riêng `vivugo` (không dùng chung với superuser `postgres`). Schema tại `backend/prisma/schema.prisma`, migration đầu tiên `20260825032943_init` đã áp dụng.

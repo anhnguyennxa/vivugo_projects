@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vivugo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vivugo}
+      POSTGRES_DB: vivugo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vivugo']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Chạy 1 lần khi cần áp migration mới, không tự khởi động cùng `docker compose up`:
+  #   docker compose run --rm backend-migrate
+  backend-migrate:
+    build:
+      context: ./backend
+      target: builder
+    command: npx prisma migrate deploy
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://vivugo:${POSTGRES_PASSWORD:-vivugo}@postgres:5432/vivugo?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles: ['tools']
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://vivugo:${POSTGRES_PASSWORD:-vivugo}@postgres:5432/vivugo?schema=public
+      CORS_ORIGIN: http://localhost:5173
+      FRONTEND_URL: http://localhost:5173
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '3000:3000'
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '5173:80'
+
+volumes:
+  postgres_data:
