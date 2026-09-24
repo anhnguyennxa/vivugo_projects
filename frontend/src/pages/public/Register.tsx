@@ -50,14 +50,22 @@ export function Register() {
 
     setSubmitting(true)
     try {
-      const { user, accessToken } = await authService.register({
+      const { accessToken } = await authService.register({
         email,
         password,
         fullName: fullName.trim(),
         phone: phone.trim() || undefined,
       })
-      useAuthStore.getState().setSession(user, accessToken)
-      navigate(ROUTES.home)
+      // Backend đã đặt sẵn cookie refresh khi đăng ký. Không đăng xuất thì lần tải trang
+      // tiếp theo App.tsx sẽ tự refresh và đăng nhập luôn — nên thu hồi token/xoá cookie
+      // ngay. Chỉ set accessToken (không set user) để không kích hoạt các side effect sau đăng nhập.
+      useAuthStore.setState({ accessToken })
+      try {
+        await useAuthStore.getState().logout()
+      } catch {
+        // đăng xuất thất bại (mạng...) vẫn chuyển sang trang đăng nhập; store đã được dọn ở finally
+      }
+      navigate(ROUTES.login, { state: { registeredEmail: email } })
     } catch (err) {
       setError(getApiErrorMessage(err) ?? 'Đăng ký thất bại, vui lòng thử lại')
     } finally {

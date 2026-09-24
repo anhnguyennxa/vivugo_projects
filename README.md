@@ -71,6 +71,7 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod run --rm backend-
 
 Các lần sau chỉ cần `./deploy.sh` (kéo code mới, build lại, migrate, khởi động lại).
 
+- Chưa có tên miền riêng: dùng DuckDNS (duckdns.org) — tạo sub domain, trỏ về IP VPS, rồi đặt `DOMAIN=<tên>.duckdns.org` trong `.env.prod`. Cổng 80 phải mở để Let's Encrypt cấp chứng chỉ. VNPay thật nên dùng tên miền riêng.
 - Chỉ Caddy mở cổng ra ngoài; Postgres và backend chỉ nằm trong mạng nội bộ Docker. `.env.prod` và `backend/.env` không bao giờ được commit.
 - `TRUST_PROXY=1` (đã đặt trong compose) là bắt buộc phía sau Caddy: nếu thiếu, `request.ip` là IP proxy nên audit log/IP gửi VNPay sai và rate limit gộp mọi người dùng làm một.
 - IPN của VNPay thật phải trỏ về `https://<DOMAIN>/api/payments/vnpay/callback`; chuyển `PAY_URL`/`REFUND_API_URL` trong `backend/src/payments/vnpay.service.ts` từ sandbox sang endpoint production khi có merchant thật.

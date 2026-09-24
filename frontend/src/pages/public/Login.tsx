@@ -1,6 +1,6 @@
 import { Compass, Eye, EyeOff, LogIn } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
@@ -13,7 +13,9 @@ export function Login() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const next = searchParams.get('next')
-  const [email, setEmail] = useState('')
+  // Trang Đăng ký chuyển sang đây kèm email vừa tạo để điền sẵn.
+  const registeredEmail = (useLocation().state as { registeredEmail?: string } | null)?.registeredEmail
+  const [email, setEmail] = useState(registeredEmail ?? '')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -56,6 +58,11 @@ export function Login() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-sm">
+          {registeredEmail && !error && (
+            <p className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">
+              Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.
+            </p>
+          )}
           {error && (
             <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>
           )}

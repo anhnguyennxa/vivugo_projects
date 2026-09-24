@@ -40,8 +40,8 @@ services:
       - ./backend/.env
     environment:
       DATABASE_URL: postgresql://vivugo:${POSTGRES_PASSWORD:-vivugo}@postgres:5432/vivugo?schema=public
-      CORS_ORIGIN: http://localhost:5173
-      FRONTEND_URL: http://localhost:5173
+      CORS_ORIGIN: ${PUBLIC_URL:-http://localhost:5173}
+      FRONTEND_URL: ${PUBLIC_URL:-http://localhost:5173}
     depends_on:
       postgres:
         condition: service_healthy
