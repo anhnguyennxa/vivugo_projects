@@ -1,0 +1,4 @@
+# Cấu hình/secret production trên VPS — tuyệt đối không commit
+.env.prod
+.env.prod.*
+!.env.prod.example

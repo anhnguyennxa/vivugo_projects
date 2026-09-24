@@ -55,6 +55,27 @@ Dừng và xoá toàn bộ (kể cả volume Postgres):
 docker compose down -v
 ```
 
+## Deploy production (VPS Ubuntu + Docker Compose)
+
+Yêu cầu: 1 VPS Ubuntu có Docker + Docker Compose, 1 tên miền đã trỏ bản ghi `A` về IP VPS, mở cổng 80/443. Caddy tự xin và gia hạn chứng chỉ HTTPS (Let's Encrypt).
+
+```bash
+git clone https://github.com/anhnguyennxa/vivugo_projects.git && cd vivugo_projects
+
+cp .env.prod.example .env.prod          # điền DOMAIN và POSTGRES_PASSWORD (openssl rand -base64 24)
+cp backend/.env.example backend/.env    # điền JWT secret thật, VNPay/Cloudinary/SMTP thật (DATABASE_URL, CORS_ORIGIN... do compose ghi đè)
+
+chmod +x deploy.sh && ./deploy.sh       # build, áp migration, khởi động
+docker compose -f docker-compose.prod.yml --env-file .env.prod run --rm backend-migrate npx tsx prisma/seed.ts   # lần đầu, tuỳ chọn: tạo admin + dữ liệu mẫu (đổi mật khẩu admin ngay sau đó)
+```
+
+Các lần sau chỉ cần `./deploy.sh` (kéo code mới, build lại, migrate, khởi động lại).
+
+- Chỉ Caddy mở cổng ra ngoài; Postgres và backend chỉ nằm trong mạng nội bộ Docker. `.env.prod` và `backend/.env` không bao giờ được commit.
+- `TRUST_PROXY=1` (đã đặt trong compose) là bắt buộc phía sau Caddy: nếu thiếu, `request.ip` là IP proxy nên audit log/IP gửi VNPay sai và rate limit gộp mọi người dùng làm một.
+- IPN của VNPay thật phải trỏ về `https://<DOMAIN>/api/payments/vnpay/callback`; chuyển `PAY_URL`/`REFUND_API_URL` trong `backend/src/payments/vnpay.service.ts` từ sandbox sang endpoint production khi có merchant thật.
+- Sao lưu: `docker compose -f docker-compose.prod.yml --env-file .env.prod exec postgres pg_dump -U vivugo vivugo > backup.sql`.
+
 ## Database
 
 PostgreSQL 17 chạy local. Role/DB riêng `vivugo` (không dùng chung với superuser `postgres`). Schema tại `backend/prisma/schema.prisma`, migration đầu tiên `20260825032943_init` đã áp dụng.

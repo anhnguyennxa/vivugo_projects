@@ -1,0 +1,12 @@
+# Caddy tự xin/gia hạn chứng chỉ HTTPS (Let's Encrypt) cho {$DOMAIN}.
+# Chỉ 1 tầng proxy đứng trước backend => đặt TRUST_PROXY=1 trong backend/.env.
+{$DOMAIN} {
+	encode gzip zstd
+
+	# API + Socket.IO đi thẳng vào backend (WebSocket Caddy tự nâng cấp).
+	@backend path /api/* /ws/*
+	reverse_proxy @backend backend:3000
+
+	# Còn lại là SPA tĩnh do nginx trong container frontend phục vụ.
+	reverse_proxy frontend:80
+}

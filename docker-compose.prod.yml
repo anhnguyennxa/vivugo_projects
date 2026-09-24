@@ -1,0 +1,75 @@
+# Production trên VPS:  docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+# Khác bản dev: chỉ Caddy mở cổng ra ngoài (80/443), Postgres/backend không lộ cổng,
+# mật khẩu DB bắt buộc đặt, dữ liệu Postgres và chứng chỉ HTTPS nằm trong volume.
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vivugo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Cần đặt POSTGRES_PASSWORD trong .env.prod}
+      POSTGRES_DB: vivugo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vivugo']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Chạy 1 lần sau mỗi lần deploy có migration mới (deploy.sh đã gọi sẵn).
+  backend-migrate:
+    build:
+      context: ./backend
+      target: builder
+    command: npx prisma migrate deploy
+    environment:
+      DATABASE_URL: postgresql://vivugo:${POSTGRES_PASSWORD}@postgres:5432/vivugo?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles: ['tools']
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://vivugo:${POSTGRES_PASSWORD}@postgres:5432/vivugo?schema=public
+      CORS_ORIGIN: https://${DOMAIN:?Cần đặt DOMAIN trong .env.prod}
+      FRONTEND_URL: https://${DOMAIN}
+      TRUST_PROXY: '1'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
