@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: vivugo
+          POSTGRES_PASSWORD: vivugo
+          POSTGRES_DB: vivugo
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U vivugo"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://vivugo:vivugo@localhost:5432/vivugo?schema=public
+      # Secret giả chỉ dùng cho CI (tối thiểu 32 ký tự theo env.validation.ts).
+      JWT_ACCESS_SECRET: ci-access-secret-0123456789abcdef0123456789
+      JWT_REFRESH_SECRET: ci-refresh-secret-0123456789abcdef012345678
+      CORS_ORIGIN: http://localhost:5173
+      FRONTEND_URL: http://localhost:5173
+      # Giá trị giả: test e2e tự ký IPN bằng chính secret này nên không cần merchant thật.
+      VNPAY_TMN_CODE: CITMNCODE
+      VNPAY_HASH_SECRET: ci-vnpay-hash-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      # generated/prisma không commit vào git nên phải sinh lại trước khi typecheck/test.
+      - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Build
+        run: npm run build
+      - name: Unit test
+        run: npm test
+      - name: E2E test
+        # --runInBand: các suite dùng chung 1 DB, chạy song song từng gây flaky ngẫu nhiên.
+        run: npm run test:e2e -- --runInBand
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build ./backend
+      - name: Build frontend image
+        run: docker build ./frontend
