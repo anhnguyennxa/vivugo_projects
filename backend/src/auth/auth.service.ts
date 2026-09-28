@@ -96,10 +96,16 @@ export class AuthService {
   }
 
   private cookieOptions() {
+    // 'lax' (mặc định): đủ dùng khi frontend/backend cùng origin (proxy nginx/Caddy,
+    // như bản Docker/VPS). Khi tách domain (VD frontend Vercel, backend Render),
+    // trình duyệt không gửi cookie 'lax' kèm request cross-site nên /auth/refresh sẽ
+    // luôn thất bại — đặt COOKIE_SAME_SITE=none trong trường hợp đó. Cookie 'none'
+    // bắt buộc phải secure, không phụ thuộc NODE_ENV.
+    const sameSite = (process.env.COOKIE_SAME_SITE ?? 'lax') as 'lax' | 'none';
     return {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const,
+      secure: sameSite === 'none' || process.env.NODE_ENV === 'production',
+      sameSite,
       path: '/api/auth',
       maxAge: parseDurationMs(process.env.JWT_REFRESH_EXPIRES_IN ?? '7d'),
     };

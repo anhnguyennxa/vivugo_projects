@@ -1,0 +1,68 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Tạo mới: Render dashboard > New > Blueprint > trỏ vào repo này.
+services:
+  - type: web
+    name: vivugo-backend
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /api/tours
+    # Áp migration trước mỗi lần deploy — cần devDependencies (prisma CLI) nên
+    # build lại từ stage "builder" thay vì dùng image runtime đã rụng devDeps.
+    preDeployCommand: npx prisma migrate deploy
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vivugo-db
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      # Frontend Vercel và backend Render khác domain nên bắt buộc 'none' để
+      # cookie refresh_token được gửi kèm request cross-site (xem auth.service.ts).
+      - key: COOKIE_SAME_SITE
+        value: none
+      # Đứng sau load balancer của Render => 1 tầng proxy (xem main.ts).
+      - key: TRUST_PROXY
+        value: '1'
+      # Điền tay sau khi có domain Vercel thật, VD https://vivugo.vercel.app
+      - key: CORS_ORIGIN
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      # Điền tay: Cloudinary, SMTP, VNPay (xem backend/.env.example) — để trống
+      # thì app vẫn chạy, chỉ tắt tính năng tương ứng (đã tự kiểm tra isConfigured()).
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: VNPAY_TMN_CODE
+        sync: false
+      - key: VNPAY_HASH_SECRET
+        sync: false
+
+databases:
+  - name: vivugo-db
+    plan: free
+    region: singapore

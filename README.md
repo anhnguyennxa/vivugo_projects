@@ -77,6 +77,20 @@ Các lần sau chỉ cần `./deploy.sh` (kéo code mới, build lại, migrate,
 - IPN của VNPay thật phải trỏ về `https://<DOMAIN>/api/payments/vnpay/callback`; chuyển `PAY_URL`/`REFUND_API_URL` trong `backend/src/payments/vnpay.service.ts` từ sandbox sang endpoint production khi có merchant thật.
 - Sao lưu: `docker compose -f docker-compose.prod.yml --env-file .env.prod exec postgres pg_dump -U vivugo vivugo > backup.sql`.
 
+## Deploy production (Vercel + Render)
+
+Frontend và backend nằm ở 2 domain khác nhau (khác VPS ở trên, nơi cả 2 cùng domain qua Caddy) nên bắt buộc `COOKIE_SAME_SITE=none` để cookie refresh token được gửi kèm request cross-site — thiếu biến này thì đăng nhập xong tải lại trang sẽ bị đăng xuất ngay.
+
+**1. Backend trên Render** — Dashboard → New → Blueprint → chọn repo này (đọc sẵn `render.yaml`, tạo cả web service lẫn Postgres). Sau khi tạo xong, vào service `vivugo-backend` → Environment, điền các biến đánh dấu "điền tay khi cần" trong `render.yaml`: `VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`, `CLOUDINARY_*`, `SMTP_*` (JWT secret Render tự sinh). `CORS_ORIGIN`/`FRONTEND_URL` để trống trước, quay lại điền sau khi có domain Vercel ở bước 2. Lấy URL backend dạng `https://vivugo-backend.onrender.com`.
+
+**2. Frontend trên Vercel** — Dashboard → Add New → Project → chọn repo này, **Root Directory** đặt `frontend`. Thêm biến môi trường `VITE_API_BASE_URL` = URL backend Render kèm `/api` (VD `https://vivugo-backend.onrender.com/api`) — khác bản Docker/VPS (đặt `/api` tương đối vì cùng domain), ở đây bắt buộc là URL tuyệt đối vì khác domain. Deploy xong lấy URL dạng `https://vivugo.vercel.app`.
+
+**3. Nối 2 chiều** — quay lại Render, điền `CORS_ORIGIN` và `FRONTEND_URL` bằng đúng URL Vercel ở bước 2, deploy lại backend.
+
+- Migration tự áp mỗi lần deploy (`preDeployCommand` trong `render.yaml`). Nạp dữ liệu mẫu (tuỳ chọn, lần đầu): Render dashboard → service → **Shell** → `npx tsx prisma/seed.ts`, rồi đổi ngay mật khẩu admin.
+- Gói free của Render "ngủ" sau một thời gian không có request, lần request đầu tiên sau đó có thể mất khoảng nửa phút mới phản hồi.
+- IPN VNPay thật trỏ về `https://<domain-render>/api/payments/vnpay/callback`.
+
 ## Database
 
 PostgreSQL 17 chạy local. Role/DB riêng `vivugo` (không dùng chung với superuser `postgres`). Schema tại `backend/prisma/schema.prisma`, migration đầu tiên `20260825032943_init` đã áp dụng.

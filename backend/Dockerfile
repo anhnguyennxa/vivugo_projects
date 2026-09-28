@@ -25,8 +25,14 @@ RUN apk del python3 make g++
 
 # tsconfig không set rootDir riêng nên tsc gộp cả src/, generated/, prisma/
 # vào chung 1 cây dưới dist/ (dist/src, dist/generated, dist/prisma) — chỉ
-# cần copy dist/ là đủ, không cần copy generated/prisma/ nguồn (.ts) riêng.
+# cần copy dist/ là đủ để CHẠY app, không cần copy generated/prisma/ nguồn (.ts) riêng.
 COPY --from=builder /app/dist ./dist
+
+# CLI `prisma migrate deploy` (dùng ở nền tảng chạy migrate ngay trong image
+# runtime, VD preDeployCommand của Render) cần bản .ts gốc của schema/migration
+# và prisma.config.ts — không dùng được bản đã biên dịch trong dist/.
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 3000
 CMD ["node", "dist/src/main"]
