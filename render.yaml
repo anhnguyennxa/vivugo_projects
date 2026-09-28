@@ -9,9 +9,10 @@ services:
     plan: free
     region: singapore
     healthCheckPath: /api/tours
-    # preDeployCommand chỉ có ở gói trả phí — gói free dùng dockerCommand để áp
-    # migration ngay trước khi khởi động app trong cùng 1 lệnh container.
-    dockerCommand: sh -c "npx prisma migrate deploy && node dist/src/main"
+    # preDeployCommand chỉ có ở gói trả phí. dockerCommand của Render không tách
+    # chuỗi theo shell (dấu && bị coi là 1 phần tên lệnh, gây "not found") nên
+    # phải gọi qua file script start.sh thay vì nhồi lệnh trực tiếp vào đây.
+    dockerCommand: sh start.sh
     envVars:
       - key: NODE_ENV
         value: production

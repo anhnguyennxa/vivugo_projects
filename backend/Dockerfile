@@ -34,5 +34,11 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
+# start.sh: migrate deploy rồi mới chạy app — dùng cho nền tảng chạy migrate ngay
+# trong image runtime (VD dockerCommand của Render, gói free không có preDeployCommand
+# riêng). CMD mặc định (docker-compose/VPS) không đổi, không tự động migrate.
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
+
 EXPOSE 3000
 CMD ["node", "dist/src/main"]
