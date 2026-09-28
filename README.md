@@ -87,7 +87,7 @@ Frontend và backend nằm ở 2 domain khác nhau (khác VPS ở trên, nơi c�
 
 **3. Nối 2 chiều** — quay lại Render, điền `CORS_ORIGIN` và `FRONTEND_URL` bằng đúng URL Vercel ở bước 2, deploy lại backend.
 
-- Migration tự áp mỗi lần deploy (`preDeployCommand` trong `render.yaml`). Nạp dữ liệu mẫu (tuỳ chọn, lần đầu): Render dashboard → service → **Shell** → `npx tsx prisma/seed.ts`, rồi đổi ngay mật khẩu admin.
+- Migration tự áp mỗi lần deploy (`dockerCommand` trong `render.yaml` chạy `prisma migrate deploy` trước khi khởi động app — gói free không hỗ trợ `preDeployCommand` riêng). Nạp dữ liệu mẫu (tuỳ chọn, lần đầu): Render dashboard → service → **Shell** → `npx tsx prisma/seed.ts`, rồi đổi ngay mật khẩu admin.
 - Gói free của Render "ngủ" sau một thời gian không có request, lần request đầu tiên sau đó có thể mất khoảng nửa phút mới phản hồi.
 - IPN VNPay thật trỏ về `https://<domain-render>/api/payments/vnpay/callback`.
 

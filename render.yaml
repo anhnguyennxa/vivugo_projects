@@ -9,9 +9,9 @@ services:
     plan: free
     region: singapore
     healthCheckPath: /api/tours
-    # Áp migration trước mỗi lần deploy — cần devDependencies (prisma CLI) nên
-    # build lại từ stage "builder" thay vì dùng image runtime đã rụng devDeps.
-    preDeployCommand: npx prisma migrate deploy
+    # preDeployCommand chỉ có ở gói trả phí — gói free dùng dockerCommand để áp
+    # migration ngay trước khi khởi động app trong cùng 1 lệnh container.
+    dockerCommand: sh -c "npx prisma migrate deploy && node dist/src/main"
     envVars:
       - key: NODE_ENV
         value: production
