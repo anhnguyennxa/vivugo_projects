@@ -8,6 +8,7 @@ import { AccountBookingDetail } from '@/pages/account/AccountBookingDetail'
 import { AccountBookings } from '@/pages/account/AccountBookings'
 import { AccountPassword } from '@/pages/account/AccountPassword'
 import { AccountProfile } from '@/pages/account/AccountProfile'
+import { About } from '@/pages/public/About'
 import { Blog } from '@/pages/public/Blog'
 import { BlogDetail } from '@/pages/public/BlogDetail'
 import { Cart } from '@/pages/public/Cart'
@@ -85,6 +86,7 @@ export const router = createBrowserRouter([
       { path: '/tours/:slug', element: <TourDetail /> },
       { path: '/categories/:slug', element: <CategoryRedirect /> },
       { path: '/contact', element: <Contact /> },
+      { path: '/about', element: <About /> },
       {
         path: '/account',
         element: <AccountLayout />,
