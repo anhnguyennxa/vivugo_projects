@@ -3,6 +3,7 @@ import { type FormEvent, type ReactNode, useCallback, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { DeparturesManager } from '@/components/admin/DeparturesManager'
+import { PendingTourImages } from '@/components/admin/PendingTourImages'
 import { ImageUploadButton } from '@/components/common/ImageUploadButton'
 import { TourImagesManager } from '@/components/admin/TourImagesManager'
 import { ErrorState } from '@/components/common/ErrorState'
@@ -12,7 +13,7 @@ import { REGION_OPTIONS } from '@/constants/region'
 import { ROUTES } from '@/constants/routes'
 import { TOUR_STATUS_LABELS } from '@/constants/tourStatus'
 import { useAsync } from '@/hooks/useAsync'
-import { createTour, getAdminTour, updateTour, type TourInput } from '@/services/admin'
+import { addTourImages, createTour, getAdminTour, updateTour, type TourInput } from '@/services/admin'
 import { getCategories } from '@/services/categories'
 import type { AdminTourDetail, TourStatus } from '@/types/admin'
 import type { DepartureCity, ItineraryDay, Region } from '@/types/tour'
@@ -135,6 +136,8 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+  // Ảnh chọn trước khi tour tồn tại (tạo mới) — gắn vào tour ngay sau khi tạo xong.
+  const [pendingImages, setPendingImages] = useState<string[]>([])
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }))
@@ -245,6 +248,7 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
               }
             : rest,
         )
+        if (pendingImages.length > 0) await addTourImages(created.id, pendingImages)
         navigate(ROUTES.adminTourEdit(created.id), { replace: true })
       }
     } catch (err) {
@@ -262,7 +266,7 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
         </Link>
         <h1 className="font-display text-2xl font-bold text-ink">{isEdit ? 'Sửa tour' : 'Tạo tour mới'}</h1>
         {!isEdit && (
-          <p className="mt-1 text-sm text-text-muted">Sau khi tạo, bạn có thể thêm ảnh và đợt khởi hành.</p>
+          <p className="mt-1 text-sm text-text-muted">Sau khi tạo, bạn có thể thêm đợt khởi hành.</p>
         )}
       </div>
 
@@ -474,7 +478,7 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
         </div>
       </form>
 
-      {tour && (
+      {tour ? (
         <>
           <TourImagesManager
             tourId={tour.id}
@@ -485,6 +489,14 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
           />
           <DeparturesManager tourId={tour.id} departures={tour.departures} onChanged={() => void onReload()} />
         </>
+      ) : (
+        <PendingTourImages
+          urls={pendingImages}
+          thumbnailUrl={form.thumbnailUrl}
+          onAdd={(urls) => setPendingImages((p) => [...p, ...urls])}
+          onRemove={(url) => setPendingImages((p) => p.filter((u) => u !== url))}
+          onSetThumbnail={(url) => set('thumbnailUrl', url)}
+        />
       )}
     </div>
   )
