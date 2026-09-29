@@ -2,6 +2,7 @@ import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageCircle, Messag
 import { useEffect } from 'react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
+import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { APP_NAME } from '@/constants/config'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/utils'
@@ -46,13 +47,16 @@ export function AdminLayout() {
           <span className="flex size-7 items-center justify-center rounded-lg bg-secondary text-white">
             <LayoutDashboard className="size-3.5" />
           </span>
-          <span className="font-display text-sm font-bold text-secondary">{APP_NAME} · Quản trị</span>
-          <Link
-            to={ROUTES.home}
-            className="ml-auto flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-secondary"
-          >
-            <Compass className="size-3.5" /> Về trang chủ
-          </Link>
+          <span className="font-display text-sm font-bold text-ink">{APP_NAME} · Quản trị</span>
+          <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              to={ROUTES.home}
+              className="flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-ink"
+            >
+              <Compass className="size-3.5" /> Về trang chủ
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -68,7 +72,7 @@ export function AdminLayout() {
                   'flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive
                     ? 'bg-primary-soft text-primary-ink'
-                    : 'text-text-muted hover:bg-surface-alt hover:text-secondary',
+                    : 'text-text-muted hover:bg-surface-alt hover:text-ink',
                 )
               }
             >

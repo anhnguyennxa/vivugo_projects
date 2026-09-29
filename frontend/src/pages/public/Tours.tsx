@@ -89,7 +89,7 @@ export function Tours() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-2xl font-bold text-secondary">{pageTitle}</h1>
+        <h1 className="font-display text-2xl font-bold text-ink">{pageTitle}</h1>
         <p className="mt-1 text-sm text-text-muted">
           {result ? `${result.total} tour phù hợp` : 'Khám phá các tour du lịch của VivuGo'}
         </p>
@@ -140,7 +140,7 @@ export function Tours() {
         <select
           value={category}
           onChange={(e) => updateParam('category', e.target.value)}
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none"
         >
           <option value="">Tất cả danh mục</option>
           {categories?.map((c) => (
@@ -154,7 +154,7 @@ export function Tours() {
           value={departureCity}
           onChange={(e) => updateParam('departureCity', e.target.value)}
           aria-label="Điểm khởi hành"
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none"
         >
           <option value="">Mọi điểm khởi hành</option>
           {DEPARTURE_CITY_OPTIONS.map((c) => (
@@ -174,7 +174,7 @@ export function Tours() {
             next.set('page', '1')
             setSearchParams(next)
           }}
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>

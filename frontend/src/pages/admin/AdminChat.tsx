@@ -89,7 +89,7 @@ export function AdminChat() {
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] flex-col p-4 sm:p-6">
-      <h1 className="font-display text-2xl font-bold text-secondary">Chat hỗ trợ</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Chat hỗ trợ</h1>
       <p className="mt-1 text-sm text-text-muted">Trả lời tin nhắn từ khách hàng</p>
 
       <div className="mt-4 flex min-h-0 flex-1 gap-4">
@@ -135,7 +135,7 @@ export function AdminChat() {
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-1">
-                      <span className="truncate text-sm font-medium text-secondary">{c.user.fullName}</span>
+                      <span className="truncate text-sm font-medium text-ink">{c.user.fullName}</span>
                       {c.unreadCount > 0 && (
                         <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
                           {c.unreadCount > 9 ? '9+' : c.unreadCount}
@@ -162,7 +162,7 @@ export function AdminChat() {
             <>
               <div className="flex items-center justify-between border-b border-border px-4 py-3">
                 <div>
-                  <p className="text-sm font-semibold text-secondary">{thread.conversation.user.fullName}</p>
+                  <p className="text-sm font-semibold text-ink">{thread.conversation.user.fullName}</p>
                   <p className="text-xs text-text-muted">{thread.conversation.user.email}</p>
                 </div>
                 {thread.conversation.status === 'OPEN' && (
@@ -179,7 +179,7 @@ export function AdminChat() {
                     <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                       <div
                         className={`max-w-[70%] rounded-2xl px-3 py-2 text-sm ${
-                          isMine ? 'bg-primary text-white' : 'bg-surface-alt text-secondary'
+                          isMine ? 'bg-primary text-white' : 'bg-surface-alt text-ink'
                         }`}
                       >
                         <p className="whitespace-pre-wrap break-words">{m.message}</p>

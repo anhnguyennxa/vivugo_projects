@@ -150,7 +150,7 @@ export function Checkout() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="font-display text-2xl font-bold text-secondary">Thanh toán</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Thanh toán</h1>
 
       <div className="mt-6 rounded-2xl border border-border bg-surface p-5">
         <div className="flex gap-4">
@@ -159,7 +159,7 @@ export function Checkout() {
             style={{ backgroundImage: `url(${item.tour.thumbnailUrl})` }}
           />
           <div className="min-w-0">
-            <p className="line-clamp-1 font-display text-sm font-bold text-secondary">
+            <p className="line-clamp-1 font-display text-sm font-bold text-ink">
               {item.tour.title}
             </p>
             <p className="mt-1 text-xs text-text-muted">
@@ -168,20 +168,20 @@ export function Checkout() {
           </div>
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-          <span className="text-sm font-semibold text-secondary">Tổng thanh toán</span>
-          <span className="font-mono text-lg font-bold text-secondary">{formatVnd(total)}</span>
+          <span className="text-sm font-semibold text-ink">Tổng thanh toán</span>
+          <span className="font-mono text-lg font-bold text-ink">{formatVnd(total)}</span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4 rounded-2xl border border-border bg-surface p-5">
-        <h2 className="font-display text-sm font-bold text-secondary">Thông tin liên hệ</h2>
+        <h2 className="font-display text-sm font-bold text-ink">Thông tin liên hệ</h2>
 
         {formError && (
           <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{formError}</p>
         )}
 
         <div>
-          <label htmlFor="contactName" className="mb-1.5 block text-xs font-semibold text-secondary">
+          <label htmlFor="contactName" className="mb-1.5 block text-xs font-semibold text-ink">
             Họ và tên
           </label>
           <input
@@ -194,7 +194,7 @@ export function Checkout() {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="contactPhone" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="contactPhone" className="mb-1.5 block text-xs font-semibold text-ink">
               Số điện thoại
             </label>
             <input
@@ -206,7 +206,7 @@ export function Checkout() {
             />
           </div>
           <div>
-            <label htmlFor="contactEmail" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="contactEmail" className="mb-1.5 block text-xs font-semibold text-ink">
               Email
             </label>
             <input
@@ -220,7 +220,7 @@ export function Checkout() {
         </div>
 
         <div>
-          <label htmlFor="note" className="mb-1.5 block text-xs font-semibold text-secondary">
+          <label htmlFor="note" className="mb-1.5 block text-xs font-semibold text-ink">
             Ghi chú <span className="font-normal text-text-faint">(không bắt buộc)</span>
           </label>
           <textarea

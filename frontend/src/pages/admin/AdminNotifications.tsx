@@ -74,11 +74,11 @@ export function AdminNotifications() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h1 className="font-display text-2xl font-bold text-secondary">Thông báo</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Thông báo</h1>
       <p className="mt-1 text-sm text-text-muted">Gửi thông báo hệ thống/khuyến mãi tới người dùng</p>
 
       <div className="mt-6 max-w-xl space-y-5 rounded-xl border border-border bg-surface p-5">
-        <label className="flex items-center gap-2 text-sm font-medium text-secondary">
+        <label className="flex items-center gap-2 text-sm font-medium text-ink">
           <input
             type="checkbox"
             checked={toAll}
@@ -93,7 +93,7 @@ export function AdminNotifications() {
 
         {!toAll && (
           <div>
-            <p className="mb-1.5 text-sm font-medium text-secondary">Người nhận</p>
+            <p className="mb-1.5 text-sm font-medium text-ink">Người nhận</p>
             {selected.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1.5">
                 {selected.map((u) => (
@@ -129,7 +129,7 @@ export function AdminNotifications() {
                     onClick={() => addUser(u)}
                     className="flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-surface-alt"
                   >
-                    <span className="font-medium text-secondary">{u.fullName}</span>
+                    <span className="font-medium text-ink">{u.fullName}</span>
                     <span className="text-xs text-text-muted">{u.email}</span>
                   </button>
                 ))}
@@ -139,7 +139,7 @@ export function AdminNotifications() {
         )}
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-secondary">Tiêu đề</label>
+          <label className="mb-1.5 block text-sm font-medium text-ink">Tiêu đề</label>
           <input
             type="text"
             value={title}
@@ -150,7 +150,7 @@ export function AdminNotifications() {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-secondary">Nội dung</label>
+          <label className="mb-1.5 block text-sm font-medium text-ink">Nội dung</label>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}

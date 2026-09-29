@@ -89,7 +89,7 @@ export function Cart() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="font-display text-2xl font-bold text-secondary">Giỏ hàng</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Giỏ hàng</h1>
 
       {status === 'loading' && (
         <div className="mt-6 space-y-3">
@@ -142,7 +142,7 @@ export function Cart() {
                   <div className="min-w-0 flex-1">
                     <Link
                       to={ROUTES.tourDetail(item.tour.slug)}
-                      className="line-clamp-1 font-display text-sm font-bold text-secondary hover:text-primary"
+                      className="line-clamp-1 font-display text-sm font-bold text-ink hover:text-primary"
                     >
                       {item.tour.title}
                     </Link>
@@ -173,7 +173,7 @@ export function Cart() {
                           <Plus className="size-3.5" />
                         </button>
                       </div>
-                      <p className="font-mono text-sm font-bold text-secondary">
+                      <p className="font-mono text-sm font-bold text-ink">
                         {formatVnd(itemPrice(item) * requested)}
                       </p>
                     </div>
@@ -201,8 +201,8 @@ export function Cart() {
           </div>
 
           <aside className="h-fit rounded-2xl border border-border bg-surface p-5">
-            <p className="text-sm font-semibold text-secondary">Tổng cộng</p>
-            <p className="mt-1 font-mono text-xl font-bold text-secondary">{formatVnd(total)}</p>
+            <p className="text-sm font-semibold text-ink">Tổng cộng</p>
+            <p className="mt-1 font-mono text-xl font-bold text-ink">{formatVnd(total)}</p>
             <p className="mt-3 text-xs text-text-faint">
               Mỗi tour trong giỏ được thanh toán riêng — chọn &ldquo;Đặt tour này&rdquo; cho từng mục.
             </p>

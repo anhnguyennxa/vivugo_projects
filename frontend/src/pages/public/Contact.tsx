@@ -32,7 +32,7 @@ export function Contact() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <Breadcrumb items={[{ label: 'Trang chủ', href: ROUTES.home }, { label: 'Liên hệ' }]} />
-      <h1 className="mt-4 font-display text-2xl font-bold text-secondary">Liên hệ VivuGo</h1>
+      <h1 className="mt-4 font-display text-2xl font-bold text-ink">Liên hệ VivuGo</h1>
       <p className="mt-1 text-sm text-text-muted">
         Đội ngũ tư vấn luôn sẵn sàng hỗ trợ bạn chọn tour và đặt chỗ.
       </p>
@@ -50,13 +50,13 @@ export function Contact() {
               <c.icon className="size-4.5" />
             </span>
             <p className="mt-3 text-xs font-bold uppercase tracking-wide text-text-muted">{c.title}</p>
-            <p className="mt-0.5 break-all font-display text-base font-bold text-secondary">{c.value}</p>
+            <p className="mt-0.5 break-all font-display text-base font-bold text-ink">{c.value}</p>
             <p className="mt-1 text-xs text-text-muted">{c.note}</p>
           </a>
         ))}
       </div>
 
-      <div className="mt-6 space-y-3 rounded-2xl border border-border bg-surface p-5 text-sm text-secondary">
+      <div className="mt-6 space-y-3 rounded-2xl border border-border bg-surface p-5 text-sm text-ink">
         <p className="flex items-center gap-2">
           <MapPin className="size-4 text-primary" /> {CONTACT.address}
         </p>

@@ -15,7 +15,7 @@ import { getApiErrorMessage } from '@/utils/errors'
 import { formatDate } from '@/utils/format'
 
 const selectClass =
-  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none'
+  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none'
 
 export function AdminUsers() {
   const [page, setPage] = useState(1)
@@ -72,7 +72,7 @@ export function AdminUsers() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h1 className="font-display text-2xl font-bold text-secondary">Người dùng</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Người dùng</h1>
       <p className="mt-1 text-sm text-text-muted">{result ? `${result.total} người dùng` : 'Danh sách người dùng'}</p>
 
       <div className="mt-4 flex flex-wrap gap-3">
@@ -149,7 +149,7 @@ export function AdminUsers() {
                   {result.items.map((u) => (
                     <tr key={u.id} className="border-b border-border last:border-0">
                       <td className="px-4 py-3">
-                        <p className="font-medium text-secondary">{u.fullName}</p>
+                        <p className="font-medium text-ink">{u.fullName}</p>
                         <p className="text-xs text-text-muted">{u.email}</p>
                       </td>
                       <td className="px-4 py-3 text-text-muted">{u.phone ?? '—'}</td>
@@ -161,7 +161,7 @@ export function AdminUsers() {
                       <td className="px-4 py-3">
                         <Badge variant={u.isActive ? 'success' : 'danger'}>{u.isActive ? 'Hoạt động' : 'Bị khoá'}</Badge>
                       </td>
-                      <td className="px-4 py-3 text-right font-mono text-secondary">{u._count.bookings}</td>
+                      <td className="px-4 py-3 text-right font-mono text-ink">{u._count.bookings}</td>
                       <td className="px-4 py-3 text-text-muted">{formatDate(u.createdAt)}</td>
                       <td className="px-4 py-3">
                         {u.id === me?.id ? (

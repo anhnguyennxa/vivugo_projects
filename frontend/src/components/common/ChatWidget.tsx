@@ -61,7 +61,7 @@ export function ChatWidget() {
                     className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
                       isMine
                         ? 'bg-primary text-white'
-                        : 'bg-surface-alt text-secondary'
+                        : 'bg-surface-alt text-ink'
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">{m.message}</p>

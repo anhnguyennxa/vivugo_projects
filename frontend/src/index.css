@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #2563eb;
   --color-primary-ink: #1d4ed8;
   --color-primary-soft: #e3ebfd;
   --color-secondary: #0f172a;
+  --color-ink: #0f172a;
   --color-accent: #f59e0b;
   --color-accent-soft: #fef3c7;
   --color-success: #10b981;
@@ -27,13 +30,35 @@
   color-scheme: light;
 }
 
+/* secondary giữ nguyên (nút/footer cố định tối ở cả 2 theme) — chỉ ink (màu chữ
+   tiêu đề/nội dung) và các token nền/viền đổi theo dark mode. */
+.dark {
+  color-scheme: dark;
+  --color-primary: #3b82f6;
+  --color-primary-ink: #60a5fa;
+  --color-primary-soft: #1e3a5f;
+  --color-ink: #f1f5f9;
+  --color-accent: #fbbf24;
+  --color-accent-soft: #452e04;
+  --color-success: #34d399;
+  --color-success-soft: #0d3b2d;
+  --color-danger: #f87171;
+  --color-danger-soft: #4c1414;
+  --color-background: #0b1220;
+  --color-surface: #151f32;
+  --color-surface-alt: #1c2942;
+  --color-border: #2b3958;
+  --color-text-muted: #94a3b8;
+  --color-text-faint: #64748b;
+}
+
 * {
   border-color: var(--color-border);
 }
 
 body {
   background: var(--color-background);
-  color: var(--color-secondary);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }

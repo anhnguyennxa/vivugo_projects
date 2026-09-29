@@ -9,7 +9,7 @@ export function NotFound() {
     <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-28 text-center">
       <Compass className="mb-4 size-10 text-text-faint" strokeWidth={1.5} />
       <p className="font-mono text-sm font-semibold text-primary">404</p>
-      <h1 className="mt-2 font-display text-2xl font-extrabold text-secondary">
+      <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">
         Không tìm thấy trang này
       </h1>
       <p className="mt-2 max-w-sm text-sm text-text-muted">

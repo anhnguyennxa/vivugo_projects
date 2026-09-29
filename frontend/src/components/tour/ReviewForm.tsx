@@ -45,7 +45,7 @@ export function ReviewForm({
 
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border border-primary/30 bg-primary-soft/40 p-4">
-      <p className="font-display text-sm font-bold text-secondary">
+      <p className="font-display text-sm font-bold text-ink">
         Bạn đã hoàn thành tour này — chia sẻ trải nghiệm nhé!
       </p>
 

@@ -28,7 +28,7 @@ import { formatDate, formatVnd } from '@/utils/format'
 const STATUS_VARIANT = { DRAFT: 'secondary', PUBLISHED: 'success', ARCHIVED: 'danger' } as const
 
 const selectClass =
-  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none'
+  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none'
 
 export function AdminTours() {
   const [page, setPage] = useState(1)
@@ -90,7 +90,7 @@ export function AdminTours() {
     <div className="p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-secondary">Quản lý tour</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">Quản lý tour</h1>
           <p className="mt-1 text-sm text-text-muted">{result ? `${result.total} tour` : 'Danh sách tour'}</p>
         </div>
         <Link to={ROUTES.adminTourNew}>
@@ -185,7 +185,7 @@ export function AdminTours() {
                             style={{ backgroundImage: `url(${t.thumbnailUrl})` }}
                           />
                           <div className="min-w-0">
-                            <p className="line-clamp-1 font-medium text-secondary">
+                            <p className="line-clamp-1 font-medium text-ink">
                               {t.isFeatured && <Star className="mr-1 inline size-3.5 fill-accent text-accent" />}
                               {t.title}
                             </p>
@@ -197,7 +197,7 @@ export function AdminTours() {
                         {REGION_LABELS[t.region]}
                         <p className="text-xs">Từ {DEPARTURE_CITY_LABELS[t.departureCity]}</p>
                       </td>
-                      <td className="px-4 py-3 text-right font-mono font-bold text-secondary">
+                      <td className="px-4 py-3 text-right font-mono font-bold text-ink">
                         {formatVnd(t.discountPrice ?? t.basePrice)}
                         {t.discountPrice != null && (
                           <>

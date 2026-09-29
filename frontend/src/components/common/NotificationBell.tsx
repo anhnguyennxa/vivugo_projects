@@ -67,7 +67,7 @@ export function NotificationBell() {
       {open && (
         <div className="absolute right-0 top-11 w-80 rounded-xl border border-border bg-surface shadow-md">
           <div className="flex items-center justify-between border-b border-border px-3 py-2.5">
-            <p className="text-sm font-semibold text-secondary">Thông báo</p>
+            <p className="text-sm font-semibold text-ink">Thông báo</p>
             {unreadCount > 0 && (
               <button
                 type="button"
@@ -94,11 +94,11 @@ export function NotificationBell() {
                     n.isRead ? '' : 'bg-primary-soft/40'
                   }`}
                 >
-                  <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-alt text-secondary">
+                  <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-alt text-ink">
                     <Icon className="size-4" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-secondary">{n.title}</span>
+                    <span className="block truncate text-sm font-medium text-ink">{n.title}</span>
                     <span className="block line-clamp-2 text-xs text-text-muted">{n.message}</span>
                     <span className="mt-0.5 block text-[11px] text-text-faint">
                       {formatRelativeTime(n.createdAt)}

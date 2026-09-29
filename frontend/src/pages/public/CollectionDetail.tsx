@@ -52,7 +52,7 @@ export function CollectionDetail() {
         style={{ backgroundImage: `url(${collection.coverImageUrl})` }}
       />
 
-      <h1 className="mt-6 font-display text-2xl font-bold text-secondary sm:text-3xl">{collection.title}</h1>
+      <h1 className="mt-6 font-display text-2xl font-bold text-ink sm:text-3xl">{collection.title}</h1>
       {collection.description && <p className="mt-2 max-w-2xl text-sm text-text-muted">{collection.description}</p>}
       <p className="mt-2 text-sm text-text-muted">{collection.tours.length} tour trong bộ sưu tập</p>
 

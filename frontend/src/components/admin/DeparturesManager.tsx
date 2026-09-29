@@ -105,7 +105,7 @@ export function DeparturesManager({
   return (
     <section className="rounded-2xl border border-border bg-surface p-5">
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-base font-bold text-secondary">Đợt khởi hành</h2>
+        <h2 className="font-display text-base font-bold text-ink">Đợt khởi hành</h2>
         {!form && (
           <Button type="button" size="sm" onClick={() => setForm(toForm())}>
             <CalendarPlus /> Thêm đợt
@@ -116,7 +116,7 @@ export function DeparturesManager({
 
       {form && (
         <div className="mt-3 rounded-xl border border-primary/30 bg-primary-soft/40 p-4">
-          <p className="mb-3 text-sm font-semibold text-secondary">{form.id ? 'Sửa đợt khởi hành' : 'Thêm đợt khởi hành'}</p>
+          <p className="mb-3 text-sm font-semibold text-ink">{form.id ? 'Sửa đợt khởi hành' : 'Thêm đợt khởi hành'}</p>
           <div className="grid gap-3 sm:grid-cols-4">
             <div>
               <label className="mb-1 block text-xs font-medium text-text-muted">Ngày khởi hành</label>
@@ -186,10 +186,10 @@ export function DeparturesManager({
             <tbody>
               {departures.map((d) => (
                 <tr key={d.id} className="border-t border-border">
-                  <td className="py-2.5 pr-3 text-secondary">
+                  <td className="py-2.5 pr-3 text-ink">
                     {formatDate(d.departureDate)} – {formatDate(d.returnDate)}
                   </td>
-                  <td className="py-2.5 pr-3 font-mono text-secondary">
+                  <td className="py-2.5 pr-3 font-mono text-ink">
                     {d.bookedSlots} / {d.totalSlots}
                   </td>
                   <td className="py-2.5 pr-3 font-mono text-text-muted">

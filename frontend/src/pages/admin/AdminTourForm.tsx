@@ -96,7 +96,7 @@ function fromTour(t: AdminTourDetail): FormState {
 function Field({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   return (
     <div className={className}>
-      <label className="mb-1 block text-sm font-medium text-secondary">{label}</label>
+      <label className="mb-1 block text-sm font-medium text-ink">{label}</label>
       {children}
     </div>
   )
@@ -257,10 +257,10 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
   return (
     <div className="max-w-4xl space-y-6 p-4 sm:p-6">
       <div>
-        <Link to={ROUTES.adminTours} className="mb-2 inline-flex items-center gap-1 text-sm text-text-muted hover:text-secondary">
+        <Link to={ROUTES.adminTours} className="mb-2 inline-flex items-center gap-1 text-sm text-text-muted hover:text-ink">
           <ArrowLeft className="size-4" /> Danh sách tour
         </Link>
-        <h1 className="font-display text-2xl font-bold text-secondary">{isEdit ? 'Sửa tour' : 'Tạo tour mới'}</h1>
+        <h1 className="font-display text-2xl font-bold text-ink">{isEdit ? 'Sửa tour' : 'Tạo tour mới'}</h1>
         {!isEdit && (
           <p className="mt-1 text-sm text-text-muted">Sau khi tạo, bạn có thể thêm ảnh và đợt khởi hành.</p>
         )}
@@ -415,7 +415,7 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
               ))}
             </select>
           </Field>
-          <label className="flex items-center gap-2 self-end pb-2 text-sm font-medium text-secondary">
+          <label className="flex items-center gap-2 self-end pb-2 text-sm font-medium text-ink">
             <input type="checkbox" checked={form.isFeatured} onChange={(e) => set('isFeatured', e.target.checked)} />
             Tour nổi bật (hiện ở trang chủ)
           </label>
@@ -423,7 +423,7 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium text-secondary">Lịch trình</label>
+            <label className="text-sm font-medium text-ink">Lịch trình</label>
             <Button type="button" size="sm" variant="outline" onClick={addDay}>
               <Plus /> Thêm ngày
             </Button>

@@ -82,23 +82,23 @@ export function CheckoutResult() {
         <span className={`mx-auto flex size-14 items-center justify-center rounded-full ${content.bg}`}>
           <Icon className={`size-7 ${content.color}`} />
         </span>
-        <h1 className="mt-4 font-display text-xl font-bold text-secondary">{content.title}</h1>
+        <h1 className="mt-4 font-display text-xl font-bold text-ink">{content.title}</h1>
         <p className="mt-1 font-mono text-sm text-text-muted">Mã đơn: {booking.bookingCode}</p>
 
         <div className="mt-6 space-y-2 rounded-xl bg-surface-alt p-4 text-left text-sm">
           <div className="flex justify-between">
             <span className="text-text-muted">Tour</span>
-            <span className="font-medium text-secondary">{booking.tour.title}</span>
+            <span className="font-medium text-ink">{booking.tour.title}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-text-muted">Tổng tiền</span>
-            <span className="font-mono font-semibold text-secondary">
+            <span className="font-mono font-semibold text-ink">
               {formatVnd(booking.totalPrice)}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-text-muted">Trạng thái thanh toán</span>
-            <span className="font-medium text-secondary">{booking.paymentStatus}</span>
+            <span className="font-medium text-ink">{booking.paymentStatus}</span>
           </div>
         </div>
 

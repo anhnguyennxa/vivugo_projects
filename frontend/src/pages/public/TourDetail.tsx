@@ -152,7 +152,7 @@ export function TourDetail() {
                 <Heart className={cn('size-4', isFavorited && 'fill-danger')} />
               </button>
             </div>
-            <h1 className="mt-2 text-balance font-display text-2xl font-extrabold text-secondary sm:text-3xl">
+            <h1 className="mt-2 text-balance font-display text-2xl font-extrabold text-ink sm:text-3xl">
               {tour.title}
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-muted">
@@ -177,7 +177,7 @@ export function TourDetail() {
 
             {tour.itinerary.length > 0 && (
               <div className="mt-8">
-                <h2 className="font-display text-lg font-bold text-secondary">Lịch trình</h2>
+                <h2 className="font-display text-lg font-bold text-ink">Lịch trình</h2>
                 <ol className="mt-4 space-y-4">
                   {tour.itinerary.map((day) => (
                     <li key={day.day} className="flex gap-4">
@@ -185,7 +185,7 @@ export function TourDetail() {
                         {day.day}
                       </span>
                       <div>
-                        <p className="font-semibold text-secondary">{day.title}</p>
+                        <p className="font-semibold text-ink">{day.title}</p>
                         <p className="mt-0.5 text-sm text-text-muted">{day.description}</p>
                       </div>
                     </li>
@@ -195,7 +195,7 @@ export function TourDetail() {
             )}
 
             <div className="mt-8">
-              <h2 className="font-display text-lg font-bold text-secondary">
+              <h2 className="font-display text-lg font-bold text-ink">
                 Đánh giá {tour.reviewCount > 0 && `(${tour.reviewCount})`}
               </h2>
 
@@ -224,7 +224,7 @@ export function TourDetail() {
                   {tour.reviews.map((r) => (
                     <li key={r.id} className="rounded-xl border border-border p-4">
                       <div className="flex items-center justify-between">
-                        <p className="font-semibold text-secondary">{r.user.fullName}</p>
+                        <p className="font-semibold text-ink">{r.user.fullName}</p>
                         <span className="flex items-center gap-1 text-sm font-semibold text-accent">
                           <Star className="size-3.5 fill-accent" /> {r.rating}
                         </span>
@@ -239,7 +239,7 @@ export function TourDetail() {
         </div>
 
         <aside className="h-fit rounded-2xl border border-border bg-surface p-5 shadow-sm lg:sticky lg:top-20">
-          <p className="font-mono text-2xl font-bold text-secondary">
+          <p className="font-mono text-2xl font-bold text-ink">
             {formatVnd(price)}
             <span className="ml-1.5 text-sm font-medium text-text-faint">/khách</span>
           </p>
@@ -272,7 +272,7 @@ export function TourDetail() {
                         : 'border-border hover:bg-surface-alt',
                     )}
                   >
-                    <span className="font-medium text-secondary">
+                    <span className="font-medium text-ink">
                       {formatDate(d.departureDate)}
                     </span>
                     <span
@@ -293,7 +293,7 @@ export function TourDetail() {
 
           {selectedDeparture && (
             <div className="mt-5 flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
-              <span className="flex items-center gap-1.5 text-sm font-medium text-secondary">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-ink">
                 <Users className="size-4" /> Số khách
               </span>
               <div className="flex items-center gap-3">

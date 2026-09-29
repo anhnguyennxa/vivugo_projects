@@ -39,7 +39,7 @@ const ACTION_OPTIONS = [
 ]
 
 const selectClass =
-  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none'
+  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none'
 
 export function AdminAuditLogs() {
   const [page, setPage] = useState(1)
@@ -63,7 +63,7 @@ export function AdminAuditLogs() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h1 className="font-display text-2xl font-bold text-secondary">Nhật ký hoạt động</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Nhật ký hoạt động</h1>
       <p className="mt-1 text-sm text-text-muted">
         {result ? `${result.total} bản ghi` : 'Theo dõi hành động của quản trị viên'}
       </p>
@@ -149,7 +149,7 @@ export function AdminAuditLogs() {
                       <td className="px-4 py-3">
                         {log.user ? (
                           <>
-                            <p className="font-medium text-secondary">{log.user.fullName}</p>
+                            <p className="font-medium text-ink">{log.user.fullName}</p>
                             <p className="text-xs text-text-muted">{log.user.email}</p>
                           </>
                         ) : (
@@ -162,7 +162,7 @@ export function AdminAuditLogs() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="font-medium text-secondary">{log.entity}</p>
+                        <p className="font-medium text-ink">{log.entity}</p>
                         <p className="font-mono text-xs text-text-muted">{log.entityId}</p>
                       </td>
                       <td className="px-4 py-3 text-text-muted">{log.ipAddress ?? '—'}</td>

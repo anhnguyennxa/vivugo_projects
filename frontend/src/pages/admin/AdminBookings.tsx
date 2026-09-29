@@ -52,7 +52,7 @@ function nextActions(status: BookingStatus): NextAction[] {
 }
 
 const selectClass =
-  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none'
+  'h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none'
 
 export function AdminBookings() {
   const [page, setPage] = useState(1)
@@ -121,7 +121,7 @@ export function AdminBookings() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h1 className="font-display text-2xl font-bold text-secondary">Đơn đặt tour</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Đơn đặt tour</h1>
       <p className="mt-1 text-sm text-text-muted">
         {result ? `${result.total} đơn` : 'Theo dõi và xử lý đơn đặt tour'}
       </p>
@@ -209,11 +209,11 @@ export function AdminBookings() {
                   {result.items.map((b) => (
                     <tr key={b.id} className="border-b border-border align-top last:border-0">
                       <td className="px-4 py-3">
-                        <p className="font-mono text-xs font-semibold text-secondary">{b.bookingCode}</p>
+                        <p className="font-mono text-xs font-semibold text-ink">{b.bookingCode}</p>
                         <p className="text-xs text-text-muted">{formatDate(b.createdAt)}</p>
                       </td>
                       <td className="max-w-64 px-4 py-3">
-                        <p className="font-medium text-secondary">{b.contactName}</p>
+                        <p className="font-medium text-ink">{b.contactName}</p>
                         <p className="text-xs text-text-muted">
                           {b.contactPhone} · {b.contactEmail}
                         </p>
@@ -223,7 +223,7 @@ export function AdminBookings() {
                         {formatDate(b.departure.departureDate)}
                         <p className="text-xs">{b.numAdults + b.numChildren} khách</p>
                       </td>
-                      <td className="px-4 py-3 text-right font-mono font-bold text-secondary">
+                      <td className="px-4 py-3 text-right font-mono font-bold text-ink">
                         {formatVnd(b.totalPrice)}
                       </td>
                       <td className="px-4 py-3">

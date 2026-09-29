@@ -58,7 +58,7 @@ export function AdminDashboard() {
   return (
     <div className="space-y-6 p-4 sm:p-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-secondary">Tổng quan</h1>
+        <h1 className="font-display text-2xl font-bold text-ink">Tổng quan</h1>
         <p className="mt-1 text-sm text-text-muted">Tình hình kinh doanh của VivuGo</p>
       </div>
 
@@ -69,7 +69,7 @@ export function AdminDashboard() {
               <c.icon className="size-4" />
             </span>
             <p className="mt-3 text-xs text-text-muted">{c.label}</p>
-            <p className="mt-0.5 font-mono text-xl font-bold text-secondary">{c.value}</p>
+            <p className="mt-0.5 font-mono text-xl font-bold text-ink">{c.value}</p>
           </div>
         ))}
       </div>
@@ -82,7 +82,7 @@ export function AdminDashboard() {
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <section className="rounded-2xl border border-border bg-surface p-5">
-          <h2 className="font-display text-base font-bold text-secondary">Doanh thu 6 tháng gần nhất</h2>
+          <h2 className="font-display text-base font-bold text-ink">Doanh thu 6 tháng gần nhất</h2>
           <div className="mt-4 flex h-48 items-end gap-3">
             {data.revenueByMonth.map((m) => (
               <div key={m.month} className="flex h-full flex-1 flex-col items-center justify-end gap-1">
@@ -101,12 +101,12 @@ export function AdminDashboard() {
         </section>
 
         <section className="rounded-2xl border border-border bg-surface p-5">
-          <h2 className="font-display text-base font-bold text-secondary">Đơn theo trạng thái</h2>
+          <h2 className="font-display text-base font-bold text-ink">Đơn theo trạng thái</h2>
           <ul className="mt-4 space-y-3">
             {STATUS_ORDER.map((s) => (
               <li key={s.key} className="flex items-center justify-between text-sm">
                 <BookingStatusBadge status={s.key} />
-                <span className="font-mono font-bold text-secondary">{data.bookingsByStatus[s.key]}</span>
+                <span className="font-mono font-bold text-ink">{data.bookingsByStatus[s.key]}</span>
               </li>
             ))}
           </ul>
@@ -115,7 +115,7 @@ export function AdminDashboard() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-border bg-surface p-5">
-          <h2 className="font-display text-base font-bold text-secondary">Tour bán chạy</h2>
+          <h2 className="font-display text-base font-bold text-ink">Tour bán chạy</h2>
           {data.topTours.length === 0 ? (
             <p className="mt-3 text-sm text-text-muted">Chưa có đơn nào được thanh toán.</p>
           ) : (
@@ -126,12 +126,12 @@ export function AdminDashboard() {
                     {i + 1}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <Link to={ROUTES.tourDetail(t.slug)} className="line-clamp-1 font-medium text-secondary hover:text-primary">
+                    <Link to={ROUTES.tourDetail(t.slug)} className="line-clamp-1 font-medium text-ink hover:text-primary">
                       {t.title}
                     </Link>
                     <span className="text-xs text-text-muted">{t.bookings} đơn</span>
                   </span>
-                  <span className="font-mono text-sm font-bold text-secondary">{formatVnd(t.revenue)}</span>
+                  <span className="font-mono text-sm font-bold text-ink">{formatVnd(t.revenue)}</span>
                 </li>
               ))}
             </ol>
@@ -140,7 +140,7 @@ export function AdminDashboard() {
 
         <section className="rounded-2xl border border-border bg-surface p-5">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-base font-bold text-secondary">Đơn mới nhất</h2>
+            <h2 className="font-display text-base font-bold text-ink">Đơn mới nhất</h2>
             <Link to={ROUTES.adminBookings} className="text-xs font-medium text-primary hover:underline">
               Xem tất cả
             </Link>
@@ -153,13 +153,13 @@ export function AdminDashboard() {
                 <li key={b.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
                   <span className="min-w-0">
                     <span className="block font-mono text-xs text-text-muted">{b.bookingCode}</span>
-                    <span className="line-clamp-1 font-medium text-secondary">{b.tour.title}</span>
+                    <span className="line-clamp-1 font-medium text-ink">{b.tour.title}</span>
                     <span className="text-xs text-text-muted">
                       {b.user.fullName} · {formatDate(b.createdAt)}
                     </span>
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-1">
-                    <span className="font-mono text-sm font-bold text-secondary">{formatVnd(b.totalPrice)}</span>
+                    <span className="font-mono text-sm font-bold text-ink">{formatVnd(b.totalPrice)}</span>
                     <BookingStatusBadge status={b.status} />
                   </span>
                 </li>

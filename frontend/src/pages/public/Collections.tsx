@@ -13,7 +13,7 @@ export function Collections() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-2xl font-bold text-secondary">Bộ sưu tập tour</h1>
+        <h1 className="font-display text-2xl font-bold text-ink">Bộ sưu tập tour</h1>
         <p className="mt-1 text-sm text-text-muted">Tour được tuyển chọn theo chủ đề và mùa trong năm</p>
       </div>
 

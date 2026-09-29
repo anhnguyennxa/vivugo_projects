@@ -43,7 +43,7 @@ export function AccountLayout() {
           </div>
         )}
         <div>
-          <h1 className="font-display text-2xl font-bold text-secondary">Tài khoản của tôi</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">Tài khoản của tôi</h1>
           <p className="mt-1 text-sm text-text-muted">{user.fullName} · {user.email}</p>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function AccountLayout() {
                   'flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive
                     ? 'bg-primary-soft text-primary-ink'
-                    : 'text-text-muted hover:bg-surface-alt hover:text-secondary',
+                    : 'text-text-muted hover:bg-surface-alt hover:text-ink',
                 )
               }
             >

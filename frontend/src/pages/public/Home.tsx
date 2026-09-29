@@ -61,7 +61,7 @@ export function Home() {
                 <Zap className="size-4 fill-accent" />
               </span>
               <div>
-                <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">
+                <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
                   Tour giờ chốt
                 </h2>
                 <p className="text-sm text-text-muted">Khởi hành trong 3 tuần tới — số chỗ có hạn</p>
@@ -100,7 +100,7 @@ export function Home() {
                 <Tag className="size-4" />
               </span>
               <div>
-                <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">Khuyến mãi</h2>
+                <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">Khuyến mãi</h2>
                 <p className="text-sm text-text-muted">Giá ưu đãi cho các tour đang giảm giá</p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export function Home() {
                 <Layers className="size-4" />
               </span>
               <div>
-                <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">Bộ sưu tập</h2>
+                <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">Bộ sưu tập</h2>
                 <p className="text-sm text-text-muted">Tour được tuyển chọn theo chủ đề và mùa</p>
               </div>
             </div>
@@ -135,7 +135,7 @@ export function Home() {
       <section className="mt-12">
         <div className="mb-5 flex items-end justify-between">
           <div>
-            <h2 className="font-display text-xl font-bold text-secondary sm:text-2xl">
+            <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
               Tour nổi bật
             </h2>
             <p className="mt-1 text-sm text-text-muted">Được yêu thích nhất trong tháng này</p>

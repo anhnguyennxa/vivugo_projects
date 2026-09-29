@@ -60,7 +60,7 @@ export function BlogDetail() {
         style={{ backgroundImage: `url(${post.coverImageUrl})` }}
       />
 
-      <h1 className="mt-6 font-display text-2xl font-bold text-secondary sm:text-3xl">{post.title}</h1>
+      <h1 className="mt-6 font-display text-2xl font-bold text-ink sm:text-3xl">{post.title}</h1>
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted">
         <span>{post.author.fullName}</span>
         <span className="text-text-faint">·</span>
@@ -78,9 +78,9 @@ export function BlogDetail() {
       </div>
 
       <div
-        className="prose-content mt-6 text-[15px] leading-relaxed text-secondary
-          [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-secondary
-          [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:font-display [&_h3]:text-base [&_h3]:font-bold [&_h3]:text-secondary
+        className="prose-content mt-6 text-[15px] leading-relaxed text-ink
+          [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink
+          [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:font-display [&_h3]:text-base [&_h3]:font-bold [&_h3]:text-ink
           [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_strong]:font-semibold
           [&_a]:text-primary [&_a]:underline"
       >
@@ -89,7 +89,7 @@ export function BlogDetail() {
 
       {post.relatedTours.length > 0 && (
         <div className="mt-10 border-t border-border pt-8">
-          <h2 className="mb-4 font-display text-lg font-bold text-secondary">Tour liên quan</h2>
+          <h2 className="mb-4 font-display text-lg font-bold text-ink">Tour liên quan</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             {post.relatedTours.map((tour) => (
               <TourCard key={tour.id} tour={tour} />

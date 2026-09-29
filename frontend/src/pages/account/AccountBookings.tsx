@@ -92,12 +92,12 @@ export function AccountBookings() {
                     <p className="font-mono text-xs text-text-muted">{b.bookingCode}</p>
                     <BookingStatusBadge status={b.status} />
                   </div>
-                  <p className="mt-1 line-clamp-1 font-display text-sm font-bold text-secondary">{b.tour.title}</p>
+                  <p className="mt-1 line-clamp-1 font-display text-sm font-bold text-ink">{b.tour.title}</p>
                   <p className="mt-1 flex items-center gap-1 text-xs text-text-muted">
                     <Calendar className="size-3.5" /> Khởi hành {formatDate(b.departure.departureDate)} ·{' '}
                     {b.numAdults + b.numChildren} khách
                   </p>
-                  <p className="mt-1 font-mono text-sm font-bold text-secondary">{formatVnd(b.totalPrice)}</p>
+                  <p className="mt-1 font-mono text-sm font-bold text-ink">{formatVnd(b.totalPrice)}</p>
                 </div>
               </Link>
             </li>

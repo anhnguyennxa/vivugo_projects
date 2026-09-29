@@ -139,11 +139,11 @@ export function CollectionAdminForm() {
         <div>
           <Link
             to={ROUTES.adminCollections}
-            className="mb-2 inline-flex items-center gap-1 text-sm text-text-muted hover:text-secondary"
+            className="mb-2 inline-flex items-center gap-1 text-sm text-text-muted hover:text-ink"
           >
             <ArrowLeft className="size-4" /> Bộ sưu tập
           </Link>
-          <h1 className="font-display text-2xl font-bold text-secondary">
+          <h1 className="font-display text-2xl font-bold text-ink">
             {isEdit ? 'Sửa bộ sưu tập' : 'Tạo bộ sưu tập mới'}
           </h1>
         </div>
@@ -159,7 +159,7 @@ export function CollectionAdminForm() {
         {error && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Tên bộ sưu tập</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Tên bộ sưu tập</label>
           <input
             value={title}
             onChange={(e) => handleTitleChange(e.target.value)}
@@ -169,7 +169,7 @@ export function CollectionAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Slug</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Slug</label>
           <input
             value={slug}
             onChange={(e) => {
@@ -181,7 +181,7 @@ export function CollectionAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Mô tả (tuỳ chọn)</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Mô tả (tuỳ chọn)</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -191,7 +191,7 @@ export function CollectionAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Ảnh bìa</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Ảnh bìa</label>
           <input
             value={coverImageUrl}
             onChange={(e) => setCoverImageUrl(e.target.value)}
@@ -211,7 +211,7 @@ export function CollectionAdminForm() {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-secondary">Trạng thái</label>
+            <label className="mb-1 block text-sm font-medium text-ink">Trạng thái</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as CollectionStatus)}
@@ -222,17 +222,17 @@ export function CollectionAdminForm() {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-secondary">Hiển thị từ ngày (tuỳ chọn)</label>
+            <label className="mb-1 block text-sm font-medium text-ink">Hiển thị từ ngày (tuỳ chọn)</label>
             <input type="date" value={startAt} onChange={(e) => setStartAt(e.target.value)} className={inputClass} />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-secondary">Đến hết ngày (tuỳ chọn)</label>
+            <label className="mb-1 block text-sm font-medium text-ink">Đến hết ngày (tuỳ chọn)</label>
             <input type="date" value={endAt} onChange={(e) => setEndAt(e.target.value)} className={inputClass} />
           </div>
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">
+          <label className="mb-1 block text-sm font-medium text-ink">
             Tour trong bộ sưu tập ({selected.length})
           </label>
           {selected.length === 0 ? (
@@ -245,7 +245,7 @@ export function CollectionAdminForm() {
                     className="size-8 shrink-0 rounded bg-secondary bg-cover bg-center"
                     style={{ backgroundImage: `url(${tour.thumbnailUrl})` }}
                   />
-                  <p className="line-clamp-1 flex-1 text-sm text-secondary">{tour.title}</p>
+                  <p className="line-clamp-1 flex-1 text-sm text-ink">{tour.title}</p>
                   <button
                     type="button"
                     aria-label="Lên trên"
@@ -277,7 +277,7 @@ export function CollectionAdminForm() {
             </ul>
           )}
 
-          <label className="mb-1 mt-3 block text-sm font-medium text-secondary">Thêm/bớt tour</label>
+          <label className="mb-1 mt-3 block text-sm font-medium text-ink">Thêm/bớt tour</label>
           <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border p-2">
             {tourOptions?.map((tour) => (
               <label

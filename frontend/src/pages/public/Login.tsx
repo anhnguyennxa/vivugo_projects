@@ -53,7 +53,7 @@ export function Login() {
           <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-linear-to-br from-primary to-blue-400 text-white">
             <Compass className="size-5" strokeWidth={2.2} />
           </span>
-          <h1 className="font-display text-xl font-bold text-secondary">Đăng nhập VivuGo</h1>
+          <h1 className="font-display text-xl font-bold text-ink">Đăng nhập VivuGo</h1>
           <p className="mt-1 text-sm text-text-muted">Tiếp tục hành trình khám phá của bạn</p>
         </div>
 
@@ -68,7 +68,7 @@ export function Login() {
           )}
 
           <div>
-            <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink">
               Email
             </label>
             <input
@@ -84,7 +84,7 @@ export function Login() {
 
           <div>
             <div className="mb-1.5 flex items-center justify-between">
-              <label htmlFor="password" className="block text-xs font-semibold text-secondary">
+              <label htmlFor="password" className="block text-xs font-semibold text-ink">
                 Mật khẩu
               </label>
               <Link to={ROUTES.forgotPassword} className="text-xs font-medium text-primary hover:underline">

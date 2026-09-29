@@ -48,12 +48,12 @@ export function AccountProfile() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md space-y-4 rounded-2xl border border-border bg-surface p-5">
-      <h2 className="font-display text-lg font-bold text-secondary">Thông tin cá nhân</h2>
+      <h2 className="font-display text-lg font-bold text-ink">Thông tin cá nhân</h2>
       {error && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>}
       {saved && <p className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">Đã lưu thay đổi</p>}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Ảnh đại diện</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Ảnh đại diện</label>
         {avatarError && <p className="mb-1.5 text-xs text-danger">{avatarError}</p>}
         <div className="flex items-center gap-3">
           {user.avatarUrl ? (
@@ -71,7 +71,7 @@ export function AccountProfile() {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Email</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Email</label>
         <input
           value={user.email}
           disabled
@@ -79,7 +79,7 @@ export function AccountProfile() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Họ và tên</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Họ và tên</label>
         <input
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
@@ -87,7 +87,7 @@ export function AccountProfile() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Số điện thoại</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Số điện thoại</label>
         <input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}

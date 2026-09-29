@@ -43,7 +43,7 @@ export function AccountBookingDetail() {
     <div>
       <Link
         to={ROUTES.accountBookings}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-text-muted hover:text-secondary"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-text-muted hover:text-ink"
       >
         <ArrowLeft className="size-4" /> Quay lại danh sách đơn
       </Link>
@@ -56,7 +56,7 @@ export function AccountBookingDetail() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <p className="text-xs text-text-muted">Mã đơn</p>
-              <p className="font-mono text-lg font-bold text-secondary">{booking.bookingCode}</p>
+              <p className="font-mono text-lg font-bold text-ink">{booking.bookingCode}</p>
             </div>
             <BookingStatusBadge status={booking.status} />
           </div>
@@ -71,38 +71,38 @@ export function AccountBookingDetail() {
           <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-text-muted">Ngày khởi hành</dt>
-              <dd className="font-medium text-secondary">
+              <dd className="font-medium text-ink">
                 {formatDate(booking.departure.departureDate)} – {formatDate(booking.departure.returnDate)}
               </dd>
             </div>
             <div>
               <dt className="text-text-muted">Số khách</dt>
-              <dd className="font-medium text-secondary">
+              <dd className="font-medium text-ink">
                 {booking.numAdults} người lớn{booking.numChildren > 0 && `, ${booking.numChildren} trẻ em`}
               </dd>
             </div>
             <div>
               <dt className="text-text-muted">Tổng tiền</dt>
-              <dd className="font-mono font-bold text-secondary">{formatVnd(booking.totalPrice)}</dd>
+              <dd className="font-mono font-bold text-ink">{formatVnd(booking.totalPrice)}</dd>
             </div>
             <div>
               <dt className="text-text-muted">Thanh toán</dt>
-              <dd className="font-medium text-secondary">{PAYMENT_LABELS[booking.paymentStatus]}</dd>
+              <dd className="font-medium text-ink">{PAYMENT_LABELS[booking.paymentStatus]}</dd>
             </div>
             <div>
               <dt className="text-text-muted">Người liên hệ</dt>
-              <dd className="font-medium text-secondary">
+              <dd className="font-medium text-ink">
                 {booking.contactName} · {booking.contactPhone}
               </dd>
             </div>
             <div>
               <dt className="text-text-muted">Email</dt>
-              <dd className="font-medium text-secondary">{booking.contactEmail}</dd>
+              <dd className="font-medium text-ink">{booking.contactEmail}</dd>
             </div>
             {booking.note && (
               <div className="sm:col-span-2">
                 <dt className="text-text-muted">Ghi chú</dt>
-                <dd className="font-medium text-secondary">{booking.note}</dd>
+                <dd className="font-medium text-ink">{booking.note}</dd>
               </div>
             )}
           </dl>

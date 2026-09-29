@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { NotificationBell } from '@/components/common/NotificationBell'
+import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
 import { APP_NAME } from '@/constants/config'
@@ -48,7 +49,7 @@ export function Header() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-blue-400 text-white">
             <Compass className="size-4.5" strokeWidth={2.2} />
           </span>
-          <span className="font-display text-lg font-extrabold tracking-tight text-secondary">
+          <span className="font-display text-lg font-extrabold tracking-tight text-ink">
             {APP_NAME}
           </span>
         </Link>
@@ -58,7 +59,7 @@ export function Header() {
             <Link
               key={link.label}
               to={link.href}
-              className="text-sm font-medium text-text-muted transition-colors hover:text-secondary"
+              className="text-sm font-medium text-text-muted transition-colors hover:text-ink"
             >
               {link.label}
             </Link>
@@ -70,11 +71,12 @@ export function Header() {
           <input
             type="search"
             placeholder="Tìm tour, điểm đến…"
-            className="h-9 w-full rounded-lg border border-border bg-surface-alt pl-9 pr-3 text-sm text-secondary placeholder:text-text-faint focus:border-primary focus:outline-none"
+            className="h-9 w-full rounded-lg border border-border bg-surface-alt pl-9 pr-3 text-sm text-ink placeholder:text-text-faint focus:border-primary focus:outline-none"
           />
         </div>
 
         <div className="ml-auto flex items-center gap-2 md:ml-0">
+          <ThemeToggle />
           <Link to={ROUTES.cart} className="relative">
             <Button variant="ghost" size="icon" aria-label="Giỏ hàng">
               <ShoppingCart />
@@ -104,21 +106,21 @@ export function Header() {
                     <Link
                       to={ROUTES.accountProfile}
                       onClick={() => setMenuOpen(false)}
-                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
+                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-ink hover:bg-surface-alt"
                     >
                       <UserIcon className="size-4" /> Tài khoản
                     </Link>
                     <Link
                       to={ROUTES.accountBookings}
                       onClick={() => setMenuOpen(false)}
-                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
+                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-ink hover:bg-surface-alt"
                     >
                       <Ticket className="size-4" /> Đơn đặt tour
                     </Link>
                     <Link
                       to={ROUTES.favorites}
                       onClick={() => setMenuOpen(false)}
-                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
+                      className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-ink hover:bg-surface-alt"
                     >
                       <Heart className="size-4" /> Yêu thích
                     </Link>
@@ -126,7 +128,7 @@ export function Header() {
                       <Link
                         to={ROUTES.admin}
                         onClick={() => setMenuOpen(false)}
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-secondary hover:bg-surface-alt"
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-ink hover:bg-surface-alt"
                       >
                         <LayoutDashboard className="size-4" /> Trang quản trị
                       </Link>
@@ -177,7 +179,7 @@ export function Header() {
               <Link
                 key={link.label}
                 to={link.href}
-                className="rounded-lg px-2 py-2 text-sm font-medium text-text-muted hover:bg-surface-alt hover:text-secondary"
+                className="rounded-lg px-2 py-2 text-sm font-medium text-text-muted hover:bg-surface-alt hover:text-ink"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}

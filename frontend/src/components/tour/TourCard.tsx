@@ -130,7 +130,7 @@ export function TourCard({ tour }: { tour: Tour }) {
           onClick={handleToggleFavorite}
           className={cn(
             'absolute right-2.5 top-2.5 flex size-7 items-center justify-center rounded-full bg-white/90 transition-colors hover:text-danger',
-            isFavorited ? 'text-danger' : 'text-secondary',
+            isFavorited ? 'text-danger' : 'text-ink',
           )}
         >
           <Heart className={cn('size-4', isFavorited && 'fill-danger')} />
@@ -144,7 +144,7 @@ export function TourCard({ tour }: { tour: Tour }) {
 
       <div className="flex flex-1 flex-col p-4">
         <Link to={detailUrl}>
-          <h3 className="line-clamp-2 min-h-11 font-display text-[15px] font-bold leading-snug text-secondary hover:text-primary-ink">
+          <h3 className="line-clamp-2 min-h-11 font-display text-[15px] font-bold leading-snug text-ink hover:text-primary-ink">
             {tour.title}
           </h3>
         </Link>

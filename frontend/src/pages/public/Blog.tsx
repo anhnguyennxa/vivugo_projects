@@ -64,7 +64,7 @@ export function Blog() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-2xl font-bold text-secondary">Cẩm nang du lịch</h1>
+        <h1 className="font-display text-2xl font-bold text-ink">Cẩm nang du lịch</h1>
         <p className="mt-1 text-sm text-text-muted">
           Kinh nghiệm, gợi ý lịch trình và bí kíp khám phá các điểm đến trong nước
         </p>

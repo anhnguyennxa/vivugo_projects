@@ -27,7 +27,7 @@ export function BlogPostCard({ post }: { post: BlogPostSummary }) {
           <span className="text-text-faint">·</span>
           <span className="normal-case text-text-muted">{formatDate(post.publishedAt ?? post.createdAt)}</span>
         </p>
-        <h3 className="mt-1 line-clamp-2 font-display text-sm font-bold leading-snug text-secondary">
+        <h3 className="mt-1 line-clamp-2 font-display text-sm font-bold leading-snug text-ink">
           {post.title}
         </h3>
         <p className="mt-1.5 line-clamp-2 text-xs text-text-muted">{post.excerpt}</p>

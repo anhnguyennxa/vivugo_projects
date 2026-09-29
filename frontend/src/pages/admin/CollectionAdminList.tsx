@@ -53,7 +53,7 @@ export function CollectionAdminList() {
     <div className="p-4 sm:p-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-secondary">Bộ sưu tập</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">Bộ sưu tập</h1>
           <p className="mt-1 text-sm text-text-muted">
             {result ? `${result.total} bộ sưu tập` : 'Tour theo chủ đề và mùa trong năm'}
           </p>
@@ -72,7 +72,7 @@ export function CollectionAdminList() {
             setStatus(e.target.value as CollectionStatus | '')
             setPage(1)
           }}
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none"
         >
           <option value="">Tất cả trạng thái</option>
           <option value="DRAFT">Nháp</option>
@@ -116,7 +116,7 @@ export function CollectionAdminList() {
                           className="size-10 shrink-0 rounded-lg bg-secondary bg-cover bg-center"
                           style={{ backgroundImage: `url(${c.coverImageUrl})` }}
                         />
-                        <p className="line-clamp-1 self-center font-medium text-secondary">{c.title}</p>
+                        <p className="line-clamp-1 self-center font-medium text-ink">{c.title}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -130,7 +130,7 @@ export function CollectionAdminList() {
                       {c.endAt && `Đến ${formatDate(c.endAt)}`}
                       {!c.startAt && !c.endAt && 'Vô thời hạn'}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-secondary">{c.tourCount}</td>
+                    <td className="px-4 py-3 text-right font-mono text-ink">{c.tourCount}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1.5">
                         <Link to={ROUTES.adminCollectionEdit(c.id)}>

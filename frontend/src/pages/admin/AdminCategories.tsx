@@ -74,7 +74,7 @@ export function AdminCategories() {
     <div className="max-w-3xl p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-secondary">Danh mục tour</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">Danh mục tour</h1>
           <p className="mt-1 text-sm text-text-muted">{data ? `${data.length} danh mục` : 'Nhóm tour theo chủ đề'}</p>
         </div>
         {!form && (
@@ -86,13 +86,13 @@ export function AdminCategories() {
 
       {form && (
         <form onSubmit={handleSubmit} className="mt-4 space-y-3 rounded-2xl border border-border bg-surface p-5">
-          <h2 className="font-display text-base font-bold text-secondary">
+          <h2 className="font-display text-base font-bold text-ink">
             {form.id ? 'Sửa danh mục' : 'Thêm danh mục'}
           </h2>
           {formError && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{formError}</p>}
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-secondary">Tên</label>
+              <label className="mb-1 block text-sm font-medium text-ink">Tên</label>
               <input
                 value={form.name}
                 onChange={(e) =>
@@ -106,7 +106,7 @@ export function AdminCategories() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-secondary">Slug</label>
+              <label className="mb-1 block text-sm font-medium text-ink">Slug</label>
               <input
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value, slugTouched: true })}
@@ -115,7 +115,7 @@ export function AdminCategories() {
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-secondary">Mô tả</label>
+            <label className="mb-1 block text-sm font-medium text-ink">Mô tả</label>
             <input
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -144,7 +144,7 @@ export function AdminCategories() {
             {data.map((c) => (
               <li key={c.id} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
-                  <p className="font-medium text-secondary">{c.name}</p>
+                  <p className="font-medium text-ink">{c.name}</p>
                   <p className="font-mono text-xs text-text-muted">{c.slug}</p>
                   {c.description && <p className="line-clamp-1 text-xs text-text-muted">{c.description}</p>}
                 </div>

@@ -41,7 +41,7 @@ export function ForgotPassword() {
           <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-linear-to-br from-primary to-blue-400 text-white">
             <Compass className="size-5" strokeWidth={2.2} />
           </span>
-          <h1 className="font-display text-xl font-bold text-secondary">Quên mật khẩu</h1>
+          <h1 className="font-display text-xl font-bold text-ink">Quên mật khẩu</h1>
           <p className="mt-1 text-sm text-text-muted">
             Nhập email đã đăng ký, VivuGo sẽ gửi liên kết đặt lại mật khẩu
           </p>
@@ -50,7 +50,7 @@ export function ForgotPassword() {
         {sent ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-success-soft bg-success-soft/40 p-6 text-center">
             <MailCheck className="size-8 text-success" strokeWidth={1.5} />
-            <p className="text-sm text-secondary">
+            <p className="text-sm text-ink">
               Nếu email tồn tại trong hệ thống, hướng dẫn đặt lại mật khẩu đã được gửi tới{' '}
               <span className="font-semibold">{email}</span>.
             </p>
@@ -61,7 +61,7 @@ export function ForgotPassword() {
               <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>
             )}
             <div>
-              <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-secondary">
+              <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink">
                 Email
               </label>
               <input

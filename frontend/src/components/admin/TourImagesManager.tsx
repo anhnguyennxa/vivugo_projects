@@ -63,7 +63,7 @@ export function TourImagesManager({
 
   return (
     <section className="rounded-2xl border border-border bg-surface p-5">
-      <h2 className="font-display text-base font-bold text-secondary">Thư viện ảnh</h2>
+      <h2 className="font-display text-base font-bold text-ink">Thư viện ảnh</h2>
       {error && <p className="mt-3 rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>}
 
       {images.length === 0 ? (
@@ -94,7 +94,7 @@ export function TourImagesManager({
         <ImageUploadButton multiple label="Tải ảnh từ máy" disabled={busy} onUploaded={handleUploaded} />
       </div>
 
-      <label className="mb-1 mt-4 block text-sm font-medium text-secondary">Hoặc dán URL (mỗi dòng một ảnh)</label>
+      <label className="mb-1 mt-4 block text-sm font-medium text-ink">Hoặc dán URL (mỗi dòng một ảnh)</label>
       <textarea
         value={urls}
         onChange={(e) => setUrls(e.target.value)}

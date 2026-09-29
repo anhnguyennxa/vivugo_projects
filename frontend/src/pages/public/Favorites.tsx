@@ -34,7 +34,7 @@ export function Favorites() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="font-display text-2xl font-bold text-secondary">Tour yêu thích</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Tour yêu thích</h1>
 
       {status === 'loading' && (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">

@@ -80,7 +80,7 @@ export function Register() {
           <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-linear-to-br from-primary to-blue-400 text-white">
             <Compass className="size-5" strokeWidth={2.2} />
           </span>
-          <h1 className="font-display text-xl font-bold text-secondary">Tạo tài khoản VivuGo</h1>
+          <h1 className="font-display text-xl font-bold text-ink">Tạo tài khoản VivuGo</h1>
           <p className="mt-1 text-sm text-text-muted">Đặt tour dễ dàng, theo dõi mọi chuyến đi</p>
         </div>
 
@@ -90,7 +90,7 @@ export function Register() {
           )}
 
           <div>
-            <label htmlFor="fullName" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="fullName" className="mb-1.5 block text-xs font-semibold text-ink">
               Họ và tên
             </label>
             <input
@@ -103,7 +103,7 @@ export function Register() {
           </div>
 
           <div>
-            <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink">
               Email
             </label>
             <input
@@ -118,7 +118,7 @@ export function Register() {
           </div>
 
           <div>
-            <label htmlFor="phone" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="phone" className="mb-1.5 block text-xs font-semibold text-ink">
               Số điện thoại <span className="font-normal text-text-faint">(không bắt buộc)</span>
             </label>
             <input
@@ -132,7 +132,7 @@ export function Register() {
           </div>
 
           <div>
-            <label htmlFor="password" className="mb-1.5 block text-xs font-semibold text-secondary">
+            <label htmlFor="password" className="mb-1.5 block text-xs font-semibold text-ink">
               Mật khẩu
             </label>
             <div className="relative">

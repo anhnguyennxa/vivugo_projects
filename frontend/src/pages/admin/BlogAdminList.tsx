@@ -62,7 +62,7 @@ export function BlogAdminList() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-secondary">Bài viết cẩm nang</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">Bài viết cẩm nang</h1>
           <p className="mt-1 text-sm text-text-muted">
             {result ? `${result.total} bài viết` : 'Quản lý nội dung cẩm nang du lịch'}
           </p>
@@ -81,7 +81,7 @@ export function BlogAdminList() {
             setStatus(e.target.value as BlogPostStatus | '')
             setPage(1)
           }}
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none"
         >
           <option value="">Tất cả trạng thái</option>
           <option value="DRAFT">Nháp</option>
@@ -94,7 +94,7 @@ export function BlogAdminList() {
             setRegion(e.target.value as Region | '')
             setPage(1)
           }}
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-secondary focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus:border-primary focus:outline-none"
         >
           <option value="">Tất cả vùng miền</option>
           {REGION_OPTIONS.map((r) => (
@@ -138,7 +138,7 @@ export function BlogAdminList() {
               <tbody>
                 {result.items.map((post) => (
                   <tr key={post.id} className="border-b border-border last:border-0">
-                    <td className="max-w-xs px-4 py-3 font-medium text-secondary">
+                    <td className="max-w-xs px-4 py-3 font-medium text-ink">
                       <p className="line-clamp-1">{post.title}</p>
                     </td>
                     <td className="px-4 py-3 text-text-muted">

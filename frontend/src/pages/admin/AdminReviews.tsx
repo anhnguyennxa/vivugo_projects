@@ -62,7 +62,7 @@ export function AdminReviews() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h1 className="font-display text-2xl font-bold text-secondary">Duyệt đánh giá</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">Duyệt đánh giá</h1>
       <p className="mt-1 text-sm text-text-muted">{result ? `${result.total} đánh giá` : 'Danh sách đánh giá'}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -76,7 +76,7 @@ export function AdminReviews() {
                 setPage(1)
               }}
               className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-                status === tab.value ? 'bg-surface text-secondary shadow-sm' : 'text-text-muted hover:text-secondary'
+                status === tab.value ? 'bg-surface text-ink shadow-sm' : 'text-text-muted hover:text-ink'
               }`}
             >
               {tab.label}
@@ -120,7 +120,7 @@ export function AdminReviews() {
                 <li key={r.id} className="rounded-xl border border-border bg-surface p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="flex items-center gap-2 text-sm font-medium text-secondary">
+                      <p className="flex items-center gap-2 text-sm font-medium text-ink">
                         {r.user.fullName}
                         <span className="text-xs font-normal text-text-muted">{r.user.email}</span>
                       </p>
@@ -143,7 +143,7 @@ export function AdminReviews() {
                       />
                     ))}
                   </div>
-                  <p className="mt-2 whitespace-pre-line text-sm text-secondary">{r.comment}</p>
+                  <p className="mt-2 whitespace-pre-line text-sm text-ink">{r.comment}</p>
 
                   <div className="mt-3 flex gap-2">
                     {r.status !== 'APPROVED' && (

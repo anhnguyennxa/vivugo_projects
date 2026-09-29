@@ -43,12 +43,12 @@ export function AccountPassword() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md space-y-4 rounded-2xl border border-border bg-surface p-5">
-      <h2 className="font-display text-lg font-bold text-secondary">Đổi mật khẩu</h2>
+      <h2 className="font-display text-lg font-bold text-ink">Đổi mật khẩu</h2>
       {error && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>}
       {done && <p className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">Đổi mật khẩu thành công</p>}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Mật khẩu hiện tại</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Mật khẩu hiện tại</label>
         <input
           type="password"
           value={current}
@@ -58,7 +58,7 @@ export function AccountPassword() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Mật khẩu mới</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Mật khẩu mới</label>
         <input
           type="password"
           value={next}
@@ -68,7 +68,7 @@ export function AccountPassword() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium text-secondary">Nhập lại mật khẩu mới</label>
+        <label className="mb-1 block text-sm font-medium text-ink">Nhập lại mật khẩu mới</label>
         <input
           type="password"
           value={confirm}

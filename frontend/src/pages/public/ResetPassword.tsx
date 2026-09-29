@@ -60,14 +60,14 @@ export function ResetPassword() {
           <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-linear-to-br from-primary to-blue-400 text-white">
             <Compass className="size-5" strokeWidth={2.2} />
           </span>
-          <h1 className="font-display text-xl font-bold text-secondary">Đặt lại mật khẩu</h1>
+          <h1 className="font-display text-xl font-bold text-ink">Đặt lại mật khẩu</h1>
           <p className="mt-1 text-sm text-text-muted">Tạo mật khẩu mới cho tài khoản của bạn</p>
         </div>
 
         {done ? (
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-success-soft bg-success-soft/40 p-6 text-center">
             <KeyRound className="size-8 text-success" strokeWidth={1.5} />
-            <p className="text-sm text-secondary">Đặt lại mật khẩu thành công.</p>
+            <p className="text-sm text-ink">Đặt lại mật khẩu thành công.</p>
             <Link to={ROUTES.login}>
               <Button size="sm">Đăng nhập ngay</Button>
             </Link>
@@ -86,7 +86,7 @@ export function ResetPassword() {
               <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>
             )}
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-xs font-semibold text-secondary">
+              <label htmlFor="password" className="mb-1.5 block text-xs font-semibold text-ink">
                 Mật khẩu mới
               </label>
               <div className="relative">

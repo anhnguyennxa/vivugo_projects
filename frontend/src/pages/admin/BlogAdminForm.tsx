@@ -114,10 +114,10 @@ export function BlogAdminForm() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-secondary">
+        <h1 className="font-display text-2xl font-bold text-ink">
           {isEdit ? 'Sửa bài viết' : 'Tạo bài viết mới'}
         </h1>
-        <Link to={ROUTES.adminBlog} className="text-sm text-text-muted hover:text-secondary">
+        <Link to={ROUTES.adminBlog} className="text-sm text-text-muted hover:text-ink">
           Huỷ
         </Link>
       </div>
@@ -132,7 +132,7 @@ export function BlogAdminForm() {
         {error && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Tiêu đề</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Tiêu đề</label>
           <input
             value={form.title}
             onChange={(e) => handleTitleChange(e.target.value)}
@@ -141,7 +141,7 @@ export function BlogAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Slug</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Slug</label>
           <input
             value={form.slug}
             onChange={(e) => {
@@ -153,7 +153,7 @@ export function BlogAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Tóm tắt</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Tóm tắt</label>
           <textarea
             value={form.excerpt}
             onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))}
@@ -163,7 +163,7 @@ export function BlogAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">
+          <label className="mb-1 block text-sm font-medium text-ink">
             Nội dung (Markdown)
           </label>
           <textarea
@@ -175,7 +175,7 @@ export function BlogAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Ảnh bìa (URL)</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Ảnh bìa (URL)</label>
           <input
             value={form.coverImageUrl}
             onChange={(e) => setForm((f) => ({ ...f, coverImageUrl: e.target.value }))}
@@ -191,7 +191,7 @@ export function BlogAdminForm() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-secondary">Vùng miền</label>
+            <label className="mb-1 block text-sm font-medium text-ink">Vùng miền</label>
             <select
               value={form.region ?? ''}
               onChange={(e) =>
@@ -208,7 +208,7 @@ export function BlogAdminForm() {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-secondary">Trạng thái</label>
+            <label className="mb-1 block text-sm font-medium text-ink">Trạng thái</label>
             <select
               value={form.status}
               onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as BlogPostStatus }))}
@@ -221,7 +221,7 @@ export function BlogAdminForm() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-secondary">Tour liên quan</label>
+          <label className="mb-1 block text-sm font-medium text-ink">Tour liên quan</label>
           <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border p-2">
             {tourOptions?.map((tour) => (
               <label
