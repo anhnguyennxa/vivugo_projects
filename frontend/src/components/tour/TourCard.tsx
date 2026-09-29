@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft, ChevronRight, Eye, Heart, MapPin } from 'lucide-react'
+import { ArrowRight, Calendar, ChevronLeft, ChevronRight, Eye, Heart, MapPin } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -32,9 +32,11 @@ function DepartureDates({ slug, departures }: { slug: string; departures: Depart
     trackRef.current?.scrollBy({ left: direction * DATE_SCROLL_PX, behavior: 'smooth' })
   }
 
+  const showArrows = departures.length > 2
+
   return (
     <div className="mt-3 flex items-center gap-1.5">
-      <ScrollButton direction="left" disabled={!canPrev} onClick={() => scroll(-1)} />
+      {showArrows && <ScrollButton direction="left" disabled={!canPrev} onClick={() => scroll(-1)} />}
       <div
         ref={trackRef}
         onScroll={update}
@@ -59,7 +61,7 @@ function DepartureDates({ slug, departures }: { slug: string; departures: Depart
           )
         })}
       </div>
-      <ScrollButton direction="right" disabled={!canNext} onClick={() => scroll(1)} />
+      {showArrows && <ScrollButton direction="right" disabled={!canNext} onClick={() => scroll(1)} />}
     </div>
   )
 }
@@ -167,18 +169,21 @@ export function TourCard({ tour }: { tour: Tour }) {
         )}
 
         <div className="mt-auto flex items-end justify-between gap-2 border-t border-dashed border-border pt-3.5">
-          <div className="mt-3.5">
+          <div className="min-w-0">
             <p className="text-xs text-text-muted">Giá từ:</p>
-            <p className="font-mono text-lg font-bold leading-tight text-primary-ink">{formatVnd(price)}</p>
+            <p className="font-mono text-base font-bold leading-tight text-primary-ink sm:text-lg">
+              {formatVnd(price)}
+            </p>
             {hasDiscount && (
               <p className="font-mono text-[11px] text-text-faint line-through">{formatVnd(tour.basePrice)}</p>
             )}
           </div>
           <Link
             to={detailUrl}
-            className="rounded-xl bg-primary-soft px-4 py-2.5 text-xs font-bold text-primary-ink transition-colors hover:bg-primary hover:text-white"
+            aria-label="Xem chi tiết"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-ink transition-colors hover:bg-primary hover:text-white"
           >
-            Xem chi tiết
+            <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>
