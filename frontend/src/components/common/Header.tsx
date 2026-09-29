@@ -101,7 +101,7 @@ export function Header() {
                   {user.fullName.charAt(0).toUpperCase()}
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-11 w-48 rounded-xl border border-border bg-surface p-1.5 shadow-md">
+                  <div className="absolute right-0 top-11 w-48 rounded-xl border border-border bg-surface p-1.5 shadow-md dark:shadow-none">
                     <p className="truncate px-2.5 py-1.5 text-xs text-text-muted">{user.email}</p>
                     <Link
                       to={ROUTES.accountProfile}

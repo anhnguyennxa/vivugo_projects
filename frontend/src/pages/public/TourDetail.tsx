@@ -238,7 +238,7 @@ export function TourDetail() {
           </div>
         </div>
 
-        <aside className="h-fit rounded-2xl border border-border bg-surface p-5 shadow-sm lg:sticky lg:top-20">
+        <aside className="h-fit rounded-2xl border border-border bg-surface p-5 shadow-sm dark:shadow-none lg:sticky lg:top-20">
           <p className="font-mono text-2xl font-bold text-ink">
             {formatVnd(price)}
             <span className="ml-1.5 text-sm font-medium text-text-faint">/khách</span>

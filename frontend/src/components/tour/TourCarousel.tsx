@@ -75,7 +75,7 @@ function ArrowButton({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        'absolute top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-surface text-ink shadow-md transition-opacity hover:bg-surface-alt sm:flex',
+        'absolute top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-surface text-ink shadow-md transition-opacity hover:bg-surface-alt dark:shadow-none sm:flex',
         side === 'left' ? '-left-4' : '-right-4',
         disabled && 'pointer-events-none opacity-30',
       )}

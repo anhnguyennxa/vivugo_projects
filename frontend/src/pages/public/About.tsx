@@ -55,7 +55,7 @@ export function About() {
       <h2 className="mt-8 font-display text-lg font-bold text-ink">Giá trị cốt lõi</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {VALUES.map((v) => (
-          <div key={v.title} className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          <div key={v.title} className="rounded-2xl border border-border bg-surface p-5 shadow-sm dark:shadow-none">
             <span className="flex size-9 items-center justify-center rounded-lg bg-primary-soft text-primary-ink">
               <v.icon className="size-4.5" />
             </span>

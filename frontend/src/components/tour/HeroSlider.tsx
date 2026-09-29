@@ -31,7 +31,7 @@ export function HeroSlider({ tours }: { tours: Tour[] }) {
 
   return (
     <div
-      className="relative h-[280px] overflow-hidden rounded-2xl shadow-md sm:h-[340px]"
+      className="relative h-[280px] overflow-hidden rounded-2xl shadow-md dark:shadow-none sm:h-[340px]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

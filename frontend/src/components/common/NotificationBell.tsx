@@ -65,7 +65,7 @@ export function NotificationBell() {
       </Button>
 
       {open && (
-        <div className="absolute right-0 top-11 w-80 rounded-xl border border-border bg-surface shadow-md">
+        <div className="absolute right-0 top-11 w-80 rounded-xl border border-border bg-surface shadow-md dark:shadow-none">
           <div className="flex items-center justify-between border-b border-border px-3 py-2.5">
             <p className="text-sm font-semibold text-ink">Thông báo</p>
             {unreadCount > 0 && (

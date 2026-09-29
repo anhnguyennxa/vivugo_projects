@@ -108,7 +108,7 @@ export function TourCard({ tour }: { tour: Tour }) {
   }
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-shadow hover:shadow-md">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-shadow hover:shadow-md dark:shadow-none dark:hover:shadow-none">
       <div className="group relative overflow-hidden">
         <Link to={detailUrl} aria-label={tour.title} className="block overflow-hidden">
           <div

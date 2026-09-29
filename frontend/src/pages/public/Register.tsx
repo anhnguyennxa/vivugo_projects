@@ -84,7 +84,7 @@ export function Register() {
           <p className="mt-1 text-sm text-text-muted">Đặt tour dễ dàng, theo dõi mọi chuyến đi</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-sm dark:shadow-none">
           {error && (
             <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{error}</p>
           )}

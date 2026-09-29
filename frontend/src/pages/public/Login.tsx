@@ -57,7 +57,7 @@ export function Login() {
           <p className="mt-1 text-sm text-text-muted">Tiếp tục hành trình khám phá của bạn</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-sm dark:shadow-none">
           {registeredEmail && !error && (
             <p className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">
               Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.

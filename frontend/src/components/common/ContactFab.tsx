@@ -31,7 +31,7 @@ export function ContactFab() {
             href={c.href}
             target={c.key === 'zalo' ? '_blank' : undefined}
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full bg-surface py-1.5 pl-4 pr-1.5 text-sm font-semibold text-ink shadow-md ring-1 ring-border transition-colors hover:bg-surface-alt"
+            className="flex items-center gap-2 rounded-full bg-surface py-1.5 pl-4 pr-1.5 text-sm font-semibold text-ink shadow-md ring-1 ring-border transition-colors hover:bg-surface-alt dark:shadow-none"
           >
             {c.label}
             <span className={cn('flex size-8 items-center justify-center rounded-full text-white', c.tone)}>

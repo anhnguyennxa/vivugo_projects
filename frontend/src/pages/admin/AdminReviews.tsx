@@ -76,7 +76,7 @@ export function AdminReviews() {
                 setPage(1)
               }}
               className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-                status === tab.value ? 'bg-surface text-ink shadow-sm' : 'text-text-muted hover:text-ink'
+                status === tab.value ? 'bg-surface text-ink shadow-sm dark:shadow-none' : 'text-text-muted hover:text-ink'
               }`}
             >
               {tab.label}
