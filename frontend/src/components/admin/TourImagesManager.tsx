@@ -1,8 +1,9 @@
-import { ImagePlus, Trash2 } from 'lucide-react'
+import { ImagePlus, Star, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { ImageUploadButton } from '@/components/common/ImageUploadButton'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { addTourImages, removeTourImage } from '@/services/admin'
 import type { TourImage } from '@/types/tour'
 import { getApiErrorMessage } from '@/utils/errors'
@@ -10,10 +11,14 @@ import { getApiErrorMessage } from '@/utils/errors'
 export function TourImagesManager({
   tourId,
   images,
+  thumbnailUrl,
+  onSetThumbnail,
   onChanged,
 }: {
   tourId: string
   images: TourImage[]
+  thumbnailUrl: string
+  onSetThumbnail: (url: string) => void
   onChanged: () => void
 }) {
   const [urls, setUrls] = useState('')
@@ -70,23 +75,42 @@ export function TourImagesManager({
         <p className="mt-3 text-sm text-text-muted">Chưa có ảnh nào trong thư viện.</p>
       ) : (
         <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {images.map((img) => (
-            <li key={img.id} className="group relative">
-              <div
-                className="h-24 rounded-lg bg-secondary bg-cover bg-center"
-                style={{ backgroundImage: `url(${img.url})` }}
-              />
-              <button
-                type="button"
-                aria-label="Xoá ảnh"
-                disabled={busy}
-                onClick={() => handleRemove(img.id)}
-                className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-white/90 text-danger shadow hover:bg-danger-soft"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </li>
-          ))}
+          {images.map((img) => {
+            const isThumbnail = img.url === thumbnailUrl
+            return (
+              <li key={img.id} className="group relative">
+                <div
+                  className={cn(
+                    'h-24 rounded-lg bg-secondary bg-cover bg-center ring-2 ring-offset-2 ring-offset-surface',
+                    isThumbnail ? 'ring-primary' : 'ring-transparent',
+                  )}
+                  style={{ backgroundImage: `url(${img.url})` }}
+                />
+                <button
+                  type="button"
+                  aria-label="Xoá ảnh"
+                  disabled={busy}
+                  onClick={() => handleRemove(img.id)}
+                  className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-white/90 text-danger shadow hover:bg-danger-soft"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+                {isThumbnail ? (
+                  <span className="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                    <Star className="size-3 fill-white" /> Đại diện
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onSetThumbnail(img.url)}
+                    className="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-secondary shadow transition-colors hover:bg-primary hover:text-white"
+                  >
+                    <Star className="size-3" /> Đặt đại diện
+                  </button>
+                )}
+              </li>
+            )
+          })}
         </ul>
       )}
 

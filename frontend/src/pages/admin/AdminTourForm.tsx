@@ -476,7 +476,13 @@ function TourFormBody({ tour, onReload }: { tour: AdminTourDetail | null; onRelo
 
       {tour && (
         <>
-          <TourImagesManager tourId={tour.id} images={tour.images} onChanged={() => void onReload()} />
+          <TourImagesManager
+            tourId={tour.id}
+            images={tour.images}
+            thumbnailUrl={form.thumbnailUrl}
+            onSetThumbnail={(url) => set('thumbnailUrl', url)}
+            onChanged={() => void onReload()}
+          />
           <DeparturesManager tourId={tour.id} departures={tour.departures} onChanged={() => void onReload()} />
         </>
       )}
