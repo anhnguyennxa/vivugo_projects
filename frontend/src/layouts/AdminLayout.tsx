@@ -61,7 +61,7 @@ export function AdminLayout() {
       </header>
 
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col md:flex-row">
-        <nav className="flex shrink-0 gap-1 overflow-x-auto border-b border-border p-3 md:w-52 md:flex-col md:border-b-0 md:border-r md:p-4">
+        <nav className="flex w-full shrink-0 flex-col gap-1 border-b border-border p-3 md:w-52 md:border-b-0 md:border-r md:p-4">
           {MENU.map((item) => (
             <NavLink
               key={item.to}
