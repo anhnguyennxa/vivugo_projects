@@ -21,6 +21,7 @@ const NAV_LINKS = [
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [navLinksOpen, setNavLinksOpen] = useState(false)
   const [search, setSearch] = useState('')
   const menuRef = useRef<HTMLDivElement>(null)
   const user = useAuthStore((s) => s.user)
@@ -186,27 +187,37 @@ export function Header() {
               className="h-9 w-full rounded-lg border border-border bg-surface-alt pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
             />
           </form>
-          <nav className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                to={link.href}
-                className="rounded-lg px-2 py-2 text-sm font-medium text-text-muted hover:bg-surface-alt hover:text-ink"
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            {!user && (
-              <Link
-                to={ROUTES.login}
-                className="mt-1 rounded-lg bg-primary px-2 py-2 text-center text-sm font-semibold text-white"
-                onClick={() => setMobileOpen(false)}
-              >
-                Đăng nhập
-              </Link>
-            )}
-          </nav>
+          <button
+            type="button"
+            onClick={() => setNavLinksOpen((v) => !v)}
+            className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-ink hover:bg-surface-alt"
+          >
+            {navLinksOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+            Danh mục điều hướng
+          </button>
+          {navLinksOpen && (
+            <nav className="flex flex-col gap-1">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="rounded-lg px-2 py-2 text-sm font-medium text-text-muted hover:bg-surface-alt hover:text-ink"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )}
+          {!user && (
+            <Link
+              to={ROUTES.login}
+              className="mt-1 block rounded-lg bg-primary px-2 py-2 text-center text-sm font-semibold text-white"
+              onClick={() => setMobileOpen(false)}
+            >
+              Đăng nhập
+            </Link>
+          )}
         </div>
       )}
     </header>
