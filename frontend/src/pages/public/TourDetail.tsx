@@ -132,7 +132,7 @@ export function TourDetail() {
       />
 
       <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_360px]">
-        <div>
+        <div className="min-w-0">
           <TourGallery images={tour.images} thumbnailUrl={tour.thumbnailUrl} title={tour.title} />
 
           <div className="mt-6">
