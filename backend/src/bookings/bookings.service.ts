@@ -170,6 +170,25 @@ export class BookingsService {
     return serializeBooking(booking);
   }
 
+  // Khong doi dang nhap - chi tra ve truong khong nhay cam (khong ten/sdt/email
+  // lien he) cho trang ket qua ngay sau thanh toan. Biet dung ma don (chuoi
+  // ngau nhien, khong doan duoc) coi nhu du dieu kien xem, giong hau het trang
+  // xac nhan don hang thuong mai dien tu.
+  async findByCodePublic(code: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { bookingCode: code },
+      select: {
+        bookingCode: true,
+        status: true,
+        paymentStatus: true,
+        totalPrice: true,
+        tour: { select: { title: true } },
+      },
+    });
+    if (!booking) throw new NotFoundException('Không tìm thấy đơn đặt tour');
+    return { ...booking, totalPrice: toNumber(booking.totalPrice) };
+  }
+
   async updateStatus(id: string, dto: UpdateBookingStatusDto) {
     const booking = await this.prisma.booking.findUnique({ where: { id } });
     if (!booking) throw new NotFoundException('Không tìm thấy đơn đặt tour');

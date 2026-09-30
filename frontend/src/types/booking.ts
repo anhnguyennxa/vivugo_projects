@@ -29,3 +29,13 @@ export interface Booking {
   payment: Payment | null
   review: { id: string } | null
 }
+
+// Trang ket qua ngay sau thanh toan dung ban rut gon nay - khong doi dang
+// nhap, khong lo thong tin lien he (xem GET /bookings/:code/receipt).
+export interface BookingReceipt {
+  bookingCode: string
+  status: BookingStatus
+  paymentStatus: BookingPaymentStatus
+  totalPrice: number
+  tour: { title: string }
+}

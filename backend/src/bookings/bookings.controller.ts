@@ -17,6 +17,7 @@ import {
   CurrentUser,
   type RequestUser,
 } from '../common/decorators/current-user.decorator';
+import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../../generated/prisma/enums';
 import { BookingsService } from './bookings.service';
@@ -45,6 +46,17 @@ export class BookingsController {
   async findAll(@CurrentUser() user: RequestUser) {
     const data = await this.bookingsService.findAllForUser(user);
     return { message: 'Lấy danh sách đơn đặt tour thành công', data };
+  }
+
+  // Trang kết quả ngay sau khi thanh toán (redirect tu VNPay tu domain khac)
+  // co the toi truoc khi phien dang nhap kip khoi phuc (VD Safari chan cookie
+  // cross-site) - cho xem it thong tin khong nhay cam bang chinh ma don, khong
+  // doi hoi dang nhap, giong hau het trang xac nhan don hang thuong mai dien tu.
+  @Public()
+  @Get(':code/receipt')
+  async findOneReceipt(@Param('code') code: string) {
+    const data = await this.bookingsService.findByCodePublic(code);
+    return { message: 'Lấy thông tin đơn đặt tour thành công', data };
   }
 
   @Get(':code')

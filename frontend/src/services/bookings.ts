@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import type { Booking } from '@/types/booking'
+import type { Booking, BookingReceipt } from '@/types/booking'
 import type { ApiSuccess } from '@/types/api'
 
 export interface CheckoutPayload {
@@ -25,6 +25,13 @@ export async function checkout(payload: CheckoutPayload): Promise<CheckoutResult
 
 export async function getBookingByCode(code: string): Promise<Booking> {
   const { data } = await apiClient.get<ApiSuccess<Booking>>(`/bookings/${code}`)
+  return data.data
+}
+
+// Khong doi dang nhap - dung cho trang ket qua ngay sau thanh toan (xem
+// GET /bookings/:code/receipt o backend).
+export async function getBookingReceiptByCode(code: string): Promise<BookingReceipt> {
+  const { data } = await apiClient.get<ApiSuccess<BookingReceipt>>(`/bookings/${code}/receipt`)
   return data.data
 }
 
