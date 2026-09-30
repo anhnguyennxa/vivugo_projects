@@ -15,6 +15,7 @@ import { useAdminChatStore } from '@/stores/adminChat'
 import { useAuthStore } from '@/stores/auth'
 import type { ChatConversation, ChatMessage, ChatMessageEvent, ChatUser } from '@/types/chat'
 import { formatRelativeTime } from '@/utils/format'
+import { linkifyText } from '@/utils/linkify'
 
 type Thread = { conversation: ChatConversation & { user: ChatUser }; messages: ChatMessage[] }
 
@@ -182,7 +183,7 @@ export function AdminChat() {
                           isMine ? 'bg-primary text-white' : 'bg-surface-alt text-ink'
                         }`}
                       >
-                        <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                        <p className="whitespace-pre-wrap break-words">{linkifyText(m.message)}</p>
                         <p className={`mt-0.5 text-[10px] ${isMine ? 'text-white/70' : 'text-text-faint'}`}>
                           {formatRelativeTime(m.createdAt)}
                         </p>

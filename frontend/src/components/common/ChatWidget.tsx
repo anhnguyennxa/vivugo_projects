@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '@/stores/auth'
 import { useChatStore } from '@/stores/chat'
 import { formatRelativeTime } from '@/utils/format'
+import { linkifyText } from '@/utils/linkify'
 
 export function ChatWidget() {
   const userId = useAuthStore((s) => s.user?.id)
@@ -64,7 +65,7 @@ export function ChatWidget() {
                         : 'bg-surface-alt text-ink'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                    <p className="whitespace-pre-wrap break-words">{linkifyText(m.message)}</p>
                     <p className={`mt-0.5 text-[10px] ${isMine ? 'text-white/70' : 'text-text-faint'}`}>
                       {formatRelativeTime(m.createdAt)}
                     </p>

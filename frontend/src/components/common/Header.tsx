@@ -1,5 +1,5 @@
 import { Compass, Heart, LayoutDashboard, Ticket, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { NotificationBell } from '@/components/common/NotificationBell'
@@ -21,10 +21,18 @@ const NAV_LINKS = [
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const menuRef = useRef<HTMLDivElement>(null)
   const user = useAuthStore((s) => s.user)
   const itemCount = useCartStore((s) => s.itemCount)
   const navigate = useNavigate()
+
+  function handleSearchSubmit(e: FormEvent) {
+    e.preventDefault()
+    const q = search.trim()
+    navigate(q ? `${ROUTES.tours}?search=${encodeURIComponent(q)}` : ROUTES.tours)
+    setMobileOpen(false)
+  }
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -66,14 +74,16 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="relative ml-auto hidden max-w-xs flex-1 md:block">
+        <form onSubmit={handleSearchSubmit} className="relative ml-auto hidden max-w-xs flex-1 md:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-faint" />
           <input
             type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm tour, điểm đến…"
             className="h-9 w-full rounded-lg border border-border bg-surface-alt pl-9 pr-3 text-sm text-ink placeholder:text-text-faint focus:border-primary focus:outline-none"
           />
-        </div>
+        </form>
 
         <div className="ml-auto flex items-center gap-2 md:ml-0">
           <ThemeToggle />
@@ -166,14 +176,16 @@ export function Header() {
 
       {mobileOpen && (
         <div className="border-t border-border px-4 py-3 md:hidden">
-          <div className="relative mb-3">
+          <form onSubmit={handleSearchSubmit} className="relative mb-3">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-faint" />
             <input
               type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm tour, điểm đến…"
               className="h-9 w-full rounded-lg border border-border bg-surface-alt pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
             />
-          </div>
+          </form>
           <nav className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <Link
