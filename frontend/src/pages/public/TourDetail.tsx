@@ -56,7 +56,7 @@ export function TourDetail() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Skeleton className="mb-4 h-4 w-64" />
-        <Skeleton className="h-64 w-full rounded-2xl sm:h-[380px]" />
+        <Skeleton className="h-48 w-full rounded-2xl sm:h-[380px]" />
         <Skeleton className="mt-6 h-8 w-2/3" />
         <Skeleton className="mt-2 h-4 w-1/3" />
       </div>

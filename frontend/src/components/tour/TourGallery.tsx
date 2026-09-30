@@ -18,7 +18,7 @@ export function TourGallery({
   return (
     <div>
       <div
-        className="h-64 w-full rounded-2xl bg-surface-alt bg-cover bg-center sm:h-[380px]"
+        className="h-48 w-full rounded-2xl bg-surface-alt bg-cover bg-center sm:h-[380px]"
         style={{ backgroundImage: `url(${all[active]})` }}
         role="img"
         aria-label={title}
