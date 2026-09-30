@@ -79,17 +79,22 @@ Các lần sau chỉ cần `./deploy.sh` (kéo code mới, build lại, migrate,
 
 ## Deploy production (Vercel + Render)
 
-Frontend và backend nằm ở 2 domain khác nhau (khác VPS ở trên, nơi cả 2 cùng domain qua Caddy) nên bắt buộc `COOKIE_SAME_SITE=none` để cookie refresh token được gửi kèm request cross-site — thiếu biến này thì đăng nhập xong tải lại trang sẽ bị đăng xuất ngay.
+Frontend (Vercel) và backend (Render) là 2 domain khác nhau. Thay vì gọi thẳng backend (cookie đăng nhập bị Safari/iOS chặn vì là cookie cross-site — ITP), `frontend/vercel.json` có sẵn rewrite proxy `/api/*` sang backend Render, nên trình duyệt luôn thấy API cùng domain với web — cookie hoạt động như same-site trên mọi trình duyệt.
 
 **1. Backend trên Render** — Dashboard → New → Blueprint → chọn repo này (đọc sẵn `render.yaml`, tạo cả web service lẫn Postgres). Sau khi tạo xong, vào service `vivugo-backend` → Environment, điền các biến đánh dấu "điền tay khi cần" trong `render.yaml`: `VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`, `CLOUDINARY_*`, `SMTP_*` (JWT secret Render tự sinh). `CORS_ORIGIN`/`FRONTEND_URL` để trống trước, quay lại điền sau khi có domain Vercel ở bước 2. Lấy URL backend dạng `https://vivugo-backend.onrender.com`.
 
-**2. Frontend trên Vercel** — Dashboard → Add New → Project → chọn repo này, **Root Directory** đặt `frontend`. Thêm biến môi trường `VITE_API_BASE_URL` = URL backend Render kèm `/api` (VD `https://vivugo-backend.onrender.com/api`) — khác bản Docker/VPS (đặt `/api` tương đối vì cùng domain), ở đây bắt buộc là URL tuyệt đối vì khác domain. Deploy xong lấy URL dạng `https://vivugo.vercel.app`.
+**2. Frontend trên Vercel** — Dashboard → Add New → Project → chọn repo này, **Root Directory** đặt `frontend`. Thêm 2 biến môi trường:
+   - `VITE_API_BASE_URL` = `/api` (tương đối — đi qua rewrite proxy trong `vercel.json`, không dùng URL tuyệt đối của Render nữa).
+   - `VITE_SOCKET_URL` = URL backend Render (VD `https://vivugo-backend.onrender.com`) — riêng kết nối Socket.IO (chat/thông báo realtime) vẫn nối thẳng cross-origin vì xác thực bằng token, không phụ thuộc cookie nên không bị Safari chặn.
+
+   Nếu đổi domain backend trong `frontend/vercel.json` (dòng rewrite `/api/:path*`) nhớ sửa đúng domain Render thật, không để sót `vivugo-backend.onrender.com` mẫu. Deploy xong lấy URL dạng `https://vivugo.vercel.app`.
 
 **3. Nối 2 chiều** — quay lại Render, điền `CORS_ORIGIN` và `FRONTEND_URL` bằng đúng URL Vercel ở bước 2, deploy lại backend.
 
 - Migration tự áp mỗi lần deploy (`dockerCommand` trong `render.yaml` chạy `prisma migrate deploy` trước khi khởi động app — gói free không hỗ trợ `preDeployCommand` riêng). Nạp dữ liệu mẫu (tuỳ chọn, lần đầu): Render dashboard → service → **Shell** → `npx tsx prisma/seed.ts`, rồi đổi ngay mật khẩu admin.
 - Gói free của Render "ngủ" sau một thời gian không có request, lần request đầu tiên sau đó có thể mất khoảng nửa phút mới phản hồi.
-- IPN VNPay thật trỏ về `https://<domain-render>/api/payments/vnpay/callback`.
+- IPN VNPay thật trỏ về `https://<domain-render>/api/payments/vnpay/callback` (gọi trực tiếp Render, không qua proxy Vercel).
+- Vercel rewrite chỉ proxy được HTTP (`/api/*`), **không** proxy được WebSocket — đây là lý do Socket.IO (`VITE_SOCKET_URL`) phải nối thẳng cross-origin riêng, khác với `/api`.
 
 ## Database
 
