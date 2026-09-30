@@ -131,63 +131,61 @@ export function Cart() {
               const requested = item.numAdults + item.numChildren
               const busy = busyId === item.id
               return (
-                <div
-                  key={item.id}
-                  className="flex gap-4 rounded-2xl border border-border bg-surface p-4"
-                >
-                  <div
-                    className="h-20 w-28 shrink-0 rounded-lg bg-cover bg-center"
-                    style={{ backgroundImage: `url(${item.tour.thumbnailUrl})` }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <Link
-                      to={ROUTES.tourDetail(item.tour.slug)}
-                      className="line-clamp-1 font-display text-sm font-bold text-ink hover:text-primary"
-                    >
-                      {item.tour.title}
-                    </Link>
-                    <p className="mt-1 text-xs text-text-muted">
-                      Khởi hành {formatDate(item.departure.departureDate)}
-                    </p>
-                    <div className="mt-2.5 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          disabled={busy || item.numAdults <= 1}
-                          onClick={() => handleQtyChange(item, item.numAdults - 1)}
-                          className="flex size-6 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-alt disabled:opacity-40"
-                          aria-label="Giảm số khách"
-                        >
-                          <Minus className="size-3.5" />
-                        </button>
-                        <span className="w-14 text-center font-mono text-xs text-text-muted">
-                          {requested} khách
-                        </span>
-                        <button
-                          type="button"
-                          disabled={busy || requested >= remaining}
-                          onClick={() => handleQtyChange(item, item.numAdults + 1)}
-                          className="flex size-6 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-alt disabled:opacity-40"
-                          aria-label="Tăng số khách"
-                        >
-                          <Plus className="size-3.5" />
-                        </button>
-                      </div>
-                      <p className="font-mono text-sm font-bold text-ink">
+                <div key={item.id} className="rounded-2xl border border-border bg-surface p-4">
+                  <div className="flex gap-3">
+                    <div
+                      className="h-16 w-24 shrink-0 rounded-lg bg-cover bg-center sm:h-20 sm:w-28"
+                      style={{ backgroundImage: `url(${item.tour.thumbnailUrl})` }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <Link
+                        to={ROUTES.tourDetail(item.tour.slug)}
+                        className="line-clamp-1 font-display text-sm font-bold text-ink hover:text-primary"
+                      >
+                        {item.tour.title}
+                      </Link>
+                      <p className="mt-1 text-xs text-text-muted">
+                        Khởi hành {formatDate(item.departure.departureDate)}
+                      </p>
+                      <p className="mt-1.5 font-mono text-sm font-bold text-ink">
                         {formatVnd(itemPrice(item) * requested)}
                       </p>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-end justify-between">
                     <button
                       type="button"
                       disabled={busy}
                       onClick={() => handleRemove(item)}
                       aria-label="Xoá khỏi giỏ hàng"
-                      className="text-text-faint hover:text-danger disabled:opacity-40"
+                      className="shrink-0 text-text-faint hover:text-danger disabled:opacity-40"
                     >
                       <Trash2 className="size-4" />
                     </button>
+                  </div>
+
+                  <div className="mt-3 flex items-center justify-between gap-3 border-t border-dashed border-border pt-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        disabled={busy || item.numAdults <= 1}
+                        onClick={() => handleQtyChange(item, item.numAdults - 1)}
+                        className="flex size-7 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-alt disabled:opacity-40"
+                        aria-label="Giảm số khách"
+                      >
+                        <Minus className="size-3.5" />
+                      </button>
+                      <span className="w-14 text-center font-mono text-xs text-text-muted">
+                        {requested} khách
+                      </span>
+                      <button
+                        type="button"
+                        disabled={busy || requested >= remaining}
+                        onClick={() => handleQtyChange(item, item.numAdults + 1)}
+                        className="flex size-7 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-alt disabled:opacity-40"
+                        aria-label="Tăng số khách"
+                      >
+                        <Plus className="size-3.5" />
+                      </button>
+                    </div>
                     <Button
                       size="sm"
                       onClick={() => navigate(`${ROUTES.checkout}?cartItemId=${item.id}`)}
