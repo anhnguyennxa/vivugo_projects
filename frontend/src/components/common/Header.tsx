@@ -105,14 +105,17 @@ export function Header() {
               <div className="relative" ref={menuRef}>
                 <button
                   type="button"
-                  onClick={() => setMenuOpen((v) => !v)}
+                  onClick={() => {
+                    setMenuOpen((v) => !v)
+                    setMobileOpen(false)
+                  }}
                   aria-label="Tài khoản"
                   className="flex size-8 items-center justify-center rounded-full bg-linear-to-br from-accent to-amber-400 text-xs font-bold text-white"
                 >
                   {user.fullName.charAt(0).toUpperCase()}
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-11 w-48 rounded-xl border border-border bg-surface p-1.5 shadow-md dark:shadow-none">
+                  <div className="absolute right-0 top-11 z-50 w-48 rounded-xl border border-border bg-surface p-1.5 shadow-md dark:shadow-none">
                     <p className="truncate px-2.5 py-1.5 text-xs text-text-muted">{user.email}</p>
                     <Link
                       to={ROUTES.accountProfile}
@@ -168,7 +171,10 @@ export function Header() {
             size="icon"
             className="md:hidden"
             aria-label="Menu"
-            onClick={() => setMobileOpen((v) => !v)}
+            onClick={() => {
+              setMobileOpen((v) => !v)
+              setMenuOpen(false)
+            }}
           >
             {mobileOpen ? <X /> : <Menu />}
           </Button>
