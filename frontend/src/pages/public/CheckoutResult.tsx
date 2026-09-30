@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ROUTES } from '@/constants/routes'
 import { useAsync } from '@/hooks/useAsync'
 import { getBookingByCode } from '@/services/bookings'
+import { useAuthStore } from '@/stores/auth'
 
 function formatVnd(amount: number) {
   return new Intl.NumberFormat('vi-VN').format(amount) + '₫'
@@ -43,10 +44,11 @@ const STATUS_CONTENT = {
 export function CheckoutResult() {
   const [searchParams] = useSearchParams()
   const bookingCode = searchParams.get('vnp_TxnRef') ?? searchParams.get('bookingCode')
+  const isHydrating = useAuthStore((s) => s.isHydrating)
 
   const { status, data: booking, error } = useAsync(
     () => getBookingByCode(bookingCode!),
-    [bookingCode],
+    [bookingCode, isHydrating],
   )
 
   if (!bookingCode) {
@@ -57,7 +59,7 @@ export function CheckoutResult() {
     )
   }
 
-  if (status === 'loading') {
+  if (isHydrating || status === 'loading') {
     return (
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
         <Skeleton className="h-64 w-full rounded-2xl" />
