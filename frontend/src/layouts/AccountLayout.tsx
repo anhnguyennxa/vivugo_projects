@@ -49,7 +49,7 @@ export function AccountLayout() {
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr]">
-        <nav className="flex gap-1 overflow-x-auto md:flex-col">
+        <nav className="flex min-w-0 gap-1 overflow-x-auto md:flex-col">
           {TABS.map((tab) => (
             <NavLink
               key={tab.to}

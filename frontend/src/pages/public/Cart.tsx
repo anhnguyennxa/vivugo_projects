@@ -122,7 +122,7 @@ export function Cart() {
 
       {status === 'success' && data.length > 0 && (
         <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-3">
+          <div className="min-w-0 space-y-3">
             {itemError && (
               <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{itemError}</p>
             )}
@@ -200,7 +200,7 @@ export function Cart() {
             })}
           </div>
 
-          <aside className="h-fit rounded-2xl border border-border bg-surface p-5">
+          <aside className="h-fit min-w-0 rounded-2xl border border-border bg-surface p-5">
             <p className="text-sm font-semibold text-ink">Tổng cộng</p>
             <p className="mt-1 font-mono text-xl font-bold text-ink">{formatVnd(total)}</p>
             <p className="mt-3 text-xs text-text-faint">
