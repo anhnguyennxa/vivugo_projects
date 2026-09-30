@@ -1,5 +1,5 @@
-import { Bell, BookOpen, Compass, LayoutDashboard, Layers, MessageCircle, MessageSquare, Route, ScrollText, Tags, Ticket, Users } from 'lucide-react'
-import { useEffect } from 'react'
+import { Bell, BookOpen, Compass, LayoutDashboard, Layers, Menu, MessageCircle, MessageSquare, Route, ScrollText, Tags, Ticket, Users, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 
 import { ThemeToggle } from '@/components/common/ThemeToggle'
@@ -27,6 +27,7 @@ export function AdminLayout() {
   const user = useAuthStore((s) => s.user)
   const isHydrating = useAuthStore((s) => s.isHydrating)
   const chatUnreadCount = useAdminChatStore((s) => s.unreadCount)
+  const [navOpen, setNavOpen] = useState(false)
 
   useEffect(() => {
     if (user?.role === 'ADMIN') void useAdminChatStore.getState().refresh()
@@ -61,29 +62,40 @@ export function AdminLayout() {
       </header>
 
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col md:flex-row">
-        <nav className="flex w-full shrink-0 flex-col gap-1 border-b border-border p-3 md:w-52 md:border-b-0 md:border-r md:p-4">
-          {MENU.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) =>
-                cn(
-                  'flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-primary-soft text-primary-ink'
-                    : 'text-text-muted hover:bg-surface-alt hover:text-ink',
-                )
-              }
-            >
-              <item.icon className="size-4" /> {item.label}
-              {item.to === ROUTES.adminChat && chatUnreadCount > 0 && (
-                <span className="ml-auto flex size-4.5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
-                  {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
-                </span>
-              )}
-            </NavLink>
-          ))}
+        <nav className="w-full shrink-0 border-b border-border md:w-52 md:border-b-0 md:border-r">
+          <button
+            type="button"
+            onClick={() => setNavOpen((v) => !v)}
+            className="flex w-full items-center gap-2 px-3 py-2.5 text-sm font-medium text-ink md:hidden"
+          >
+            {navOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+            Menu quản trị
+          </button>
+          <div className={cn('flex-col gap-1 p-3 pt-0 md:flex md:p-4', navOpen ? 'flex' : 'hidden md:flex')}>
+            {MENU.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                onClick={() => setNavOpen(false)}
+                className={({ isActive }) =>
+                  cn(
+                    'flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-primary-soft text-primary-ink'
+                      : 'text-text-muted hover:bg-surface-alt hover:text-ink',
+                  )
+                }
+              >
+                <item.icon className="size-4" /> {item.label}
+                {item.to === ROUTES.adminChat && chatUnreadCount > 0 && (
+                  <span className="ml-auto flex size-4.5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
+                    {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
+                  </span>
+                )}
+              </NavLink>
+            ))}
+          </div>
         </nav>
         <main className="min-w-0 flex-1">
           <Outlet />
