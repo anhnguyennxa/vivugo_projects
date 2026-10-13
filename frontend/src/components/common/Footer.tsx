@@ -1,5 +1,7 @@
-import { Compass, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { Link } from 'react-router-dom'
+
+import { LogoMark } from '@/components/common/LogoMark'
 
 function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -52,9 +54,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-blue-400 text-white">
-              <Compass className="size-4.5" strokeWidth={2.2} />
-            </span>
+            <LogoMark className="size-8" variant="light" />
             <span className="font-display text-lg font-extrabold text-white">{APP_NAME}</span>
           </div>
           <p className="mt-3 max-w-xs text-sm text-slate-400">
