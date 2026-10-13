@@ -1,4 +1,4 @@
-import { Compass, Heart, LayoutDashboard, Ticket, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
+import { Heart, LayoutDashboard, Ticket, LogOut, Menu, Search, ShoppingCart, User as UserIcon, X } from 'lucide-react'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -55,9 +55,6 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Link to={ROUTES.home} className="flex shrink-0 items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-blue-400 text-white">
-            <Compass className="size-4.5" strokeWidth={2.2} />
-          </span>
           <span className="font-display text-lg font-extrabold tracking-tight text-ink">
             {APP_NAME}
           </span>
