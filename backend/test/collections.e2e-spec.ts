@@ -27,7 +27,7 @@ describe('Collections (e2e)', () => {
   let categoryId: string;
   let tourAId: string;
   let tourBId: string;
-  let collectionIds: string[] = [];
+  const collectionIds: string[] = [];
 
   const api = () => request(app.getHttpServer());
   const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
@@ -44,10 +44,20 @@ describe('Collections (e2e)', () => {
 
     const passwordHash = await argon2.hash(password);
     const admin = await prisma.user.create({
-      data: { email: adminEmail, passwordHash, fullName: 'E2E Col Admin', role: 'ADMIN' },
+      data: {
+        email: adminEmail,
+        passwordHash,
+        fullName: 'E2E Col Admin',
+        role: 'ADMIN',
+      },
     });
     await prisma.user.create({
-      data: { email: userEmail, passwordHash, fullName: 'E2E Col User', role: 'USER' },
+      data: {
+        email: userEmail,
+        passwordHash,
+        fullName: 'E2E Col User',
+        role: 'USER',
+      },
     });
 
     const login = async (email: string) => {
@@ -94,13 +104,21 @@ describe('Collections (e2e)', () => {
   afterAll(async () => {
     // Guard: id undefined trong where của Prisma = "bỏ qua điều kiện" -> xoá cả bảng.
     if (collectionIds.length > 0) {
-      await prisma.collection.deleteMany({ where: { id: { in: collectionIds } } });
+      await prisma.collection.deleteMany({
+        where: { id: { in: collectionIds } },
+      });
     }
     if (tourAId || tourBId) {
-      await prisma.tour.deleteMany({ where: { id: { in: [tourAId, tourBId] } } });
+      await prisma.tour.deleteMany({
+        where: { id: { in: [tourAId, tourBId] } },
+      });
     }
-    await prisma.category.deleteMany({ where: { slug: `e2e-col-cat-${suffix}` } });
-    await prisma.user.deleteMany({ where: { email: { in: [adminEmail, userEmail] } } });
+    await prisma.category.deleteMany({
+      where: { slug: `e2e-col-cat-${suffix}` },
+    });
+    await prisma.user.deleteMany({
+      where: { email: { in: [adminEmail, userEmail] } },
+    });
     await app.close();
   });
 
@@ -156,7 +174,8 @@ describe('Collections (e2e)', () => {
         tourIds: [tourAId, tourBId],
       })
       .expect(201);
-    const collection = (res.body as ApiBody<{ id: string; status: string }>).data;
+    const collection = (res.body as ApiBody<{ id: string; status: string }>)
+      .data;
     expect(collection.status).toBe('DRAFT');
     collectionIds.push(collection.id);
 
@@ -166,9 +185,8 @@ describe('Collections (e2e)', () => {
       .get(`/api/collections/admin/${collection.id}`)
       .set(auth(adminToken))
       .expect(200);
-    const detail = (
-      adminDetail.body as ApiBody<{ tours: { id: string }[] }>
-    ).data;
+    const detail = (adminDetail.body as ApiBody<{ tours: { id: string }[] }>)
+      .data;
     expect(detail.tours.map((t) => t.id)).toEqual([tourAId, tourBId]);
   });
 
@@ -185,7 +203,11 @@ describe('Collections (e2e)', () => {
       .expect(200);
     const body = (
       detail.body as ApiBody<{
-        tours: { id: string; discountPrice: number | null; departures: unknown[] }[];
+        tours: {
+          id: string;
+          discountPrice: number | null;
+          departures: unknown[];
+        }[];
       }>
     ).data;
     expect(body.tours.map((t) => t.id)).toEqual([tourAId, tourBId]);
@@ -193,9 +215,8 @@ describe('Collections (e2e)', () => {
     expect(body.tours[1].discountPrice).toBeNull();
 
     const list = await api().get('/api/collections').expect(200);
-    const listBody = (
-      list.body as ApiBody<{ id: string; tourCount: number }[]>
-    ).data;
+    const listBody = (list.body as ApiBody<{ id: string; tourCount: number }[]>)
+      .data;
     const found = listBody.find((c) => c.id === collectionId);
     expect(found?.tourCount).toBe(2);
 
@@ -296,13 +317,18 @@ describe('Collections (e2e)', () => {
       })
       .expect(409);
 
-    await api().delete(`/api/collections/${id}`).set(auth(adminToken)).expect(200);
+    await api()
+      .delete(`/api/collections/${id}`)
+      .set(auth(adminToken))
+      .expect(200);
     const adminList = await api()
       .get('/api/collections/admin')
       .query({ search: suffix.toString(), limit: 100 })
       .set(auth(adminToken))
       .expect(200);
-    const ids = (adminList.body as ApiBody<{ id: string }[]>).data.map((c) => c.id);
+    const ids = (adminList.body as ApiBody<{ id: string }[]>).data.map(
+      (c) => c.id,
+    );
     expect(ids).not.toContain(id);
   });
 });

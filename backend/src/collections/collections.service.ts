@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 
 import { Prisma } from '../../generated/prisma/client';
-import { ensureDateWindowValid, isWithinWindow } from '../common/utils/date-window.util';
+import {
+  ensureDateWindowValid,
+  isWithinWindow,
+} from '../common/utils/date-window.util';
 import { PrismaService } from '../database/prisma/prisma.service';
 import { effectiveDiscountPrice } from '../tours/promo.util';
 import {
@@ -37,7 +40,9 @@ function serializeTourCard<
     basePrice: Number(tour.basePrice),
     discountPrice: effectiveDiscountPrice(tour),
     avgRating: Number(tour.avgRating),
-    ...(tour.departures && { departures: serializeDepartures(tour.departures) }),
+    ...(tour.departures && {
+      departures: serializeDepartures(tour.departures),
+    }),
   };
 }
 
@@ -117,7 +122,8 @@ export class CollectionsService {
         ...c,
         tourCount: _count.tours,
         // Đang thật sự hiển thị với khách: đã đăng và trong hạn (nếu có đặt hạn).
-        isActive: c.status === 'PUBLISHED' && isWithinWindow(c.startAt, c.endAt),
+        isActive:
+          c.status === 'PUBLISHED' && isWithinWindow(c.startAt, c.endAt),
       })),
       page,
       limit,
@@ -131,7 +137,9 @@ export class CollectionsService {
       include: {
         tours: {
           orderBy: { sortOrder: 'asc' },
-          include: { tour: { select: { id: true, title: true, thumbnailUrl: true } } },
+          include: {
+            tour: { select: { id: true, title: true, thumbnailUrl: true } },
+          },
         },
       },
     });

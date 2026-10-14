@@ -199,8 +199,7 @@ describe('Blog (e2e)', () => {
       .get('/api/blog/admin?limit=100')
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200);
-    const items = (adminList.body as ApiBody & { data: { id: string }[] })
-      .data;
+    const items = (adminList.body as ApiBody & { data: { id: string }[] }).data;
     expect(items.some((p) => p.id === postId)).toBe(false);
 
     await request(app.getHttpServer()).get(`/api/blog/${postSlug}`).expect(404);

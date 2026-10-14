@@ -116,15 +116,16 @@ describe('Auth (e2e)', () => {
     expect(data.phone).toBe('0912345678');
 
     const cleared = await patch({ phone: '' }).expect(200);
-    expect((cleared.body as { data: { phone: string | null } }).data.phone).toBe(
-      null,
-    );
+    expect(
+      (cleared.body as { data: { phone: string | null } }).data.phone,
+    ).toBe(null);
 
     const withAvatar = await patch({
       avatarUrl: 'https://res.cloudinary.com/demo/image/upload/avatar.png',
     }).expect(200);
     expect(
-      (withAvatar.body as { data: { avatarUrl: string | null } }).data.avatarUrl,
+      (withAvatar.body as { data: { avatarUrl: string | null } }).data
+        .avatarUrl,
     ).toBe('https://res.cloudinary.com/demo/image/upload/avatar.png');
 
     const clearedAvatar = await patch({ avatarUrl: null }).expect(200);

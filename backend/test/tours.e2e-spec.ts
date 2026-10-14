@@ -157,9 +157,7 @@ describe('Tours & Categories (e2e)', () => {
       expect(tour.discountPrice!).toBeLessThan(tour.basePrice);
     }
 
-    await request(app.getHttpServer())
-      .get('/api/tours?promo=abc')
-      .expect(400);
+    await request(app.getHttpServer()).get('/api/tours?promo=abc').expect(400);
   });
 
   it('GET /api/tours?lastMinute=true chỉ trả về tour có đợt khởi hành trong 21 ngày tới, kèm đợt gần nhất', async () => {

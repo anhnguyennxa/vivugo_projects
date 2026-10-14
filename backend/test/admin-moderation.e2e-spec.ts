@@ -42,10 +42,20 @@ describe('Admin reviews & users (e2e)', () => {
 
     const passwordHash = await argon2.hash(password);
     const admin = await prisma.user.create({
-      data: { email: adminEmail, passwordHash, fullName: 'E2E Mod Admin', role: 'ADMIN' },
+      data: {
+        email: adminEmail,
+        passwordHash,
+        fullName: 'E2E Mod Admin',
+        role: 'ADMIN',
+      },
     });
     const user = await prisma.user.create({
-      data: { email: userEmail, passwordHash, fullName: 'E2E Mod User', role: 'USER' },
+      data: {
+        email: userEmail,
+        passwordHash,
+        fullName: 'E2E Mod User',
+        role: 'USER',
+      },
     });
     await prisma.user.create({
       data: {
@@ -130,7 +140,9 @@ describe('Admin reviews & users (e2e)', () => {
       await prisma.departure.deleteMany({ where: { tourId } });
       await prisma.tour.deleteMany({ where: { id: tourId } });
     }
-    await prisma.category.deleteMany({ where: { slug: `e2e-mod-cat-${suffix}` } });
+    await prisma.category.deleteMany({
+      where: { slug: `e2e-mod-cat-${suffix}` },
+    });
     await prisma.user.deleteMany({
       where: { email: { in: [adminEmail, userEmail, lockedEmail] } },
     });
@@ -277,7 +289,9 @@ describe('Admin reviews & users (e2e)', () => {
         .set(auth(adminToken))
         .send({ isActive: false })
         .expect(200);
-      expect((locked.body as { data: { isActive: boolean } }).data.isActive).toBe(false);
+      expect(
+        (locked.body as { data: { isActive: boolean } }).data.isActive,
+      ).toBe(false);
 
       await api().get('/api/auth/me').set(auth(userToken)).expect(401);
       await api()
@@ -307,14 +321,18 @@ describe('Admin reviews & users (e2e)', () => {
         .set(auth(adminToken))
         .send({ role: 'ADMIN' })
         .expect(200);
-      expect((promoted.body as { data: { role: string } }).data.role).toBe('ADMIN');
+      expect((promoted.body as { data: { role: string } }).data.role).toBe(
+        'ADMIN',
+      );
 
       const demoted = await api()
         .patch(`/api/admin/users/${userId}`)
         .set(auth(adminToken))
         .send({ role: 'USER' })
         .expect(200);
-      expect((demoted.body as { data: { role: string } }).data.role).toBe('USER');
+      expect((demoted.body as { data: { role: string } }).data.role).toBe(
+        'USER',
+      );
     });
   });
 });

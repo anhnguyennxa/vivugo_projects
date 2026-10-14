@@ -18,7 +18,10 @@ export function isPromoActive(tour: PromoWindowFields, now = new Date()) {
 
 // Giá giảm hiệu lực cho khách xem — null nếu chưa/đã hết hạn hoặc không có giá giảm,
 // để phía hiển thị tự trở về giá gốc mà không cần biết gì về hạn khuyến mãi.
-export function effectiveDiscountPrice(tour: PromoWindowFields, now = new Date()) {
+export function effectiveDiscountPrice(
+  tour: PromoWindowFields,
+  now = new Date(),
+) {
   return isPromoActive(tour, now) ? Number(tour.discountPrice) : null;
 }
 

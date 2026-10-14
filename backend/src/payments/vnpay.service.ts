@@ -57,7 +57,8 @@ function formatVnpayDate(date: Date): string {
 const PAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
 // API hoàn tiền của VNPay (merchant_webapi) — khác cổng thanh toán, gọi
 // server-to-server chứ không phải điều hướng trình duyệt.
-const REFUND_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction';
+const REFUND_API_URL =
+  'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction';
 
 @Injectable()
 export class VnpayService {
@@ -193,7 +194,9 @@ export class VnpayService {
         transactionNo: data.vnp_TransactionNo,
       };
     } catch (err) {
-      this.logger.error(`Gọi API hoàn tiền VNPay thất bại: ${(err as Error).message}`);
+      this.logger.error(
+        `Gọi API hoàn tiền VNPay thất bại: ${(err as Error).message}`,
+      );
       return {
         success: false,
         responseCode: 'NETWORK_ERROR',

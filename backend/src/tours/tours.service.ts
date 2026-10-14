@@ -11,7 +11,10 @@ import type { CreateTourDto } from './dto/create-tour.dto';
 import type { QueryToursDto } from './dto/query-tours.dto';
 import type { UpdateTourDto } from './dto/update-tour.dto';
 import { activePromoWhere, effectiveDiscountPrice } from './promo.util';
-import { serializeDepartures, UPCOMING_DEPARTURES_INCLUDE } from './upcoming-departures.util';
+import {
+  serializeDepartures,
+  UPCOMING_DEPARTURES_INCLUDE,
+} from './upcoming-departures.util';
 
 type SerializableTour = {
   basePrice: Prisma.Decimal;
@@ -29,7 +32,9 @@ function serializeTour<T extends SerializableTour>(tour: T) {
     basePrice: Number(tour.basePrice),
     discountPrice: effectiveDiscountPrice(tour),
     avgRating: Number(tour.avgRating),
-    ...(tour.departures && { departures: serializeDepartures(tour.departures) }),
+    ...(tour.departures && {
+      departures: serializeDepartures(tour.departures),
+    }),
   };
 }
 
@@ -39,9 +44,12 @@ function serializeTourRaw<T extends SerializableTour>(tour: T) {
   return {
     ...tour,
     basePrice: Number(tour.basePrice),
-    discountPrice: tour.discountPrice != null ? Number(tour.discountPrice) : null,
+    discountPrice:
+      tour.discountPrice != null ? Number(tour.discountPrice) : null,
     avgRating: Number(tour.avgRating),
-    ...(tour.departures && { departures: serializeDepartures(tour.departures) }),
+    ...(tour.departures && {
+      departures: serializeDepartures(tour.departures),
+    }),
   };
 }
 
@@ -49,7 +57,11 @@ function ensurePromoWindowValid(
   promoStartAt?: string | null,
   promoEndAt?: string | null,
 ) {
-  if (promoStartAt && promoEndAt && new Date(promoStartAt) > new Date(promoEndAt)) {
+  if (
+    promoStartAt &&
+    promoEndAt &&
+    new Date(promoStartAt) > new Date(promoEndAt)
+  ) {
     throw new BadRequestException(
       'Ngày bắt đầu khuyến mãi phải trước hoặc bằng ngày kết thúc',
     );

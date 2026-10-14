@@ -37,7 +37,11 @@ describe('Payments refund (e2e)', () => {
     message: 'Success',
     transactionNo: 'REFUND-MOCK-1',
   };
-  const refundCalls: { txnRef: string; amount: number; transactionNo: string }[] = [];
+  const refundCalls: {
+    txnRef: string;
+    amount: number;
+    transactionNo: string;
+  }[] = [];
 
   const api = () => request(app.getHttpServer());
   const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
@@ -71,10 +75,20 @@ describe('Payments refund (e2e)', () => {
 
     const passwordHash = await argon2.hash(password);
     const admin = await prisma.user.create({
-      data: { email: adminEmail, passwordHash, fullName: 'E2E Refund Admin', role: 'ADMIN' },
+      data: {
+        email: adminEmail,
+        passwordHash,
+        fullName: 'E2E Refund Admin',
+        role: 'ADMIN',
+      },
     });
     const user = await prisma.user.create({
-      data: { email: userEmail, passwordHash, fullName: 'E2E Refund User', role: 'USER' },
+      data: {
+        email: userEmail,
+        passwordHash,
+        fullName: 'E2E Refund User',
+        role: 'USER',
+      },
     });
     userId = user.id;
 
@@ -93,7 +107,8 @@ describe('Payments refund (e2e)', () => {
         title: `E2E Refund Tour ${suffix}`,
         slug: `e2e-refund-tour-${suffix}`,
         categoryId: category.id,
-        description: 'Mo ta hop le voi tren hai muoi ky tu cho tour kiem thu hoan tien',
+        description:
+          'Mo ta hop le voi tren hai muoi ky tu cho tour kiem thu hoan tien',
         itinerary: [],
         location: 'Test',
         region: 'MIEN_NAM',
@@ -128,8 +143,12 @@ describe('Payments refund (e2e)', () => {
       await prisma.departure.deleteMany({ where: { tourId } });
       await prisma.tour.deleteMany({ where: { id: tourId } });
     }
-    await prisma.category.deleteMany({ where: { slug: `e2e-refund-cat-${suffix}` } });
-    await prisma.user.deleteMany({ where: { email: { in: [adminEmail, userEmail] } } });
+    await prisma.category.deleteMany({
+      where: { slug: `e2e-refund-cat-${suffix}` },
+    });
+    await prisma.user.deleteMany({
+      where: { email: { in: [adminEmail, userEmail] } },
+    });
     await app.close();
   });
 
@@ -173,7 +192,10 @@ describe('Payments refund (e2e)', () => {
 
   it('USER thường không được gọi hoàn tiền (403)', async () => {
     const id = await makeCancelledPaidBooking(`E2ERF${suffix}A`);
-    await api().post(`/api/payments/${id}/refund`).set(auth(userToken)).expect(403);
+    await api()
+      .post(`/api/payments/${id}/refund`)
+      .set(auth(userToken))
+      .expect(403);
   });
 
   it('từ chối hoàn tiền khi đơn chưa bị huỷ (400)', async () => {
@@ -290,7 +312,9 @@ describe('Payments refund (e2e)', () => {
     expect(call?.amount).toBe(2000000);
     expect(call?.transactionNo).toBe(`TXN-${code}`);
 
-    const payment = await prisma.payment.findUnique({ where: { bookingId: id } });
+    const payment = await prisma.payment.findUnique({
+      where: { bookingId: id },
+    });
     expect(payment?.status).toBe('REFUNDED');
     expect(payment?.refundedAt).not.toBeNull();
     expect(payment?.refundTransactionRef).toBe('REFUND-MOCK-1');
@@ -299,19 +323,28 @@ describe('Payments refund (e2e)', () => {
     expect(booking?.paymentStatus).toBe('REFUNDED');
 
     // Hoàn lần 2 phải bị từ chối vì đã REFUNDED, không phải PAID nữa.
-    await api().post(`/api/payments/${id}/refund`).set(auth(adminToken)).expect(400);
+    await api()
+      .post(`/api/payments/${id}/refund`)
+      .set(auth(adminToken))
+      .expect(400);
   });
 
   it('VNPay từ chối hoàn tiền: trả 400, không đổi trạng thái đơn', async () => {
     const id = await makeCancelledPaidBooking(`E2ERF${suffix}F`);
 
-    refundResponse = { success: false, responseCode: '91', message: 'Giao dịch không tồn tại' };
+    refundResponse = {
+      success: false,
+      responseCode: '91',
+      message: 'Giao dịch không tồn tại',
+    };
     try {
       const res = await api()
         .post(`/api/payments/${id}/refund`)
         .set(auth(adminToken))
         .expect(400);
-      expect((res.body as ApiBody<null>).message).toContain('VNPay từ chối hoàn tiền');
+      expect((res.body as ApiBody<null>).message).toContain(
+        'VNPay từ chối hoàn tiền',
+      );
     } finally {
       refundResponse = {
         success: true,
@@ -321,7 +354,9 @@ describe('Payments refund (e2e)', () => {
       };
     }
 
-    const payment = await prisma.payment.findUnique({ where: { bookingId: id } });
+    const payment = await prisma.payment.findUnique({
+      where: { bookingId: id },
+    });
     expect(payment?.status).toBe('SUCCESS');
     const booking = await prisma.booking.findUnique({ where: { id } });
     expect(booking?.paymentStatus).toBe('PAID');
@@ -332,7 +367,10 @@ describe('Payments refund (e2e)', () => {
 
     vnpayConfigured = false;
     try {
-      await api().post(`/api/payments/${id}/refund`).set(auth(adminToken)).expect(503);
+      await api()
+        .post(`/api/payments/${id}/refund`)
+        .set(auth(adminToken))
+        .expect(503);
     } finally {
       vnpayConfigured = true;
     }

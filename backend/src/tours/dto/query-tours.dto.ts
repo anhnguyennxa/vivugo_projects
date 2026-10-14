@@ -51,7 +51,9 @@ export class QueryToursDto {
 
   // Chỉ lấy tour đang khuyến mãi (có giá giảm)
   @IsOptional()
-  @Transform(({ value }) => (value === 'true' ? true : value === 'false' ? false : value))
+  @Transform(({ value }) =>
+    value === 'true' ? true : value === 'false' ? false : value,
+  )
   @IsBoolean()
   promo?: boolean;
 
